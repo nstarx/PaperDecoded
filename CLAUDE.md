@@ -21,6 +21,21 @@ This project hosts accessible, beginner-friendly explanations of cutting-edge AI
 - `--success: #10b981` (Green)
 - `--warning: #f59e0b` (Orange)
 
+### Text Color Rules
+**IMPORTANT: Never use red for text - it's hard to read!**
+- Use **blue** (`#2563eb`, `#3b82f6`, `#60a5fa`) for emphasis/negative indicators
+- Use **gray** (`--text-secondary`) for secondary text
+- Red is only OK for backgrounds/gradients, NOT for text
+
+### Citation Heatmap (Card Headers)
+Card header colors are based on citation count (heatmap style):
+- **Legendary (10,000+)**: Red `#dc2626` → `#b91c1c` - landmark papers
+- **High (100-9,999)**: Orange `#f97316` → `#ea580c` - highly cited
+- **Medium (30-99)**: Yellow `#eab308` → `#ca8a04` - moderately cited
+- **Low (<30)**: Blue `#3b82f6` → `#1d4ed8` - new/emerging papers
+
+This is set automatically via JavaScript `setCitationTiers()` function.
+
 ### Icons
 Use **Google Material Icons** throughout:
 ```html
@@ -60,14 +75,22 @@ Each explainer follows this structure:
 - **Visuals**: Use flow diagrams, comparison cards, stat cards
 
 ### 3. Adding to Index
-Update `index.html` to add new paper card:
+Update `index.html` to add new paper card with all required data attributes:
 ```html
-<article class="paper-card" data-categories="category1,category2">
+<article class="paper-card"
+    data-categories="category1,category2"
+    data-year="2025"
+    data-citations="45"
+    data-read-time="15"
+    data-date="2025-01-15"
+    data-read-year="2025">
     <div class="paper-card-header">
         <div class="category">
             <span class="material-icons">icon</span>
             Category Name
         </div>
+        <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
+        <span class="citation-badge"><span class="material-icons">format_quote</span> 45</span>
         <h3>Paper Title</h3>
         <div class="authors">Authors</div>
     </div>
@@ -83,6 +106,20 @@ Update `index.html` to add new paper card:
 </article>
 ```
 
+### Data Attributes Explained
+- `data-categories`: Comma-separated list for topic filtering
+- `data-year`: Publication year (for "Published" filter)
+- `data-citations`: Citation count (determines header heatmap color)
+- `data-read-time`: Reading time in minutes
+- `data-date`: Full date for sorting (YYYY-MM-DD)
+- `data-read-year`: Year when paper was read (for "Read in" filter)
+
+### Index Page Features
+- **Collapsible topic filters**: Click "Filter by Topic" to expand/collapse
+- **Year filters**: "Published" (publication year) + "Read in" (reading year)
+- **Sort options**: Most Recent, Oldest First, Most Cited, Read Time
+- **Search**: Full-text search across all cards
+
 ### 4. Remove "Coming Soon" Status
 When a paper is ready, remove:
 - `.coming-soon` class from the card
@@ -96,6 +133,15 @@ When a paper is ready, remove:
 - `multimodal` - Multimodal AI
 - `self-supervised` - Self-Supervised Learning
 - `robotics` - Robotics & Planning
+- `productivity` - AI & Productivity
+- `testing` - Software Testing
+- `efficiency` - Model Efficiency
+- `data` - Data Integration
+- `security` - Code Security
+- `federated` - Federated Learning
+- `agents` - AI Agents
+- `reasoning` - Reasoning
+- `multi-agent` - Multi-Agent Systems
 
 ## Key Components Reference
 

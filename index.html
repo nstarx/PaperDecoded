@@ -583,13 +583,30 @@
             margin-left: 8px;
         }
 
-        /* Stats in meta */
+        /* Stats in meta - readable dark text */
         .meta-item.citations {
-            color: var(--warning);
+            color: var(--text-secondary);
         }
 
         .meta-item.citations .material-icons {
-            color: var(--warning);
+            color: var(--text-secondary);
+        }
+
+        /* Citation tier indicators - heatmap style (red=hot/many, blue=cold/few) */
+        .paper-card[data-citation-tier="legendary"] .paper-card-header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+        }
+
+        .paper-card[data-citation-tier="high"] .paper-card-header {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+        }
+
+        .paper-card[data-citation-tier="medium"] .paper-card-header {
+            background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%) !important;
+        }
+
+        .paper-card[data-citation-tier="low"] .paper-card-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
         }
 
         /* Reading badge - inside header */
@@ -1613,7 +1630,26 @@
             }
         });
 
-        // Initialize with default sort (most recent)
+        // Calculate citation tiers for color coding
+        function setCitationTiers() {
+            paperCards.forEach(card => {
+                const citations = parseInt(card.dataset.citations || '0');
+                let tier;
+                if (citations >= 10000) {
+                    tier = 'legendary';  // Gold - landmark papers
+                } else if (citations >= 100) {
+                    tier = 'high';       // Purple - highly cited
+                } else if (citations >= 30) {
+                    tier = 'medium';     // Blue - moderately cited
+                } else {
+                    tier = 'low';        // Gray - new/emerging
+                }
+                card.dataset.citationTier = tier;
+            });
+        }
+
+        // Initialize
+        setCitationTiers();
         sortCards('recent');
     </script>
 </body>
