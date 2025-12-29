@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Illusion of Thinking - Paper Explained | NStarX Research</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --secondary: #f59e0b;
+            --accent: #ec4899;
+            --success: #10b981;
+            --warning: #ef4444;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--bg-light);
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .paper-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .paper-info span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .paper-info .material-icons {
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .toc h2 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .toc a {
+            color: var(--primary);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toc a:hover {
+            background: var(--bg-light);
+        }
+
+        .toc .material-icons {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Sections */
+        section {
+            background: white;
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--bg-light);
+        }
+
+        .section-header .material-icons {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin: 25px 0 15px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+
+        /* Highlight Boxes */
+        .highlight-box {
+            background: linear-gradient(135deg, #f0e7ff 0%, #fce7f3 100%);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+        }
+
+        .highlight-box.warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fee2e2 100%);
+            border-left-color: var(--warning);
+        }
+
+        .highlight-box.success {
+            background: linear-gradient(135deg, #d1fae5 0%, #cffafe 100%);
+            border-left-color: var(--success);
+        }
+
+        .highlight-box p {
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        /* Analogy Box */
+        .analogy {
+            background: linear-gradient(135deg, #fef3c7 0%, #fff7ed 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .analogy-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 12px;
+        }
+
+        .analogy-title .material-icons {
+            color: #f59e0b;
+        }
+
+        .analogy p {
+            color: #78350f;
+            margin: 0;
+        }
+
+        /* Key Insight */
+        .key-insight {
+            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid #93c5fd;
+        }
+
+        .key-insight-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 12px;
+        }
+
+        .key-insight-title .material-icons {
+            color: #3b82f6;
+        }
+
+        .key-insight p {
+            color: #1e3a8a;
+            margin: 0;
+        }
+
+        /* Three Regimes Visual */
+        .regimes-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 700px) {
+            .regimes-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .regime-card {
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .regime-card.low {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #10b981;
+        }
+
+        .regime-card.medium {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+        }
+
+        .regime-card.high {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #ef4444;
+        }
+
+        .regime-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .regime-card .winner {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .regime-card.low .winner { color: #047857; }
+        .regime-card.medium .winner { color: #b45309; }
+        .regime-card.high .winner { color: #b91c1c; }
+
+        .regime-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Puzzle Cards */
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 600px) {
+            .puzzle-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .puzzle-card {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .puzzle-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .puzzle-card p {
+            font-size: 0.9rem;
+            margin: 0 0 10px;
+        }
+
+        .puzzle-card .complexity {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 600px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .comparison-card.old {
+            background: linear-gradient(135deg, #fee2e2 0%, #fef3c7 100%);
+            border: 2px solid #ef4444;
+        }
+
+        .comparison-card.new {
+            background: linear-gradient(135deg, #d1fae5 0%, #dbeafe 100%);
+            border: 2px solid #10b981;
+        }
+
+        .comparison-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .comparison-card.old h4 { color: #b91c1c; }
+        .comparison-card.new h4 { color: #047857; }
+
+        .comparison-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comparison-card li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            font-size: 0.95rem;
+        }
+
+        .comparison-card li:last-child {
+            border-bottom: none;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f0e7ff 0%, #fce7f3 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card .label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        /* Thinking Process Visual */
+        .thinking-visual {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .thinking-timeline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .thinking-step {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .thinking-step.correct {
+            background: #d1fae5;
+            color: #047857;
+        }
+
+        .thinking-step.incorrect {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .thinking-step.final {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .arrow {
+            color: var(--text-muted);
+        }
+
+        /* Collapse Visual */
+        .collapse-visual {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            color: white;
+        }
+
+        .collapse-visual h4 {
+            color: #f87171;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .complexity-bar {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 120px;
+            margin: 20px 0;
+        }
+
+        .bar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .bar {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.3s;
+        }
+
+        .bar.accuracy {
+            background: linear-gradient(to top, #10b981, #34d399);
+        }
+
+        .bar.thinking {
+            background: linear-gradient(to top, #7c3aed, #a78bfa);
+        }
+
+        .bar-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .legend-dot.accuracy { background: #10b981; }
+        .legend-dot.thinking { background: #7c3aed; }
+
+        /* Glossary */
+        .glossary-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .glossary-item {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .glossary-item dt {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .glossary-item dd {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Takeaways */
+        .takeaways-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .takeaways-list li {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .takeaways-list li:last-child {
+            border-bottom: none;
+        }
+
+        .takeaways-list .material-icons {
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-top: 1px solid var(--border);
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Back Button */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: white;
+            opacity: 0.9;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        /* Failure Pattern Visual */
+        .failure-pattern {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .pattern-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .pattern-label {
+            width: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .pattern-bar {
+            flex: 1;
+            height: 30px;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pattern-fill {
+            height: 100%;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .pattern-fill.hanoi {
+            background: linear-gradient(90deg, #10b981, #ef4444);
+        }
+
+        .pattern-fill.river {
+            background: linear-gradient(90deg, #10b981 15%, #ef4444 15%);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="back-link">
+                <span class="material-icons">arrow_back</span>
+                Back to Papers
+            </a>
+            <h1>The Illusion of Thinking</h1>
+            <p class="subtitle">Understanding the Strengths and Limitations of Reasoning Models via the Lens of Problem Complexity</p>
+            <div class="paper-info">
+                <span><span class="material-icons">business</span> Apple AI Research</span>
+                <span><span class="material-icons">calendar_today</span> 2025</span>
+                <span><span class="material-icons">timer</span> 20 min read</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <h2><span class="material-icons">list</span> What's Inside</h2>
+            <div class="toc-grid">
+                <a href="#tldr"><span class="material-icons">bolt</span> TL;DR</a>
+                <a href="#lrms"><span class="material-icons">psychology</span> What Are LRMs?</a>
+                <a href="#methodology"><span class="material-icons">science</span> The Methodology</a>
+                <a href="#regimes"><span class="material-icons">insights</span> Three Regimes</a>
+                <a href="#collapse"><span class="material-icons">trending_down</span> The Collapse</a>
+                <a href="#overthinking"><span class="material-icons">loop</span> Overthinking</a>
+                <a href="#algorithm"><span class="material-icons">code</span> Algorithm Failure</a>
+                <a href="#implications"><span class="material-icons">lightbulb</span> Implications</a>
+                <a href="#glossary"><span class="material-icons">menu_book</span> Glossary</a>
+                <a href="#takeaways"><span class="material-icons">star</span> Key Takeaways</a>
+            </div>
+        </nav>
+
+        <!-- TL;DR Section -->
+        <section id="tldr">
+            <div class="section-header">
+                <span class="material-icons">bolt</span>
+                <h2>TL;DR - The 60-Second Summary</h2>
+            </div>
+
+            <div class="highlight-box warning">
+                <p><strong>The Big Discovery:</strong> Despite impressive benchmark scores, "thinking" AI models (like OpenAI's o1/o3, DeepSeek-R1, Claude 3.7 Thinking) completely fail when problems get complex enough - accuracy drops to literally 0%.</p>
+            </div>
+
+            <p>Apple researchers tested these new "Large Reasoning Models" (LRMs) on controllable puzzles where they could precisely measure what happens as problems get harder. What they found challenges the narrative that these models are genuine reasoners:</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">0%</div>
+                    <div class="label">Accuracy at high complexity</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">3</div>
+                    <div class="label">Performance regimes discovered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">4</div>
+                    <div class="label">Puzzle types tested</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">~100</div>
+                    <div class="label">Moves possible in Tower of Hanoi</div>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <div class="key-insight-title">
+                    <span class="material-icons">psychology_alt</span>
+                    The Paradox
+                </div>
+                <p>As problems get harder, these models initially "think" more (use more tokens). But past a critical threshold, they actually start thinking <em>less</em> - and completely fail. This happens even when they have plenty of unused token budget available!</p>
+            </div>
+        </section>
+
+        <!-- What Are LRMs -->
+        <section id="lrms">
+            <div class="section-header">
+                <span class="material-icons">psychology</span>
+                <h2>What Are Large Reasoning Models (LRMs)?</h2>
+            </div>
+
+            <p>LRMs are a new generation of AI models designed to "think" before answering. Unlike traditional language models that respond immediately, LRMs generate detailed reasoning chains - often called "thinking traces" - before providing their final answer.</p>
+
+            <div class="analogy">
+                <div class="analogy-title">
+                    <span class="material-icons">lightbulb</span>
+                    Think of It Like...
+                </div>
+                <p>Imagine two students taking a math test. A regular LLM is like a student who blurts out answers immediately - sometimes right, sometimes wrong. An LRM is like a student who shows their work, writing out each step of their reasoning. The promise is that this "thinking out loud" leads to better answers... but does it really?</p>
+            </div>
+
+            <h3>The Key Players</h3>
+
+            <div class="comparison-grid">
+                <div class="comparison-card new">
+                    <h4><span class="material-icons">psychology</span> Thinking Models (LRMs)</h4>
+                    <ul>
+                        <li>OpenAI o1 / o3-mini</li>
+                        <li>DeepSeek-R1</li>
+                        <li>Claude 3.7 Sonnet (Thinking)</li>
+                        <li>Gemini Flash Thinking</li>
+                    </ul>
+                </div>
+                <div class="comparison-card old">
+                    <h4><span class="material-icons">chat</span> Standard LLMs</h4>
+                    <ul>
+                        <li>GPT-4</li>
+                        <li>DeepSeek-V3</li>
+                        <li>Claude 3.7 Sonnet (Standard)</li>
+                        <li>Llama, Mistral, etc.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p>LRMs are trained using reinforcement learning with verifiable rewards - they learn to produce better reasoning traces by getting feedback on whether their final answers are correct. This training encourages self-reflection, backtracking, and exploring multiple solution paths.</p>
+        </section>
+
+        <!-- Methodology -->
+        <section id="methodology">
+            <div class="section-header">
+                <span class="material-icons">science</span>
+                <h2>The Clever Methodology</h2>
+            </div>
+
+            <p>The researchers realized that testing on standard math benchmarks has problems: (1) models may have seen similar problems during training, and (2) you can't precisely control difficulty. So they used classic puzzles instead.</p>
+
+            <h3>Why Puzzles Work Better</h3>
+
+            <div class="highlight-box">
+                <p><strong>Controllable complexity:</strong> Add more disks to Tower of Hanoi = exponentially harder. Add more checkers = quadratically harder. This lets researchers see exactly when and how models fail.</p>
+            </div>
+
+            <h3>The Four Puzzle Environments</h3>
+
+            <div class="puzzle-grid">
+                <div class="puzzle-card">
+                    <h4><span class="material-icons">stacked_bar_chart</span> Tower of Hanoi</h4>
+                    <p>Move all disks from peg A to peg C, never placing larger disks on smaller ones.</p>
+                    <span class="complexity">Complexity: 2^N - 1 moves</span>
+                </div>
+                <div class="puzzle-card">
+                    <h4><span class="material-icons">swap_horiz</span> Checker Jumping</h4>
+                    <p>Swap positions of red and blue checkers by sliding or jumping.</p>
+                    <span class="complexity">Complexity: (N+1)^2 - 1 moves</span>
+                </div>
+                <div class="puzzle-card">
+                    <h4><span class="material-icons">directions_boat</span> River Crossing</h4>
+                    <p>Transport actors and agents across a river with safety constraints.</p>
+                    <span class="complexity">Complexity: ~Linear with N</span>
+                </div>
+                <div class="puzzle-card">
+                    <h4><span class="material-icons">view_in_ar</span> Blocks World</h4>
+                    <p>Rearrange stacked blocks from initial to goal configuration.</p>
+                    <span class="complexity">Complexity: ~Linear with N</span>
+                </div>
+            </div>
+
+            <h3>The Secret Weapon: Simulators</h3>
+
+            <p>Unlike math problems where you only know if the final answer is right, the researchers built simulators that could:</p>
+            <ul style="margin-left: 20px; color: var(--text-secondary);">
+                <li>Verify each individual move in a solution</li>
+                <li>Identify exactly where the model first made a mistake</li>
+                <li>Extract and evaluate intermediate solutions from the thinking traces</li>
+                <li>Track when correct vs. incorrect solutions appeared during "thinking"</li>
+            </ul>
+        </section>
+
+        <!-- Three Regimes -->
+        <section id="regimes">
+            <div class="section-header">
+                <span class="material-icons">insights</span>
+                <h2>The Three Regimes of Complexity</h2>
+            </div>
+
+            <p>The central finding: there are three distinct "regimes" based on problem complexity, and thinking models don't always win!</p>
+
+            <div class="regimes-container">
+                <div class="regime-card low">
+                    <h4>Low Complexity</h4>
+                    <div class="winner">Winner: Standard LLMs</div>
+                    <p>Simple problems where extra "thinking" is wasteful overhead. Standard models solve them faster and more efficiently.</p>
+                </div>
+                <div class="regime-card medium">
+                    <h4>Medium Complexity</h4>
+                    <div class="winner">Winner: Thinking Models</div>
+                    <p>The sweet spot where extended reasoning actually helps. LRMs explore possibilities and self-correct.</p>
+                </div>
+                <div class="regime-card high">
+                    <h4>High Complexity</h4>
+                    <div class="winner">Winner: Nobody (0% accuracy)</div>
+                    <p>Both model types completely collapse. Thinking doesn't help - performance goes to zero.</p>
+                </div>
+            </div>
+
+            <div class="analogy">
+                <div class="analogy-title">
+                    <span class="material-icons">lightbulb</span>
+                    The Race Car Analogy
+                </div>
+                <p>Imagine two cars: a sports car (standard LLM) and a thinking car that stops to consult GPS at every intersection (LRM). For a trip to the corner store, the sports car wins - no thinking needed. For a cross-city journey, the GPS car finds better routes. But for an impossible journey across an ocean? Both cars fail completely - the GPS just wastes more time before giving up.</p>
+            </div>
+
+            <div class="key-insight">
+                <div class="key-insight-title">
+                    <span class="material-icons">warning</span>
+                    The Uncomfortable Truth
+                </div>
+                <p>LRMs don't "think better" - they just delay failure. At high complexity, the advantage of thinking completely disappears. The extra reasoning tokens are essentially wasted compute.</p>
+            </div>
+        </section>
+
+        <!-- The Collapse -->
+        <section id="collapse">
+            <div class="section-header">
+                <span class="material-icons">trending_down</span>
+                <h2>The Collapse Phenomenon</h2>
+            </div>
+
+            <p>Perhaps the most striking finding: as problems approach critical complexity, models don't just get worse - they <em>give up</em>.</p>
+
+            <div class="collapse-visual">
+                <h4><span class="material-icons">show_chart</span> The Counterintuitive Pattern</h4>
+                <p style="color: #94a3b8; margin-bottom: 20px;">As complexity increases, thinking effort rises... then mysteriously falls right before complete failure.</p>
+
+                <div class="complexity-bar">
+                    <div class="bar-item">
+                        <div class="bar accuracy" style="height: 100px;"></div>
+                        <div class="bar-label">N=3</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar accuracy" style="height: 85px;"></div>
+                        <div class="bar-label">N=5</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar accuracy" style="height: 60px;"></div>
+                        <div class="bar-label">N=7</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar accuracy" style="height: 30px;"></div>
+                        <div class="bar-label">N=9</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar accuracy" style="height: 5px;"></div>
+                        <div class="bar-label">N=10</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar accuracy" style="height: 2px;"></div>
+                        <div class="bar-label">N=15</div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar accuracy" style="height: 0px;"></div>
+                        <div class="bar-label">N=20</div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-dot accuracy"></div>
+                        <span>Accuracy (drops to 0%)</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3>The Token Budget Paradox</h3>
+
+            <p>Here's what makes this truly puzzling: these models have large token budgets (64,000 tokens) that they're nowhere close to exhausting. They <em>could</em> keep thinking, but they <em>choose</em> to reduce their reasoning effort right when problems get hardest.</p>
+
+            <div class="highlight-box warning">
+                <p><strong>What This Suggests:</strong> The models seem to "recognize" when they're in over their heads and essentially give up. This isn't graceful degradation - it's a fundamental scaling limit in their reasoning architecture.</p>
+            </div>
+        </section>
+
+        <!-- Overthinking -->
+        <section id="overthinking">
+            <div class="section-header">
+                <span class="material-icons">loop</span>
+                <h2>The Overthinking Phenomenon</h2>
+            </div>
+
+            <p>By analyzing the thinking traces (the model's internal reasoning), researchers discovered another inefficiency: for simple problems, models often find the right answer <em>early</em> and then waste compute exploring wrong paths.</p>
+
+            <div class="thinking-visual">
+                <h4>Inside a Simple Problem's Thinking Trace</h4>
+                <div class="thinking-timeline">
+                    <div class="thinking-step correct">Correct answer found!</div>
+                    <span class="arrow">→</span>
+                    <div class="thinking-step incorrect">Wrong alternative</div>
+                    <span class="arrow">→</span>
+                    <div class="thinking-step incorrect">Wrong alternative</div>
+                    <span class="arrow">→</span>
+                    <div class="thinking-step incorrect">Wrong alternative</div>
+                    <span class="arrow">→</span>
+                    <div class="thinking-step final">Final: Correct (lucky!)</div>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">The model found the right answer at 10% into its thinking, then spent 90% exploring dead ends before (hopefully) returning to the correct solution.</p>
+            </div>
+
+            <h3>How Thinking Patterns Change with Complexity</h3>
+
+            <div class="comparison-grid">
+                <div class="comparison-card new">
+                    <h4><span class="material-icons">sentiment_satisfied</span> Low Complexity</h4>
+                    <ul>
+                        <li>Correct solution found early</li>
+                        <li>Model keeps exploring anyway</li>
+                        <li>Wasted compute on "overthinking"</li>
+                        <li>Usually returns to correct answer</li>
+                    </ul>
+                </div>
+                <div class="comparison-card old">
+                    <h4><span class="material-icons">sentiment_dissatisfied</span> Medium/High Complexity</h4>
+                    <ul>
+                        <li>Many incorrect attempts first</li>
+                        <li>Correct solution (if any) found late</li>
+                        <li>Model may fixate on early wrong answer</li>
+                        <li>Often never finds correct solution</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <div class="key-insight-title">
+                    <span class="material-icons">lightbulb</span>
+                    Self-Correction is Limited
+                </div>
+                <p>LRMs do have some self-correction ability - that's why they outperform standard models at medium complexity. But this ability doesn't scale. Past a threshold, models fixate on wrong answers and can't backtrack effectively.</p>
+            </div>
+        </section>
+
+        <!-- Algorithm Failure -->
+        <section id="algorithm">
+            <div class="section-header">
+                <span class="material-icons">code</span>
+                <h2>The Shocking Algorithm Test</h2>
+            </div>
+
+            <p>The researchers ran a revealing experiment: what if we <em>give</em> the model the exact algorithm to solve Tower of Hanoi? Surely then it can execute the steps correctly?</p>
+
+            <div class="highlight-box warning">
+                <p><strong>Result: No improvement!</strong> Even with the complete recursive algorithm provided in the prompt, models still collapsed at roughly the same complexity threshold. They couldn't reliably execute prescribed logical steps.</p>
+            </div>
+
+            <p>This is significant because:</p>
+            <ul style="margin-left: 20px; color: var(--text-secondary);">
+                <li><strong>Finding a solution</strong> requires search, creativity, and exploration</li>
+                <li><strong>Executing a known algorithm</strong> should be much easier - just follow the steps!</li>
+                <li>Yet models failed at both equally</li>
+            </ul>
+
+            <div class="analogy">
+                <div class="analogy-title">
+                    <span class="material-icons">lightbulb</span>
+                    Like a Chef Who Can't Follow Recipes
+                </div>
+                <p>Imagine a chef who can sometimes invent creative dishes, but when given a detailed recipe, still burns the food at step 47. The limitation isn't creativity - it's the fundamental ability to track state and execute sequential operations consistently.</p>
+            </div>
+
+            <h3>The Training Data Hypothesis</h3>
+
+            <p>Another puzzling finding: models behave very differently across puzzle types, even with similar numbers of moves required.</p>
+
+            <div class="failure-pattern">
+                <h4>First Error Position by Puzzle Type</h4>
+                <div class="pattern-row">
+                    <div class="pattern-label">Tower of Hanoi</div>
+                    <div class="pattern-bar">
+                        <div class="pattern-fill hanoi" style="width: 100%;">~100 correct moves before error</div>
+                    </div>
+                </div>
+                <div class="pattern-row">
+                    <div class="pattern-label">River Crossing</div>
+                    <div class="pattern-bar">
+                        <div class="pattern-fill river" style="width: 100%;">~4 correct moves before error</div>
+                    </div>
+                </div>
+            </div>
+
+            <p>Models can execute ~100 correct moves in Tower of Hanoi but fail after just ~4 moves in River Crossing. The likely explanation? Tower of Hanoi is all over the internet; River Crossing with N>2 is rare. These models aren't reasoning - they're pattern matching against training data.</p>
+        </section>
+
+        <!-- Implications -->
+        <section id="implications">
+            <div class="section-header">
+                <span class="material-icons">lightbulb</span>
+                <h2>What This Means</h2>
+            </div>
+
+            <h3>For AI Researchers</h3>
+
+            <div class="highlight-box">
+                <p>Current LRM architectures may have fundamental barriers to generalizable reasoning. Simply adding more "thinking" through longer chains-of-thought won't solve the problem. New approaches to training and architecture may be needed.</p>
+            </div>
+
+            <h3>For Practitioners</h3>
+
+            <div class="comparison-grid">
+                <div class="comparison-card new">
+                    <h4><span class="material-icons">check_circle</span> When to Use LRMs</h4>
+                    <ul>
+                        <li>Medium-complexity reasoning tasks</li>
+                        <li>Problems similar to training data</li>
+                        <li>When you need visible reasoning traces</li>
+                        <li>Tasks benefiting from self-correction</li>
+                    </ul>
+                </div>
+                <div class="comparison-card old">
+                    <h4><span class="material-icons">cancel</span> When NOT to Use LRMs</h4>
+                    <ul>
+                        <li>Very simple tasks (wasteful)</li>
+                        <li>High-complexity planning (will fail)</li>
+                        <li>Novel problem structures</li>
+                        <li>Tasks requiring exact computation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>For Everyone</h3>
+
+            <div class="key-insight">
+                <div class="key-insight-title">
+                    <span class="material-icons">psychology_alt</span>
+                    The Question of "Real" Reasoning
+                </div>
+                <p>Is the "thinking" in LRMs genuine reasoning, or sophisticated pattern matching that looks like reasoning? When models fail at well-defined puzzles but succeed on training-data-adjacent problems, it suggests the latter. True reasoning would generalize.</p>
+            </div>
+        </section>
+
+        <!-- Glossary -->
+        <section id="glossary">
+            <div class="section-header">
+                <span class="material-icons">menu_book</span>
+                <h2>Glossary</h2>
+            </div>
+
+            <dl class="glossary-grid">
+                <div class="glossary-item">
+                    <dt>Large Reasoning Model (LRM)</dt>
+                    <dd>AI models that generate extended "thinking traces" before answering, trained to reason step-by-step. Examples: OpenAI o1/o3, DeepSeek-R1, Claude 3.7 Thinking.</dd>
+                </div>
+                <div class="glossary-item">
+                    <dt>Thinking Tokens</dt>
+                    <dd>The tokens generated during the model's internal reasoning process before it produces a final answer. These represent the model's "thought process."</dd>
+                </div>
+                <div class="glossary-item">
+                    <dt>Chain-of-Thought (CoT)</dt>
+                    <dd>A prompting technique where models break down problems into intermediate steps. LRMs are trained to produce these automatically.</dd>
+                </div>
+                <div class="glossary-item">
+                    <dt>Compositional Depth</dt>
+                    <dd>The number of sequential operations (moves) required to solve a puzzle. Higher depth = more complexity.</dd>
+                </div>
+                <div class="glossary-item">
+                    <dt>Overthinking</dt>
+                    <dd>When a model finds a correct solution early but continues generating incorrect alternatives, wasting compute on unnecessary exploration.</dd>
+                </div>
+                <div class="glossary-item">
+                    <dt>Accuracy Collapse</dt>
+                    <dd>The phenomenon where model performance drops to 0% beyond a certain complexity threshold, with no gradual degradation.</dd>
+                </div>
+                <div class="glossary-item">
+                    <dt>pass@k</dt>
+                    <dd>A metric measuring the probability that at least one of k generated samples is correct. Used to evaluate upper-bound capabilities.</dd>
+                </div>
+                <div class="glossary-item">
+                    <dt>Reinforcement Learning (RL)</dt>
+                    <dd>Training method where models learn from feedback on their outputs. LRMs use RL with verifiable rewards to learn better reasoning.</dd>
+                </div>
+            </dl>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section id="takeaways">
+            <div class="section-header">
+                <span class="material-icons">star</span>
+                <h2>Key Takeaways</h2>
+            </div>
+
+            <ul class="takeaways-list">
+                <li>
+                    <span class="material-icons">insights</span>
+                    <div>
+                        <strong>Three Regimes Exist:</strong> Standard LLMs win at low complexity (more efficient), LRMs win at medium complexity (thinking helps), both fail completely at high complexity (0% accuracy).
+                    </div>
+                </li>
+                <li>
+                    <span class="material-icons">trending_down</span>
+                    <div>
+                        <strong>Counterintuitive Scaling:</strong> As problems get harder, LRMs initially think more, then mysteriously reduce their reasoning effort right before complete collapse - even with unused token budget.
+                    </div>
+                </li>
+                <li>
+                    <span class="material-icons">loop</span>
+                    <div>
+                        <strong>Overthinking is Real:</strong> For simple problems, models often find correct answers early but waste compute exploring wrong alternatives. Self-correction exists but doesn't scale.
+                    </div>
+                </li>
+                <li>
+                    <span class="material-icons">code_off</span>
+                    <div>
+                        <strong>Can't Execute Algorithms:</strong> Even when given explicit algorithms, models fail at similar complexity thresholds. The limitation is fundamental, not about strategy discovery.
+                    </div>
+                </li>
+                <li>
+                    <span class="material-icons">pattern</span>
+                    <div>
+                        <strong>Pattern Matching, Not Reasoning:</strong> Models perform vastly better on Tower of Hanoi (common online) than River Crossing (rare), suggesting reliance on training data rather than true reasoning.
+                    </div>
+                </li>
+                <li>
+                    <span class="material-icons">warning</span>
+                    <div>
+                        <strong>Fundamental Barriers:</strong> Current LRM approaches may have inherent limitations. More "thinking" alone won't solve the problem - new architectures or training methods may be needed.
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Learn More -->
+        <section>
+            <div class="section-header">
+                <span class="material-icons">school</span>
+                <h2>Learn More</h2>
+            </div>
+
+            <p>This paper challenges assumptions about the reasoning capabilities of frontier AI models. For those interested in going deeper:</p>
+
+            <ul style="margin-left: 20px; color: var(--text-secondary);">
+                <li><a href="https://arxiv.org/abs/2505.xxxxx" target="_blank" style="color: var(--primary);">Read the full paper on arXiv</a></li>
+                <li>The appendix contains detailed descriptions of all puzzle environments and simulators</li>
+                <li>Related work: GSM-Symbolic paper on mathematical reasoning limitations</li>
+                <li>Related work: "Faith and Fate" paper on compositionality limits in transformers</li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        <p><strong>Paper:</strong> "The Illusion of Thinking: Understanding the Strengths and Limitations of Reasoning Models via the Lens of Problem Complexity"</p>
+        <p><strong>Authors:</strong> Shojaee, Mirzadeh, Alizadeh, Horton, Bengio, Farajtabar (Apple)</p>
+        <p style="margin-top: 15px;"><a href="index.html">Back to NStarX Research Papers</a></p>
+    </footer>
+</body>
+</html>
