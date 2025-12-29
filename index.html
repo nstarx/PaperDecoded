@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NStarX Research Papers | AI & ML Made Simple</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -0.02em;
+        }
+
+        header .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            font-weight: 400;
+        }
+
+        .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .header-stat {
+            text-align: center;
+        }
+
+        .header-stat .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .header-stat .label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-header .material-icons {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        /* Filter Tags */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .filter-tag {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid var(--border);
+            background: white;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tag:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-tag.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Paper Cards Grid */
+        .papers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        @media (max-width: 400px) {
+            .papers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Paper Card */
+        .paper-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .paper-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        .paper-card-header {
+            padding: 25px 25px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+        }
+
+        .paper-card-header .category {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .paper-card-header .category .material-icons {
+            font-size: 1rem;
+        }
+
+        .paper-card-header h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .paper-card-header .authors {
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+
+        .paper-card-body {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .paper-card-body .description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .paper-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .meta-item .material-icons {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .paper-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .paper-tag {
+            padding: 4px 10px;
+            background: var(--bg-light);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .paper-card-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn .material-icons {
+            font-size: 1.2rem;
+        }
+
+        /* Coming Soon Card */
+        .paper-card.coming-soon {
+            opacity: 0.7;
+        }
+
+        .paper-card.coming-soon .paper-card-header {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+        }
+
+        .coming-soon-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.25);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* About Section */
+        .about-section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 700px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .about-item h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .about-item h3 .material-icons {
+            font-size: 1.5rem;
+        }
+
+        .about-item p {
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            max-width: 500px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: white;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-bar .material-icons {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .material-icons {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>NStarX Research Papers</h1>
+            <p class="subtitle">Selected AI & ML papers for NStarX employees - explained in simple terms for everyone to understand</p>
+            <div class="header-stats">
+                <div class="header-stat">
+                    <div class="number" id="paper-count">2</div>
+                    <div class="label">Papers</div>
+                </div>
+                <div class="header-stat">
+                    <div class="number">3</div>
+                    <div class="label">Topics</div>
+                </div>
+                <div class="header-stat">
+                    <div class="number">2024</div>
+                    <div class="label">Latest</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Search -->
+        <div class="search-bar">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search papers..." id="search-input">
+        </div>
+
+        <!-- Filter Tags -->
+        <div class="filter-bar">
+            <button class="filter-tag active" data-filter="all">All Papers</button>
+            <button class="filter-tag" data-filter="vision">Computer Vision</button>
+            <button class="filter-tag" data-filter="language">Language Models</button>
+            <button class="filter-tag" data-filter="multimodal">Multimodal</button>
+            <button class="filter-tag" data-filter="self-supervised">Self-Supervised</button>
+            <button class="filter-tag" data-filter="robotics">Robotics</button>
+        </div>
+
+        <!-- Papers Section -->
+        <div class="section-header">
+            <span class="material-icons">article</span>
+            <h2>Paper Explainers</h2>
+        </div>
+
+        <div class="papers-grid" id="papers-grid">
+            <!-- VL-JEPA Card -->
+            <article class="paper-card" data-categories="vision,language,multimodal,self-supervised">
+                <div class="paper-card-header">
+                    <div class="category">
+                        <span class="material-icons">visibility</span>
+                        Vision-Language
+                    </div>
+                    <h3>VL-JEPA: Joint Embedding Predictive Architecture</h3>
+                    <div class="authors">Chen, Shukor, Moutakanni, et al. (Meta FAIR, HKUST)</div>
+                </div>
+                <div class="paper-card-body">
+                    <p class="description">A revolutionary vision-language model that predicts meaning instead of words. Achieves better results with 50% fewer parameters by learning in abstract embedding space.</p>
+                    <div class="paper-meta">
+                        <div class="meta-item">
+                            <span class="material-icons">calendar_today</span>
+                            Dec 2024
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons">schedule</span>
+                            15 min read
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons">school</span>
+                            Beginner Friendly
+                        </div>
+                    </div>
+                    <div class="paper-tags">
+                        <span class="paper-tag">JEPA</span>
+                        <span class="paper-tag">Vision Transformer</span>
+                        <span class="paper-tag">Embeddings</span>
+                        <span class="paper-tag">Video Understanding</span>
+                    </div>
+                    <div class="paper-card-actions">
+                        <a href="VL-JEPA-Explained.html" class="btn btn-primary">
+                            <span class="material-icons">menu_book</span>
+                            Read Explainer
+                        </a>
+                        <a href="https://arxiv.org/abs/2512.10942" target="_blank" class="btn btn-outline">
+                            <span class="material-icons">description</span>
+                            Paper
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Placeholder: V-JEPA 2 -->
+            <article class="paper-card coming-soon" data-categories="vision,self-supervised,robotics">
+                <div class="paper-card-header">
+                    <span class="coming-soon-badge">Coming Soon</span>
+                    <div class="category">
+                        <span class="material-icons">smart_display</span>
+                        Video Understanding
+                    </div>
+                    <h3>V-JEPA 2: Self-Supervised Video Models</h3>
+                    <div class="authors">Meta AI Research Team</div>
+                </div>
+                <div class="paper-card-body">
+                    <p class="description">A world model that enables understanding, prediction, and planning from video. Trained on 1M+ hours of video using self-supervised learning.</p>
+                    <div class="paper-meta">
+                        <div class="meta-item">
+                            <span class="material-icons">calendar_today</span>
+                            Jun 2025
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons">schedule</span>
+                            ~20 min read
+                        </div>
+                    </div>
+                    <div class="paper-tags">
+                        <span class="paper-tag">World Models</span>
+                        <span class="paper-tag">Robotics</span>
+                        <span class="paper-tag">Video Prediction</span>
+                    </div>
+                    <div class="paper-card-actions">
+                        <button class="btn btn-outline" disabled>
+                            <span class="material-icons">hourglass_empty</span>
+                            Coming Soon
+                        </button>
+                        <a href="https://arxiv.org/abs/2506.09985" target="_blank" class="btn btn-outline">
+                            <span class="material-icons">description</span>
+                            Paper
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Attention Is All You Need -->
+            <article class="paper-card" data-categories="language">
+                <div class="paper-card-header" style="background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);">
+                    <div class="category">
+                        <span class="material-icons">auto_awesome</span>
+                        Landmark Paper
+                    </div>
+                    <h3>Attention Is All You Need</h3>
+                    <div class="authors">Vaswani, Shazeer, Parmar et al. (Google Brain)</div>
+                </div>
+                <div class="paper-card-body">
+                    <p class="description">The foundational paper that introduced Transformers - the architecture behind ChatGPT, BERT, and virtually all modern AI models.</p>
+                    <div class="paper-meta">
+                        <div class="meta-item">
+                            <span class="material-icons">calendar_today</span>
+                            2017 (Classic)
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons">schedule</span>
+                            20 min read
+                        </div>
+                        <div class="meta-item">
+                            <span class="material-icons">school</span>
+                            Beginner Friendly
+                        </div>
+                    </div>
+                    <div class="paper-tags">
+                        <span class="paper-tag">Transformers</span>
+                        <span class="paper-tag">Self-Attention</span>
+                        <span class="paper-tag">Encoder-Decoder</span>
+                        <span class="paper-tag">NLP</span>
+                    </div>
+                    <div class="paper-card-actions">
+                        <a href="Attention-Explained.html" class="btn btn-primary">
+                            <span class="material-icons">menu_book</span>
+                            Read Explainer
+                        </a>
+                        <a href="https://arxiv.org/abs/1706.03762" target="_blank" class="btn btn-outline">
+                            <span class="material-icons">description</span>
+                            Paper
+                        </a>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- About Section -->
+        <section class="about-section">
+            <div class="section-header">
+                <span class="material-icons">info</span>
+                <h2>About This Project</h2>
+            </div>
+            <div class="about-content">
+                <div class="about-item">
+                    <h3><span class="material-icons">lightbulb</span> Our Mission</h3>
+                    <p>We believe cutting-edge AI research should be accessible to everyone. Each paper is explained using simple language, real-world analogies, and clear visualizations - no PhD required.</p>
+                </div>
+                <div class="about-item">
+                    <h3><span class="material-icons">groups</span> Who Is This For?</h3>
+                    <p>Students, developers, product managers, curious minds - anyone interested in understanding how modern AI works without getting lost in equations and jargon.</p>
+                </div>
+                <div class="about-item">
+                    <h3><span class="material-icons">auto_stories</span> What We Cover</h3>
+                    <p>Vision models, language models, multimodal AI, self-supervised learning, robotics, and more. From foundational papers to the latest breakthroughs.</p>
+                </div>
+                <div class="about-item">
+                    <h3><span class="material-icons">add_circle</span> Suggest a Paper</h3>
+                    <p>Have a paper you'd like explained? We're always looking to expand our collection. Reach out with your suggestions!</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p><strong>NStarX</strong> - Making AI research accessible for our team</p>
+        <p style="margin-top: 10px;">Internal Resource | <a href="https://arxiv.org" target="_blank">Papers from arXiv</a></p>
+    </footer>
+
+    <script>
+        // Filter functionality
+        const filterTags = document.querySelectorAll('.filter-tag');
+        const paperCards = document.querySelectorAll('.paper-card');
+
+        filterTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                // Update active state
+                filterTags.forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+
+                const filter = tag.dataset.filter;
+
+                paperCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'flex';
+                    } else {
+                        const categories = card.dataset.categories.split(',');
+                        if (categories.includes(filter)) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+
+            paperCards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Reset filter tags
+            if (query) {
+                filterTags.forEach(t => t.classList.remove('active'));
+            } else {
+                filterTags[0].classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
