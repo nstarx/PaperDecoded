@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The GenAI Wall Effect - Explained Simply</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #dc2626;
+            --primary-dark: #b91c1c;
+            --secondary: #f59e0b;
+            --accent: #7c3aed;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg-dark: #450a0a;
+            --bg-light: #fef2f2;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: var(--bg-light);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .paper-info {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .paper-info span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Navigation */
+        .nav-container {
+            background: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container a {
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .nav-container a:hover {
+            color: var(--primary-dark);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--bg-light);
+        }
+
+        .section-header .material-icons {
+            font-size: 2rem;
+            color: var(--primary);
+            background: linear-gradient(135deg, rgba(220,38,38,0.1), rgba(245,158,11,0.1));
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        h3 {
+            color: var(--primary-dark);
+            margin: 1.5rem 0 1rem;
+            font-size: 1.2rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        /* Highlight Boxes */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(220,38,38,0.1), rgba(245,158,11,0.1));
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box.success {
+            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.1));
+            border-left-color: var(--success);
+        }
+
+        .highlight-box.warning {
+            background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(239,68,68,0.1));
+            border-left-color: var(--warning);
+        }
+
+        .highlight-box strong {
+            color: var(--primary-dark);
+        }
+
+        /* Analogy Box */
+        .analogy {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 2px solid #f59e0b;
+        }
+
+        .analogy-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.75rem;
+        }
+
+        .analogy p {
+            color: #78350f;
+            margin: 0;
+        }
+
+        /* Key Insight */
+        .key-insight {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .key-insight-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #065f46;
+            margin-bottom: 0.75rem;
+        }
+
+        .key-insight p {
+            color: #064e3b;
+            margin: 0;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-card {
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .comparison-card.old {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border: 2px solid #fca5a5;
+        }
+
+        .comparison-card.new {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border: 2px solid #6ee7b7;
+        }
+
+        .comparison-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .comparison-card.old h4 {
+            color: #dc2626;
+        }
+
+        .comparison-card.new h4 {
+            color: #059669;
+        }
+
+        .comparison-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comparison-card li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .comparison-card li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .comparison-card.old li::before {
+            background: #ef4444;
+        }
+
+        .comparison-card.new li::before {
+            background: #10b981;
+        }
+
+        /* Distance Diagram */
+        .distance-diagram {
+            background: linear-gradient(135deg, #1e1b4b, #312e81);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .distance-diagram h4 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #c4b5fd;
+        }
+
+        .distance-track {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .distance-track::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: linear-gradient(to right, #10b981, #f59e0b, #ef4444);
+            border-radius: 2px;
+        }
+
+        .distance-point {
+            text-align: center;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .distance-point .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .distance-point.insider .icon {
+            background: #10b981;
+        }
+
+        .distance-point.adjacent .icon {
+            background: #f59e0b;
+        }
+
+        .distance-point.distant .icon {
+            background: #ef4444;
+        }
+
+        .distance-point .label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .distance-point .title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Wall Visualization */
+        .wall-viz {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1rem;
+            align-items: center;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 12px;
+        }
+
+        .wall-side {
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .wall-side.before {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border: 2px solid #86efac;
+        }
+
+        .wall-side.after {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border: 2px solid #fca5a5;
+        }
+
+        .wall-barrier {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .wall-barrier .bricks {
+            width: 20px;
+            height: 80px;
+            background: repeating-linear-gradient(
+                0deg,
+                #dc2626 0px,
+                #dc2626 15px,
+                #b91c1c 15px,
+                #b91c1c 20px
+            );
+            border-radius: 4px;
+        }
+
+        .wall-barrier .label {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        /* Task Types */
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .task-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .task-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220,38,38,0.15);
+        }
+
+        .task-card .icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .task-card h4 {
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .task-card p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        .task-card .result {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+
+        .task-card .result.success {
+            color: #059669;
+        }
+
+        .task-card .result.fail {
+            color: #dc2626;
+        }
+
+        /* Results Matrix */
+        .results-matrix {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .results-matrix table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .results-matrix th, .results-matrix td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .results-matrix th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .results-matrix td.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .results-matrix td.fail {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .results-matrix td.neutral {
+            background: #f1f5f9;
+        }
+
+        /* Glossary */
+        .glossary-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .glossary-item {
+            background: var(--bg-light);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--secondary);
+        }
+
+        .glossary-item strong {
+            color: var(--primary-dark);
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .toc a {
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .toc a:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .toc .material-icons {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-dark);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        footer a {
+            color: var(--secondary);
+        }
+
+        .citation {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            max-width: 800px;
+            margin: 1.5rem auto 0;
+            font-family: monospace;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            section {
+                padding: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .distance-track {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .distance-track::before {
+                top: 10%;
+                bottom: 10%;
+                left: 50%;
+                right: auto;
+                width: 4px;
+                height: auto;
+                background: linear-gradient(to bottom, #10b981, #f59e0b, #ef4444);
+            }
+
+            .wall-viz {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .wall-barrier {
+                flex-direction: row;
+            }
+
+            .wall-barrier .bricks {
+                width: 80px;
+                height: 20px;
+                background: repeating-linear-gradient(
+                    90deg,
+                    #dc2626 0px,
+                    #dc2626 15px,
+                    #b91c1c 15px,
+                    #b91c1c 20px
+                );
+            }
+
+            .wall-barrier .label {
+                writing-mode: horizontal-tb;
+            }
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>The GenAI Wall Effect</h1>
+        <p class="subtitle">Why AI can help some outsiders do expert work, but hits a wall with others</p>
+        <div class="paper-info">
+            <span><span class="material-icons">business</span> Stanford & Harvard Business School</span>
+            <span><span class="material-icons">calendar_today</span> September 2025</span>
+            <span><span class="material-icons">timer</span> 18 min read</span>
+        </div>
+    </header>
+
+    <nav class="nav-container">
+        <a href="index.html"><span class="material-icons">arrow_back</span> Back to Papers</a>
+    </nav>
+
+    <main class="container">
+        <!-- TL;DR -->
+        <section id="tldr">
+            <div class="section-header">
+                <span class="material-icons">flash_on</span>
+                <h2>TL;DR - The 30-Second Version</h2>
+            </div>
+
+            <div class="highlight-box">
+                <strong>The Big Idea:</strong> GenAI can help people from adjacent fields perform expert tasks almost as well as specialists. But there's a "wall" - when the knowledge gap is too large (like asking software developers to write marketing content), AI can't fully bridge the expertise gap for complex execution tasks.
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">78</div>
+                    <div class="label">Employees tested</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">63%</div>
+                    <div class="label">Time saved with AI</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">31%</div>
+                    <div class="label">Quality improvement</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">1</div>
+                    <div class="label">Wall discovered</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Table of Contents -->
+        <section>
+            <div class="toc">
+                <h3><span class="material-icons">list</span> What We'll Cover</h3>
+                <ul>
+                    <li><a href="#problem"><span class="material-icons">help_outline</span> The Question</a></li>
+                    <li><a href="#distance"><span class="material-icons">straighten</span> Knowledge Distance</a></li>
+                    <li><a href="#experiment"><span class="material-icons">science</span> The Experiment</a></li>
+                    <li><a href="#wall"><span class="material-icons">block</span> The Wall Effect</a></li>
+                    <li><a href="#tasks"><span class="material-icons">assignment</span> Task Types Matter</a></li>
+                    <li><a href="#results"><span class="material-icons">insights</span> Key Results</a></li>
+                    <li><a href="#implications"><span class="material-icons">lightbulb</span> What This Means</a></li>
+                    <li><a href="#glossary"><span class="material-icons">book</span> Glossary</a></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- The Question -->
+        <section id="problem">
+            <div class="section-header">
+                <span class="material-icons">help_outline</span>
+                <h2>The Big Question: Can AI Make Everyone an Expert?</h2>
+            </div>
+
+            <p>As companies rush to deploy AI tools, a critical question emerges: <strong>Can AI help people from one profession do the work of another profession?</strong></p>
+
+            <p>Think about it: if AI can give anyone access to expert knowledge instantly, does specialized training still matter? Could a software developer write marketing copy as well as a marketer? Could a marketer analyze data as well as a data scientist?</p>
+
+            <div class="analogy">
+                <div class="analogy-title"><span class="material-icons">lightbulb</span> The Language Tutor Analogy</div>
+                <p>Imagine you want to write a speech in French. If you already speak Spanish (a related Romance language), a translation app might help you produce a decent French speech. But if you only speak Mandarin, even the best translation app might not help you catch the nuances, idioms, and cultural references that make a speech compelling. <strong>The "distance" between your native language and French determines how much AI can help.</strong></p>
+            </div>
+
+            <p>This paper investigates exactly this question through a clever experiment at a real company.</p>
+        </section>
+
+        <!-- Knowledge Distance -->
+        <section id="distance">
+            <div class="section-header">
+                <span class="material-icons">straighten</span>
+                <h2>The Key Concept: Knowledge Distance</h2>
+            </div>
+
+            <p>The researchers introduce a crucial idea: <strong>knowledge distance</strong> - how different are the skills required for two different jobs?</p>
+
+            <div class="distance-diagram">
+                <h4>Knowledge Distance Spectrum</h4>
+                <div class="distance-track">
+                    <div class="distance-point insider">
+                        <div class="icon"><span class="material-icons">star</span></div>
+                        <div class="title">Insiders</div>
+                        <div class="label">Web Analysts<br>(do this daily)</div>
+                    </div>
+                    <div class="distance-point adjacent">
+                        <div class="icon"><span class="material-icons">near_me</span></div>
+                        <div class="title">Adjacent Outsiders</div>
+                        <div class="label">Marketing Specialists<br>(related field)</div>
+                    </div>
+                    <div class="distance-point distant">
+                        <div class="icon"><span class="material-icons">explore</span></div>
+                        <div class="title">Distant Outsiders</div>
+                        <div class="label">Tech Specialists<br>(different field)</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Why Does Distance Matter?</h3>
+            <p>This is rooted in <strong>transfer of learning theory</strong>: you learn new tasks more easily when they're similar to things you already know.</p>
+
+            <div class="comparison-grid">
+                <div class="comparison-card new">
+                    <h4><span class="material-icons">check_circle</span> Near Transfer (Easier)</h4>
+                    <ul>
+                        <li>Saxophone player learning flute</li>
+                        <li>Marketing specialist writing web articles</li>
+                        <li>Python programmer learning JavaScript</li>
+                        <li>Similar skills, easier to adapt</li>
+                    </ul>
+                </div>
+                <div class="comparison-card old">
+                    <h4><span class="material-icons">cancel</span> Far Transfer (Harder)</h4>
+                    <ul>
+                        <li>Saxophone player performing surgery</li>
+                        <li>Software developer writing marketing content</li>
+                        <li>Accountant designing bridges</li>
+                        <li>Different skills, harder to bridge</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <div class="key-insight-title"><span class="material-icons">stars</span> The Core Hypothesis</div>
+                <p>The researchers predicted that AI would help adjacent outsiders more than distant outsiders. When knowledge distance is too great, AI hits a "wall" where it can no longer bridge the expertise gap effectively.</p>
+            </div>
+        </section>
+
+        <!-- The Experiment -->
+        <section id="experiment">
+            <div class="section-header">
+                <span class="material-icons">science</span>
+                <h2>The Experiment: Writing Web Articles at IG</h2>
+            </div>
+
+            <p>The study was conducted at <strong>IG</strong>, a large UK-based trading platform company with 2,000+ employees. They had built a custom AI tool for creating marketing content.</p>
+
+            <h3>The Three Groups</h3>
+            <div class="stats-grid">
+                <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #34d399);">
+                    <div class="number">12</div>
+                    <div class="label">Web Analysts<br>(Insiders)</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+                    <div class="number">26</div>
+                    <div class="label">Marketing Specialists<br>(Adjacent Outsiders)</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #ef4444, #f87171);">
+                    <div class="number">40</div>
+                    <div class="label">Tech Specialists<br>(Distant Outsiders)</div>
+                </div>
+            </div>
+
+            <h3>The Two Tasks</h3>
+            <div class="task-grid">
+                <div class="task-card">
+                    <span class="material-icons icon">description</span>
+                    <h4>Task 1: Article Conceptualization</h4>
+                    <p>Create a "brief" with keywords, URL structure, meta description, headings, and FAQs for an article. This is structured, template-based work.</p>
+                    <div class="result">Abstract thinking, high-level planning</div>
+                </div>
+                <div class="task-card">
+                    <span class="material-icons icon">edit_note</span>
+                    <h4>Task 2: Article Execution</h4>
+                    <p>Write the full 800+ word article with proper SEO optimization, engaging prose, internal links, and calls to action.</p>
+                    <div class="result">Concrete execution, hands-on crafting</div>
+                </div>
+            </div>
+
+            <h3>The Conditions</h3>
+            <p>Participants were randomly assigned to work with or without AI assistance:</p>
+            <ul>
+                <li><strong>Human Only:</strong> No AI tools, just their own skills and Google</li>
+                <li><strong>Human + AI:</strong> Access to IG's custom-trained AI tools for content generation</li>
+            </ul>
+        </section>
+
+        <!-- The Wall Effect -->
+        <section id="wall">
+            <div class="section-header">
+                <span class="material-icons">block</span>
+                <h2>The Wall Effect: Where AI Stops Helping</h2>
+            </div>
+
+            <p>The researchers discovered what they call the <strong>"GenAI Wall"</strong> - the point where AI can no longer meaningfully reduce expertise gaps.</p>
+
+            <div class="wall-viz">
+                <div class="wall-side before">
+                    <h4 style="color: #166534;">AI Can Bridge</h4>
+                    <p style="font-size: 0.9rem; color: #166534;">Adjacent outsiders can match experts with AI help</p>
+                </div>
+                <div class="wall-barrier">
+                    <div class="bricks"></div>
+                    <div class="label">THE WALL</div>
+                </div>
+                <div class="wall-side after">
+                    <h4 style="color: #991b1b;">AI Cannot Bridge</h4>
+                    <p style="font-size: 0.9rem; color: #991b1b;">Distant outsiders still fall short even with AI</p>
+                </div>
+            </div>
+
+            <h3>Why Does the Wall Exist?</h3>
+            <p>Through interviews, the researchers discovered the key difference:</p>
+
+            <div class="highlight-box">
+                <strong>Marketing Specialists</strong> lacked hands-on experience but had <strong>foundational knowledge</strong> - they could tell good marketing content from bad, even if they couldn't write it quickly themselves. AI filled the execution gap.
+            </div>
+
+            <div class="highlight-box warning">
+                <strong>Tech Specialists</strong> lacked both experience AND foundational knowledge. They didn't know what good marketing content looked like, so they often "corrected" AI suggestions in ways that made them worse - removing calls to action, shortening content below SEO requirements, using technical writing style.
+            </div>
+
+            <div class="analogy">
+                <div class="analogy-title"><span class="material-icons">lightbulb</span> The GPS Analogy</div>
+                <p>AI is like a GPS navigation system. If you're driving in a neighboring city you've visited before, GPS helps you find the exact route efficiently - you can tell if it's leading you somewhere reasonable. But if you're dropped in a foreign country where you don't know the roads, customs, or even which side to drive on, GPS alone won't save you from making wrong turns into one-way streets or ending up in pedestrian zones.</p>
+            </div>
+        </section>
+
+        <!-- Task Types -->
+        <section id="tasks">
+            <div class="section-header">
+                <span class="material-icons">assignment</span>
+                <h2>Task Types: Conceptualization vs Execution</h2>
+            </div>
+
+            <p>A crucial finding: the wall appears in different places depending on the <strong>type of task</strong>.</p>
+
+            <div class="comparison-grid">
+                <div class="comparison-card new">
+                    <h4><span class="material-icons">check_circle</span> Conceptualization Tasks</h4>
+                    <ul>
+                        <li>Abstract, high-level ideation</li>
+                        <li>Following templates and structures</li>
+                        <li>Listing features and ideas</li>
+                        <li><strong>AI closed the gap for BOTH groups</strong></li>
+                    </ul>
+                </div>
+                <div class="comparison-card old">
+                    <h4><span class="material-icons">warning</span> Execution Tasks</h4>
+                    <ul>
+                        <li>Concrete, hands-on crafting</li>
+                        <li>Turning ideas into tangible output</li>
+                        <li>Requires judgment and taste</li>
+                        <li><strong>AI only helped adjacent outsiders</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Why the Difference?</h3>
+            <p>The researchers explain it as the difference between <strong>abstraction</strong> and <strong>embodiment</strong>:</p>
+
+            <div class="highlight-box success">
+                <strong>Conceptualization = Abstraction:</strong> Listing what an article should cover is like creating a blueprint. The structure is defined, you just fill in the blanks. AI can generate good suggestions, and even someone unfamiliar with the domain can recognize a reasonable outline.
+            </div>
+
+            <div class="highlight-box warning">
+                <strong>Execution = Embodiment:</strong> Actually writing the article is like building from the blueprint. You need to make thousands of micro-decisions about word choice, tone, flow, and emphasis. Without foundational knowledge, you can't evaluate whether AI's suggestions fit the goal.
+            </div>
+        </section>
+
+        <!-- Key Results -->
+        <section id="results">
+            <div class="section-header">
+                <span class="material-icons">insights</span>
+                <h2>Key Results: The Numbers</h2>
+            </div>
+
+            <h3>Conceptualization Task (Brief Writing)</h3>
+            <div class="results-matrix">
+                <table>
+                    <tr>
+                        <th>Group</th>
+                        <th>Without AI</th>
+                        <th>With AI</th>
+                        <th>Gap Closed?</th>
+                    </tr>
+                    <tr>
+                        <td class="neutral"><strong>Web Analysts (Insiders)</strong></td>
+                        <td>3.82</td>
+                        <td>4.12</td>
+                        <td class="neutral">Baseline</td>
+                    </tr>
+                    <tr>
+                        <td class="neutral"><strong>Marketing Specialists</strong></td>
+                        <td>3.04</td>
+                        <td>4.18</td>
+                        <td class="success">Yes!</td>
+                    </tr>
+                    <tr>
+                        <td class="neutral"><strong>Tech Specialists</strong></td>
+                        <td>3.02</td>
+                        <td>4.05</td>
+                        <td class="success">Yes!</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>Execution Task (Article Writing)</h3>
+            <div class="results-matrix">
+                <table>
+                    <tr>
+                        <th>Group</th>
+                        <th>With AI</th>
+                        <th>Matched Experts?</th>
+                    </tr>
+                    <tr>
+                        <td class="neutral"><strong>Web Analysts (Insiders)</strong></td>
+                        <td>3.96</td>
+                        <td class="neutral">Baseline</td>
+                    </tr>
+                    <tr>
+                        <td class="neutral"><strong>Marketing Specialists</strong></td>
+                        <td>3.92</td>
+                        <td class="success">Yes!</td>
+                    </tr>
+                    <tr>
+                        <td class="neutral"><strong>Tech Specialists</strong></td>
+                        <td>3.42</td>
+                        <td class="fail">No - Hit the Wall</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>Time and Productivity</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">63 min</div>
+                    <div class="label">Brief without AI</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">23 min</div>
+                    <div class="label">Brief with AI</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">87 min</div>
+                    <div class="label">Article without AI</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">22 min</div>
+                    <div class="label">Article with AI</div>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <div class="key-insight-title"><span class="material-icons">stars</span> The Critical Finding</div>
+                <p>AI dramatically improved speed and quality for everyone. But for <strong>execution tasks</strong>, distant outsiders still couldn't match experts - even with AI. They hit the wall because they lacked the foundational knowledge to use AI suggestions effectively.</p>
+            </div>
+        </section>
+
+        <!-- Implications -->
+        <section id="implications">
+            <div class="section-header">
+                <span class="material-icons">lightbulb</span>
+                <h2>What This Means for the Future of Work</h2>
+            </div>
+
+            <h3>For Organizations</h3>
+            <div class="highlight-box">
+                <ul style="margin: 0;">
+                    <li><strong>AI won't make everyone interchangeable.</strong> Deep expertise still matters, especially for execution-heavy tasks.</li>
+                    <li><strong>Cross-training is more valuable than ever.</strong> Foundational knowledge in adjacent domains becomes the key to leveraging AI effectively.</li>
+                    <li><strong>Task design matters.</strong> Breaking work into conceptualization (AI-friendly) and execution (expertise-dependent) components can optimize AI deployment.</li>
+                </ul>
+            </div>
+
+            <h3>For Workers</h3>
+            <div class="highlight-box success">
+                <ul style="margin: 0;">
+                    <li><strong>Broaden your base.</strong> Learning fundamentals of adjacent fields makes you more AI-effective.</li>
+                    <li><strong>Execution skills are defensible.</strong> The ability to turn ideas into quality output remains valuable.</li>
+                    <li><strong>Judgment is key.</strong> Knowing good from bad output is as important as creating it.</li>
+                </ul>
+            </div>
+
+            <h3>The Two Types of AI Limits</h3>
+            <div class="comparison-grid">
+                <div class="comparison-card new" style="border-color: var(--accent);">
+                    <h4 style="color: var(--accent);"><span class="material-icons">height</span> The GenAI Ceiling</h4>
+                    <ul>
+                        <li>Vertical limit within an occupation</li>
+                        <li>How much AI lifts low performers toward high performers</li>
+                        <li>Within-job skill leveling</li>
+                        <li>Previously studied extensively</li>
+                    </ul>
+                </div>
+                <div class="comparison-card old" style="border-color: var(--primary); background: linear-gradient(135deg, #fef2f2, #fce7f3);">
+                    <h4 style="color: var(--primary);"><span class="material-icons">block</span> The GenAI Wall</h4>
+                    <ul>
+                        <li>Horizontal limit across occupations</li>
+                        <li>How much AI helps outsiders match insiders</li>
+                        <li>Cross-job expertise transfer</li>
+                        <li>This paper's new contribution</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="analogy">
+                <div class="analogy-title"><span class="material-icons">lightbulb</span> The Bigger Picture</div>
+                <p>For over 200 years, we've organized work by bundling similar tasks into specialized jobs because transferring knowledge was expensive. AI is changing this - it makes knowledge transfer cheaper. But not infinitely cheap. The wall shows us where specialization still matters: when tasks require embodiment (not just ideation) and when foundational domain knowledge is needed to use AI effectively.</p>
+            </div>
+        </section>
+
+        <!-- Glossary -->
+        <section id="glossary">
+            <div class="section-header">
+                <span class="material-icons">book</span>
+                <h2>Glossary: Key Terms Explained</h2>
+            </div>
+
+            <div class="glossary-grid">
+                <div class="glossary-item">
+                    <strong>GenAI Wall Effect</strong> - The point at which AI can no longer meaningfully reduce expertise gaps between occupational insiders and distant outsiders.
+                </div>
+                <div class="glossary-item">
+                    <strong>Knowledge Distance</strong> - How different the skill requirements are between two occupations. Small distance = similar skills; large distance = very different skills.
+                </div>
+                <div class="glossary-item">
+                    <strong>Insiders</strong> - People who regularly perform a specific task as part of their job. They have hands-on expertise from repeated practice.
+                </div>
+                <div class="glossary-item">
+                    <strong>Adjacent Outsiders</strong> - People from related fields who don't do the specific task but share foundational knowledge with insiders.
+                </div>
+                <div class="glossary-item">
+                    <strong>Distant Outsiders</strong> - People from unrelated fields with neither hands-on experience nor foundational knowledge of the task domain.
+                </div>
+                <div class="glossary-item">
+                    <strong>Transfer of Learning</strong> - The ability to apply knowledge from familiar tasks to unfamiliar ones. Easier when tasks are similar (near transfer) vs. different (far transfer).
+                </div>
+                <div class="glossary-item">
+                    <strong>Conceptualization</strong> - Abstract, high-level ideation work like planning and outlining. Structured and template-based.
+                </div>
+                <div class="glossary-item">
+                    <strong>Execution</strong> - Concrete, hands-on work that turns ideas into tangible outputs. Requires judgment and domain taste.
+                </div>
+                <div class="glossary-item">
+                    <strong>Foundational Knowledge</strong> - Basic understanding of a domain that allows you to evaluate quality even without hands-on expertise.
+                </div>
+                <div class="glossary-item">
+                    <strong>SEO/CRO</strong> - Search Engine Optimization / Conversion Rate Optimization. Techniques for making web content rank higher on Google and convert readers into customers.
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section>
+            <div class="section-header">
+                <span class="material-icons">emoji_events</span>
+                <h2>Key Takeaways</h2>
+            </div>
+
+            <div class="highlight-box success">
+                <ol>
+                    <li><strong>AI helps adjacent outsiders match experts</strong> - People from related fields can use AI to close skill gaps effectively.</li>
+                    <li><strong>AI hits a wall with distant outsiders</strong> - For execution tasks, people from unrelated fields still fall short even with AI.</li>
+                    <li><strong>Task type matters</strong> - AI bridges gaps better for conceptualization (planning) than execution (doing).</li>
+                    <li><strong>Foundational knowledge is key</strong> - You need to know "good from bad" to use AI suggestions effectively.</li>
+                    <li><strong>Specialization still matters</strong> - Deep expertise remains valuable, especially for complex execution work.</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Learn More -->
+        <section>
+            <div class="section-header">
+                <span class="material-icons">school</span>
+                <h2>Learn More</h2>
+            </div>
+
+            <ul>
+                <li><a href="https://www.hbs.edu/faculty/Pages/item.aspx?num=65855" target="_blank">Original Paper (HBS Working Paper)</a></li>
+                <li><a href="AI-Coding-Productivity-Explained.html">AI-Assisted Coding Productivity</a> - Related study on AI and developer productivity</li>
+                <li><a href="VibeCoding-Explained.html">Is Vibe Coding Safe?</a> - Another perspective on AI-assisted work</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>Explained Simply | Making AI Research Accessible</p>
+        <p style="margin-top: 0.5rem; opacity: 0.8;">Based on research by Stanford University and Harvard Business School</p>
+        <div class="citation">
+@article{genaiwall2025,
+  title={The GenAI Wall Effect: Examining the Limits to Horizontal Expertise Transfer Between Occupational Insiders and Outsiders},
+  author={Vendraminelli, Luca and Disorbo, Matthew and Hildebrandt, Annika and McFowland III, Edward and Karunakaran, Arvind and Bojinov, Iavor},
+  journal={Harvard Business School Working Paper},
+  number={26-011},
+  year={2025}
+}
+        </div>
+    </footer>
+</body>
+</html>

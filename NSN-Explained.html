@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested Subspace Networks Explained | One Model, Infinite Sizes</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --secondary: #0891b2;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg-light: #f0fdf4;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --border: #d1d5db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 50%, #f5f3ff 100%);
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto 20px;
+        }
+
+        .paper-info {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .paper-info span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .paper-info .material-icons {
+            font-size: 1.1rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Section styling */
+        section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .section-title .material-icons {
+            font-size: 1.8rem;
+            color: var(--secondary);
+        }
+
+        /* TL;DR Box */
+        .tldr {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .tldr h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .tldr ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .tldr li {
+            padding: 8px 0;
+            padding-left: 28px;
+            position: relative;
+        }
+
+        .tldr li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Highlight boxes */
+        .highlight-box {
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+        }
+
+        .highlight-box.warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+            border-left-color: var(--warning);
+        }
+
+        .highlight-box.purple {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border-left-color: var(--accent);
+        }
+
+        /* Analogy box */
+        .analogy {
+            background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid #fbbf24;
+        }
+
+        .analogy-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: #b45309;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .analogy-title .material-icons {
+            color: #f59e0b;
+        }
+
+        /* Key insight */
+        .key-insight {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid var(--accent);
+        }
+
+        .key-insight-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: #6d28d9;
+            margin-bottom: 12px;
+        }
+
+        /* Stats grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid var(--primary);
+        }
+
+        .stat-card .number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Comparison grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .comparison-card {
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .comparison-card.old {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border: 2px solid #ef4444;
+        }
+
+        .comparison-card.new {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid var(--success);
+        }
+
+        .comparison-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .comparison-card.old h4 {
+            color: #dc2626;
+        }
+
+        .comparison-card.new h4 {
+            color: var(--success);
+        }
+
+        .comparison-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comparison-card li {
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .comparison-card.old li::before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: #ef4444;
+        }
+
+        .comparison-card.new li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success);
+        }
+
+        /* Three column desiderata */
+        .desiderata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .desiderata-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 2px solid var(--border);
+            text-align: center;
+        }
+
+        .desiderata-card .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.8rem;
+        }
+
+        .desiderata-card:nth-child(1) .icon {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #2563eb;
+        }
+
+        .desiderata-card:nth-child(2) .icon {
+            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+            color: #db2777;
+        }
+
+        .desiderata-card:nth-child(3) .icon {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            color: var(--primary);
+        }
+
+        .desiderata-card h4 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .desiderata-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Nested hierarchy visual */
+        .nested-visual {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .nested-circles {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            height: 200px;
+            margin: 20px 0;
+        }
+
+        .nested-circle {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+        }
+
+        .circle-r64 {
+            width: 180px;
+            height: 180px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            font-size: 1rem;
+        }
+
+        .circle-r32 {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            font-size: 0.95rem;
+        }
+
+        .circle-r16 {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #34d399 0%, #22d3ee 100%);
+            font-size: 0.9rem;
+        }
+
+        .circle-r8 {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6ee7b7 0%, #67e8f9 100%);
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .nested-labels {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .nested-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .nested-label .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        /* Flow diagram */
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .flow-step {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 15px 20px;
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .flow-step.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .flow-step .step-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .flow-step .step-desc {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 25px 0;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 25px;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -26px;
+            top: 5px;
+            width: 14px;
+            height: 14px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px var(--primary);
+        }
+
+        .timeline-item h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        /* Architecture comparison */
+        .arch-comparison {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 768px) {
+            .arch-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .arch-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid var(--border);
+        }
+
+        .arch-card.highlight {
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%);
+            border-color: var(--primary);
+        }
+
+        .arch-card h5 {
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .arch-card .arch-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .arch-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Performance chart mockup */
+        .performance-visual {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid var(--border);
+        }
+
+        .perf-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 200px;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .perf-bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .perf-bar {
+            width: 50px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 8px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .perf-bar.baseline {
+            background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+        }
+
+        .perf-bar.nsn {
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .perf-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* LLM results */
+        .llm-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .llm-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid var(--border);
+        }
+
+        .llm-card h5 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .llm-card .metric {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .llm-card .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Glossary */
+        .glossary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .glossary-item {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 18px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .glossary-item strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .glossary-item p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Takeaways */
+        .takeaways {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 35px;
+        }
+
+        .takeaways h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .takeaway-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .takeaway-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .takeaway-list li:last-child {
+            border-bottom: none;
+        }
+
+        .takeaway-number {
+            background: rgba(255,255,255,0.2);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Table of contents */
+        .toc {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .toc h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .toc li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .toc li a:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .toc .material-icons {
+            font-size: 1rem;
+            color: var(--secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            header .subtitle {
+                font-size: 1.1rem;
+            }
+
+            section {
+                padding: 25px 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Nested Subspace Networks</h1>
+        <p class="subtitle">One Model, Infinite Sizes: How to Make AI Instantly Adjustable</p>
+        <div class="paper-info">
+            <span><span class="material-icons">person</span> Rauba & van der Schaar</span>
+            <span><span class="material-icons">business</span> University of Cambridge</span>
+            <span><span class="material-icons">calendar_today</span> September 2025</span>
+            <span><span class="material-icons">schedule</span> 15 min read</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- TL;DR -->
+        <div class="tldr">
+            <h2><span class="material-icons">bolt</span> TL;DR - The 30-Second Version</h2>
+            <ul>
+                <li><strong>The Problem:</strong> AI models are "one-size-fits-all" - you can't easily shrink them when you need less power</li>
+                <li><strong>The Solution:</strong> NSNs create a Russian nesting doll of models - smaller models live inside bigger ones</li>
+                <li><strong>The Magic:</strong> Cut 50% of computation with only 5% accuracy loss - instantly, at runtime</li>
+                <li><strong>The Impact:</strong> Works on existing models like Llama, Gemma, Pythia - no training from scratch needed</li>
+            </ul>
+        </div>
+
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <h3><span class="material-icons">list</span> What We'll Cover</h3>
+            <ul>
+                <li><a href="#problem"><span class="material-icons">report_problem</span> The Deployment Problem</a></li>
+                <li><a href="#solution"><span class="material-icons">lightbulb</span> The NSN Solution</a></li>
+                <li><a href="#how"><span class="material-icons">engineering</span> How It Works</a></li>
+                <li><a href="#training"><span class="material-icons">model_training</span> Training Strategy</a></li>
+                <li><a href="#results"><span class="material-icons">analytics</span> Results</a></li>
+                <li><a href="#glossary"><span class="material-icons">menu_book</span> Glossary</a></li>
+            </ul>
+        </nav>
+
+        <!-- The Problem -->
+        <section id="problem">
+            <h2 class="section-title">
+                <span class="material-icons">report_problem</span>
+                The Problem: AI Models Are Inflexible
+            </h2>
+
+            <p>Imagine you bought a car that only drives at exactly 100 mph. Sure, it's fast - but what about when you're in a parking lot? Or stuck in traffic? Or low on fuel?</p>
+
+            <p>That's essentially the problem with today's AI models. They're trained for a <strong>fixed computational budget</strong> - they always use the same amount of computing power, whether they're answering "What's 2+2?" or "Explain quantum mechanics."</p>
+
+            <div class="analogy">
+                <div class="analogy-title">
+                    <span class="material-icons">lightbulb</span>
+                    The Restaurant Analogy
+                </div>
+                <p>Imagine a restaurant that can only serve its full 12-course tasting menu. Want a quick sandwich? Too bad - you're getting 12 courses. Need to feed a crowd on a budget? Still 12 courses each. Today's AI models are like this restaurant - they can't adjust their "portion size" based on the situation.</p>
+            </div>
+
+            <h3 style="margin: 25px 0 15px; color: var(--secondary);">Current Approaches Have Problems</h3>
+
+            <div class="comparison-grid">
+                <div class="comparison-card old">
+                    <h4><span class="material-icons">cancel</span> Static Methods</h4>
+                    <ul>
+                        <li>Pruning: permanently cut connections</li>
+                        <li>Distillation: train a smaller copy</li>
+                        <li>LoRA: fixed low-rank adapters</li>
+                        <li>Need to repeat for each size!</li>
+                        <li>Can't change at runtime</li>
+                    </ul>
+                </div>
+                <div class="comparison-card old">
+                    <h4><span class="material-icons">cancel</span> Dynamic Methods</h4>
+                    <ul>
+                        <li>Slimmable networks: drop channels</li>
+                        <li>Early exit: stop early</li>
+                        <li>Must train from scratch</li>
+                        <li>Can't apply to existing models</li>
+                        <li>Only discrete size options</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box warning">
+                <strong>The Real-World Impact:</strong> A company deploying GPT-style models needs different versions for different situations - mobile phones, data centers, real-time vs. batch processing. Today, that means training and maintaining multiple separate models. Expensive!
+            </div>
+        </section>
+
+        <!-- Three Desiderata -->
+        <section>
+            <h2 class="section-title">
+                <span class="material-icons">checklist</span>
+                What Would the Perfect Solution Look Like?
+            </h2>
+
+            <p>The researchers identified three key requirements (they call them "desiderata") for an ideal solution:</p>
+
+            <div class="desiderata-grid">
+                <div class="desiderata-card">
+                    <div class="icon">
+                        <span class="material-icons">flash_on</span>
+                    </div>
+                    <h4>D1: Instant Adaptability</h4>
+                    <p>Switch between sizes instantly at runtime - no retraining, no delay, no extra cost</p>
+                </div>
+                <div class="desiderata-card">
+                    <div class="icon">
+                        <span class="material-icons">add_circle</span>
+                    </div>
+                    <h4>D2: Post-Hoc Application</h4>
+                    <p>Apply to existing pre-trained models - don't need to train from scratch</p>
+                </div>
+                <div class="desiderata-card">
+                    <div class="icon">
+                        <span class="material-icons">tune</span>
+                    </div>
+                    <h4>D3: Granularity</h4>
+                    <p>Smooth, continuous range of sizes - not just "small, medium, large"</p>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <div class="key-insight-title">
+                    <span class="material-icons">psychology</span>
+                    Key Insight
+                </div>
+                <p>Nested Subspace Networks (NSNs) are the <strong>first method to satisfy all three</strong> requirements. They achieve this by restructuring how neural network layers work, creating a "hierarchy of models within a single model."</p>
+            </div>
+        </section>
+
+        <!-- The Solution -->
+        <section id="solution">
+            <h2 class="section-title">
+                <span class="material-icons">lightbulb</span>
+                The NSN Solution: Russian Nesting Dolls for AI
+            </h2>
+
+            <p>The core idea of NSNs is beautifully simple: <strong>smaller models should literally live inside bigger models</strong>. This is called the "nested subspace property."</p>
+
+            <div class="analogy">
+                <div class="analogy-title">
+                    <span class="material-icons">lightbulb</span>
+                    The Matryoshka Doll Analogy
+                </div>
+                <p>You know those Russian nesting dolls (matryoshka)? Open the biggest one, and there's a smaller one inside. Open that, and there's an even smaller one. NSNs work the same way - the rank-64 model contains the rank-32 model, which contains the rank-16 model, and so on. To use a smaller model, you just... use fewer layers of the doll.</p>
+            </div>
+
+            <div class="nested-visual">
+                <h4 style="margin-bottom: 15px; color: var(--text-primary);">The Nested Hierarchy</h4>
+                <div class="nested-circles">
+                    <div class="nested-circle circle-r64">Rank 64<br>Full Power</div>
+                    <div class="nested-circle circle-r32">Rank 32</div>
+                    <div class="nested-circle circle-r16">Rank 16</div>
+                    <div class="nested-circle circle-r8">R8</div>
+                </div>
+                <div class="nested-labels">
+                    <div class="nested-label">
+                        <div class="dot" style="background: var(--primary);"></div>
+                        Rank 64: Maximum accuracy
+                    </div>
+                    <div class="nested-label">
+                        <div class="dot" style="background: #10b981;"></div>
+                        Rank 32: 50% less compute
+                    </div>
+                    <div class="nested-label">
+                        <div class="dot" style="background: #34d399;"></div>
+                        Lower ranks: Even faster
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin: 25px 0 15px; color: var(--secondary);">How Is This Different from LoRA?</h3>
+
+            <div class="arch-comparison">
+                <div class="arch-card">
+                    <div class="arch-icon">🧱</div>
+                    <h5>Standard MLP</h5>
+                    <p>Full weight matrix W. Fixed size, fixed compute cost.</p>
+                </div>
+                <div class="arch-card">
+                    <div class="arch-icon">🔗</div>
+                    <h5>LoRA</h5>
+                    <p>Frozen W + low-rank adapter. Still fixed rank at runtime.</p>
+                </div>
+                <div class="arch-card highlight">
+                    <div class="arch-icon">🪆</div>
+                    <h5>NSN</h5>
+                    <p>Rank-trainable layers. Any rank at runtime!</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>The Key Difference:</strong> LoRA learns a single, fixed low-rank update. NSNs learn an entire <em>hierarchy</em> of ranks simultaneously, so you can pick any rank at inference time.
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how">
+            <h2 class="section-title">
+                <span class="material-icons">engineering</span>
+                How It Actually Works
+            </h2>
+
+            <p>Let's break down the technical magic behind NSNs. Don't worry - we'll keep it simple!</p>
+
+            <h3 style="margin: 20px 0 15px; color: var(--secondary);">Step 1: Low-Rank Factorization</h3>
+
+            <p>Neural networks have weight matrices (W) that transform inputs to outputs. NSNs replace these with two smaller matrices multiplied together:</p>
+
+            <div class="highlight-box purple">
+                <strong>The Math (Simplified):</strong><br>
+                <code>Original: output = W × input</code> (big matrix W)<br>
+                <code>NSN: output = B × A × input</code> (two smaller matrices)
+            </div>
+
+            <p>The matrices A and B are structured so that:</p>
+            <ul style="margin: 15px 0 15px 25px;">
+                <li><strong>Rank r</strong> uses the first r rows of A and first r columns of B</li>
+                <li><strong>Rank r+1</strong> uses everything rank r uses, plus one more row/column</li>
+                <li>This creates the <strong>nested subspace property</strong> - smaller models are literally subsets of larger ones</li>
+            </ul>
+
+            <h3 style="margin: 25px 0 15px; color: var(--secondary);">Step 2: Why Does This Reduce Computation?</h3>
+
+            <div class="analogy">
+                <div class="analogy-title">
+                    <span class="material-icons">lightbulb</span>
+                    The Compression Analogy
+                </div>
+                <p>Think of it like image compression. A full-resolution photo might be 10MB. A compressed JPEG might be 1MB but still looks pretty good. The low-rank matrices are like compressed versions of the full weight matrix - they capture the most important patterns using fewer numbers.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">W</div>
+                    <div class="label">Original: d_in × d_out parameters</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">BA</div>
+                    <div class="label">NSN: r × (d_in + d_out) parameters</div>
+                </div>
+            </div>
+
+            <p>When r (the rank) is much smaller than the input/output dimensions, this saves a ton of computation!</p>
+
+            <h3 style="margin: 25px 0 15px; color: var(--secondary);">Step 3: Applying to Pre-trained Models</h3>
+
+            <p>The really clever part: you can convert existing models to NSNs!</p>
+
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="step-title">Pre-trained Model</div>
+                    <div class="step-desc">Standard weights W</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="step-title">SVD Decomposition</div>
+                    <div class="step-desc">W = UΣV^T</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="step-title">Initialize NSN</div>
+                    <div class="step-desc">B = U√Σ, A = √ΣV^T</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step active">
+                    <div class="step-title">Fine-tune</div>
+                    <div class="step-desc">Multi-rank training</div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>Why SVD?</strong> Singular Value Decomposition automatically identifies the most important directions in the weight matrix. By initializing NSNs this way, we preserve the knowledge from the original model while enabling dynamic rank selection.
+            </div>
+        </section>
+
+        <!-- Training Strategy -->
+        <section id="training">
+            <h2 class="section-title">
+                <span class="material-icons">model_training</span>
+                The Training Secret: Uncertainty-Aware Learning
+            </h2>
+
+            <p>Here's the tricky part: how do you train ONE set of weights to work well at MANY different ranks?</p>
+
+            <h3 style="margin: 20px 0 15px; color: var(--secondary);">The Challenge</h3>
+
+            <div class="comparison-grid">
+                <div class="comparison-card old">
+                    <h4><span class="material-icons">cancel</span> Naive Approach</h4>
+                    <ul>
+                        <li>Train at highest rank only</li>
+                        <li>Truncate to lower ranks at test time</li>
+                        <li>Performance collapses at low ranks!</li>
+                        <li>87% at rank 64 → 10% at rank 2</li>
+                    </ul>
+                </div>
+                <div class="comparison-card new">
+                    <h4><span class="material-icons">check_circle</span> NSN Approach</h4>
+                    <ul>
+                        <li>Train at multiple ranks simultaneously</li>
+                        <li>Weight each rank by its difficulty</li>
+                        <li>Smooth performance across all ranks</li>
+                        <li>87% at rank 64 → 65% at rank 2</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 style="margin: 25px 0 15px; color: var(--secondary);">The Solution: Uncertainty Weighting</h3>
+
+            <p>The key insight: <strong>lower ranks are inherently harder</strong> (less capacity = harder to learn). The training should account for this!</p>
+
+            <div class="analogy">
+                <div class="analogy-title">
+                    <span class="material-icons">lightbulb</span>
+                    The Student Analogy
+                </div>
+                <p>Imagine teaching both calculus and basic arithmetic to students. You'd expect more mistakes on calculus (it's harder!), so you wouldn't weight calculus errors the same as arithmetic errors when assessing overall progress. NSN training does something similar - it learns how "hard" each rank is and adjusts accordingly.</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Learn Uncertainty Parameters</h4>
+                    <p>For each rank, the model learns a "variance" σ² that measures how hard that rank is to learn.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Weight Loss by Uncertainty</h4>
+                    <p>High variance (hard tasks) get down-weighted. Low variance (easy tasks) get up-weighted.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Anchor + Variant Training</h4>
+                    <p>Each step trains both a high "anchor" rank (for stability) and a random "variant" rank (for coverage).</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Result: Balanced Learning</h4>
+                    <p>All ranks learn effectively, and the model discovers smooth interpolation between them.</p>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <div class="key-insight-title">
+                    <span class="material-icons">psychology</span>
+                    Emergent Behavior
+                </div>
+                <p>The learned variances become a proxy for "rank expressiveness." Higher ranks (more capacity) learn lower variances. Lower ranks (less capacity) learn higher variances. The model automatically discovers this hierarchy!</p>
+            </div>
+        </section>
+
+        <!-- Results -->
+        <section id="results">
+            <h2 class="section-title">
+                <span class="material-icons">analytics</span>
+                The Results: Does It Actually Work?
+            </h2>
+
+            <p>Spoiler: Yes, remarkably well. Let's look at the numbers.</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">50%</div>
+                    <div class="label">FLOPs Reduction Possible</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">5pp</div>
+                    <div class="label">Accuracy Loss (only!)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">4</div>
+                    <div class="label">LLMs Successfully Adapted</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">∞</div>
+                    <div class="label">Continuous Rank Options</div>
+                </div>
+            </div>
+
+            <h3 style="margin: 25px 0 15px; color: var(--secondary);">Tested on Real LLMs</h3>
+
+            <div class="llm-results">
+                <div class="llm-card">
+                    <h5>Pythia-2.8B</h5>
+                    <div class="metric">68%</div>
+                    <div class="metric-label">Max FLOPs savings</div>
+                </div>
+                <div class="llm-card">
+                    <h5>GPT-Neo-2.7B</h5>
+                    <div class="metric">68%</div>
+                    <div class="metric-label">Max FLOPs savings</div>
+                </div>
+                <div class="llm-card">
+                    <h5>Gemma-2B</h5>
+                    <div class="metric">68%</div>
+                    <div class="metric-label">Max FLOPs savings</div>
+                </div>
+                <div class="llm-card">
+                    <h5>Qwen2-0.5B</h5>
+                    <div class="metric">122%</div>
+                    <div class="metric-label">Max FLOPs savings</div>
+                </div>
+            </div>
+
+            <h3 style="margin: 25px 0 15px; color: var(--secondary);">NSN vs. Specialist Models</h3>
+
+            <p>The key question: can ONE NSN match the performance of MANY individually-trained models?</p>
+
+            <div class="performance-visual">
+                <div class="perf-bars">
+                    <div class="perf-bar-group">
+                        <div class="perf-bar baseline" style="height: 130px;">44%</div>
+                        <div class="perf-bar nsn" style="height: 128px;">43%</div>
+                        <div class="perf-label">Rank 1</div>
+                    </div>
+                    <div class="perf-bar-group">
+                        <div class="perf-bar baseline" style="height: 150px;">62%</div>
+                        <div class="perf-bar nsn" style="height: 149px;">62%</div>
+                        <div class="perf-label">Rank 2</div>
+                    </div>
+                    <div class="perf-bar-group">
+                        <div class="perf-bar baseline" style="height: 170px;">81%</div>
+                        <div class="perf-bar nsn" style="height: 168px;">81%</div>
+                        <div class="perf-label">Rank 4</div>
+                    </div>
+                    <div class="perf-bar-group">
+                        <div class="perf-bar baseline" style="height: 182px;">86%</div>
+                        <div class="perf-bar nsn" style="height: 182px;">86%</div>
+                        <div class="perf-label">Rank 8+</div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 30px; margin-top: 15px;">
+                    <span style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                        <div style="width: 20px; height: 12px; background: #64748b; border-radius: 3px;"></div>
+                        Individual specialist models
+                    </span>
+                    <span style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+                        <div style="width: 20px; height: 12px; background: var(--primary); border-radius: 3px;"></div>
+                        Single NSN (all ranks)
+                    </span>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>The Verdict:</strong> A single NSN matches the performance of multiple specialist models trained for each specific rank. This means you get the flexibility of many models with the cost of training just one!
+            </div>
+
+            <h3 style="margin: 25px 0 15px; color: var(--secondary);">Smooth Interpolation</h3>
+
+            <p>Even at ranks <em>not explicitly trained</em>, NSNs perform predictably:</p>
+
+            <div class="key-insight">
+                <div class="key-insight-title">
+                    <span class="material-icons">psychology</span>
+                    Theoretical Guarantee
+                </div>
+                <p>The paper proves mathematically that performance changes smoothly as you adjust the rank. There are no "cliffs" or unpredictable drops. This means you can confidently pick any rank and know roughly what performance to expect.</p>
+            </div>
+        </section>
+
+        <!-- Why It Works -->
+        <section>
+            <h2 class="section-title">
+                <span class="material-icons">science</span>
+                Why Does This Work So Well?
+            </h2>
+
+            <p>The researchers dug deep to understand why NSNs are so effective:</p>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Different Local Minima</h4>
+                    <p>NSNs converge to different solutions than standard fine-tuning. The low-rank constraint acts as regularization, guiding the model to find solutions that work across the entire rank hierarchy.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Layers Specialize at High Ranks</h4>
+                    <p>At low ranks, all layers learn similar, general functions. As rank increases, layers diverge and specialize. The low-rank constraint forces useful redundancy at lower capacity levels.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>True Nested Structure</h4>
+                    <p>Experiments verified that lower-rank models' vector spaces are truly contained within higher-rank ones - the mathematical property holds in practice, not just theory.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Table -->
+        <section>
+            <h2 class="section-title">
+                <span class="material-icons">compare</span>
+                How NSNs Compare to Alternatives
+            </h2>
+
+            <p>Here's how NSNs stack up against existing methods:</p>
+
+            <div style="overflow-x: auto; margin: 25px 0;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="background: var(--primary); color: white;">
+                            <th style="padding: 12px; text-align: left;">Method</th>
+                            <th style="padding: 12px; text-align: center;">Trade-off at Runtime</th>
+                            <th style="padding: 12px; text-align: center;">Post-hoc Applicable</th>
+                            <th style="padding: 12px; text-align: center;">Smooth Frontier</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 12px;">Standard LoRA</td>
+                            <td style="padding: 12px; text-align: center; color: #ef4444;">✗</td>
+                            <td style="padding: 12px; text-align: center; color: var(--success);">✓</td>
+                            <td style="padding: 12px; text-align: center; color: #ef4444;">✗</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;">DyLoRA</td>
+                            <td style="padding: 12px; text-align: center; color: var(--success);">✓</td>
+                            <td style="padding: 12px; text-align: center; color: var(--success);">✓</td>
+                            <td style="padding: 12px; text-align: center; color: var(--success);">✓</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 12px;">Slimmable Networks</td>
+                            <td style="padding: 12px; text-align: center; color: var(--success);">✓</td>
+                            <td style="padding: 12px; text-align: center; color: #ef4444;">✗</td>
+                            <td style="padding: 12px; text-align: center; color: var(--success);">✓</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;">Pruning</td>
+                            <td style="padding: 12px; text-align: center; color: #ef4444;">✗</td>
+                            <td style="padding: 12px; text-align: center; color: var(--success);">✓</td>
+                            <td style="padding: 12px; text-align: center; color: #ef4444;">✗</td>
+                        </tr>
+                        <tr style="background: #ecfdf5; border: 2px solid var(--primary);">
+                            <td style="padding: 12px;"><strong>NSNs (This Paper)</strong></td>
+                            <td style="padding: 12px; text-align: center; color: var(--success);"><strong>✓</strong></td>
+                            <td style="padding: 12px; text-align: center; color: var(--success);"><strong>✓</strong></td>
+                            <td style="padding: 12px; text-align: center; color: var(--success);"><strong>✓</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="highlight-box">
+                <strong>NSNs are unique</strong> in satisfying all three desiderata: instant runtime adaptability, post-hoc applicability to existing models, AND smooth continuous trade-offs.
+            </div>
+        </section>
+
+        <!-- Practical Implications -->
+        <section>
+            <h2 class="section-title">
+                <span class="material-icons">business</span>
+                What This Means for You
+            </h2>
+
+            <div class="desiderata-grid">
+                <div class="desiderata-card">
+                    <div class="icon">
+                        <span class="material-icons">phone_android</span>
+                    </div>
+                    <h4>Mobile Deployment</h4>
+                    <p>Same model runs at full power on servers, reduced power on phones - no separate mobile version needed</p>
+                </div>
+                <div class="desiderata-card">
+                    <div class="icon">
+                        <span class="material-icons">savings</span>
+                    </div>
+                    <h4>Cost Optimization</h4>
+                    <p>Easy queries use less compute (cheaper), hard queries use more - automatic scaling</p>
+                </div>
+                <div class="desiderata-card">
+                    <div class="icon">
+                        <span class="material-icons">speed</span>
+                    </div>
+                    <h4>Latency Control</h4>
+                    <p>Need fast responses? Drop to lower rank. Need accuracy? Use full rank. Your choice, at runtime</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Glossary -->
+        <section id="glossary">
+            <h2 class="section-title">
+                <span class="material-icons">menu_book</span>
+                Glossary
+            </h2>
+
+            <div class="glossary-grid">
+                <div class="glossary-item">
+                    <strong>Rank</strong>
+                    <p>A measure of a matrix's "capacity" or expressiveness. Higher rank = more parameters = more compute.</p>
+                </div>
+                <div class="glossary-item">
+                    <strong>Low-Rank Factorization</strong>
+                    <p>Replacing one big matrix with two smaller matrices multiplied together. Saves computation when rank is low.</p>
+                </div>
+                <div class="glossary-item">
+                    <strong>Nested Subspace Property</strong>
+                    <p>The guarantee that rank-r models are literally subsets of rank-(r+1) models. Enables smooth interpolation.</p>
+                </div>
+                <div class="glossary-item">
+                    <strong>FLOPs</strong>
+                    <p>Floating-Point Operations. A measure of computational cost - more FLOPs = more compute needed.</p>
+                </div>
+                <div class="glossary-item">
+                    <strong>SVD (Singular Value Decomposition)</strong>
+                    <p>A mathematical technique to decompose matrices. Used to initialize NSN layers from pre-trained weights.</p>
+                </div>
+                <div class="glossary-item">
+                    <strong>Pareto Frontier</strong>
+                    <p>The optimal trade-off curve between competing objectives (here: accuracy vs. compute). NSNs achieve smooth frontiers.</p>
+                </div>
+                <div class="glossary-item">
+                    <strong>Aleatoric Uncertainty</strong>
+                    <p>Inherent randomness in data. Used here to model how "hard" each rank is to learn.</p>
+                </div>
+                <div class="glossary-item">
+                    <strong>Foundation Model</strong>
+                    <p>Large pre-trained models (like GPT, Llama) that serve as starting points for many tasks.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways">
+            <h2><span class="material-icons">star</span> Key Takeaways</h2>
+            <ul class="takeaway-list">
+                <li>
+                    <span class="takeaway-number">1</span>
+                    <span><strong>One model, infinite sizes:</strong> NSNs create a hierarchy of models within a single set of weights, letting you choose any computational budget at runtime.</span>
+                </li>
+                <li>
+                    <span class="takeaway-number">2</span>
+                    <span><strong>Works on existing models:</strong> You can convert pre-trained LLMs to NSNs without training from scratch - just decompose, fine-tune, deploy.</span>
+                </li>
+                <li>
+                    <span class="takeaway-number">3</span>
+                    <span><strong>Minimal accuracy cost:</strong> Get 50% computation savings with only 5 percentage points of accuracy loss.</span>
+                </li>
+                <li>
+                    <span class="takeaway-number">4</span>
+                    <span><strong>Smooth trade-offs:</strong> No cliffs or surprises - performance degrades predictably and smoothly as you reduce rank.</span>
+                </li>
+                <li>
+                    <span class="takeaway-number">5</span>
+                    <span><strong>The training trick:</strong> Uncertainty-aware multi-rank training is key - it automatically balances learning across all ranks.</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Learn More -->
+        <section>
+            <h2 class="section-title">
+                <span class="material-icons">school</span>
+                Learn More
+            </h2>
+
+            <ul style="margin-left: 20px;">
+                <li style="margin-bottom: 10px;"><a href="https://arxiv.org/abs/2509.17874" target="_blank" style="color: var(--primary);">Original Paper on arXiv</a></li>
+                <li style="margin-bottom: 10px;"><a href="https://arxiv.org/abs/2106.09685" target="_blank" style="color: var(--primary);">LoRA Paper</a> - The low-rank adaptation method NSNs extend</li>
+                <li style="margin-bottom: 10px;"><a href="https://arxiv.org/abs/1812.08928" target="_blank" style="color: var(--primary);">Slimmable Networks</a> - An earlier approach to dynamic networks</li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        <p><strong>Paper:</strong> "Deep Hierarchical Learning with Nested Subspace Networks"</p>
+        <p>Rauba & van der Schaar, University of Cambridge, September 2025</p>
+        <p style="margin-top: 15px;"><a href="index.html">← Back to Paper Directory</a></p>
+    </footer>
+</body>
+</html>

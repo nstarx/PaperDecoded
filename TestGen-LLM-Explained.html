@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TestGen-LLM: How Meta Uses AI to Write Tests Explained</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0866ff;
+            --primary-dark: #0756d4;
+            --secondary: #00a400;
+            --accent: #f02849;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 50%, #fefce8 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, #1877f2 50%, var(--secondary) 100%);
+            color: white;
+            border-radius: 0 0 40px 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(8, 102, 255, 0.3);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .paper-info {
+            background: rgba(255,255,255,0.15);
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            display: inline-block;
+        }
+
+        .paper-info a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .meta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        section {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h2 .material-icons {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        h3 {
+            color: var(--secondary);
+            font-size: 1.3rem;
+            margin: 25px 0 15px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+            border-left: 4px solid var(--primary);
+            padding: 20px 25px;
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+        }
+
+        .highlight-box.success {
+            background: linear-gradient(135deg, #d1fae5 0%, #dcfce7 100%);
+            border-left-color: var(--success);
+        }
+
+        .highlight-box.warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+            border-left-color: var(--warning);
+        }
+
+        .analogy {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 2px dashed var(--secondary);
+            padding: 25px;
+            border-radius: 16px;
+            margin: 25px 0;
+        }
+
+        .analogy-title {
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analogy-title .material-icons {
+            font-size: 1.3rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 700px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .comparison-card {
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid;
+        }
+
+        .comparison-card.old {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .comparison-card.new {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .comparison-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comparison-card.old h4 {
+            color: #dc2626;
+        }
+
+        .comparison-card.new h4 {
+            color: #16a34a;
+        }
+
+        .comparison-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comparison-card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), #1877f2);
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, var(--warning), #f97316);
+        }
+
+        .stat-card.secondary {
+            background: linear-gradient(135deg, var(--secondary), #15803d);
+        }
+
+        .stat-card .number {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .stat-card .label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .concept-card {
+            background: var(--bg-light);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .concept-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .concept-icon .material-icons {
+            font-size: 2.5rem;
+        }
+
+        .concept-card h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .pipeline-visual {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+        }
+
+        .pipeline-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pipeline-step {
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .pipeline-step.input {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+        }
+
+        .pipeline-step.filter {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+        }
+
+        .pipeline-step.output {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+        }
+
+        .pipeline-step.reject {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+        }
+
+        .pipeline-step .material-icons {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .pipeline-step .percent {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .arrow {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .arrow .material-icons {
+            font-size: 1.5rem;
+        }
+
+        .glossary-term {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .glossary-term strong {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .key-insight {
+            background: linear-gradient(135deg, #fef3c7, #fef9c3);
+            border: 2px solid #fbbf24;
+            padding: 25px;
+            border-radius: 16px;
+            margin: 25px 0;
+        }
+
+        .key-insight-title {
+            color: #b45309;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .key-insight-title .material-icons {
+            font-size: 1.3rem;
+        }
+
+        .toc {
+            background: var(--bg-light);
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc li {
+            padding: 8px 0;
+        }
+
+        .toc a {
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toc a:hover {
+            color: var(--secondary);
+        }
+
+        .leaderboard {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .leaderboard th, .leaderboard td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .leaderboard th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .leaderboard tr:hover {
+            background: var(--bg-light);
+        }
+
+        .leaderboard tr.highlight {
+            background: linear-gradient(90deg, #eff6ff, #f0fdf4);
+            font-weight: 600;
+        }
+
+        .leaderboard .rank {
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .filter-funnel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .funnel-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .funnel-bar {
+            flex: 1;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .funnel-label {
+            width: 120px;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .funnel-percent {
+            width: 60px;
+            font-weight: 700;
+        }
+
+        .prompt-box {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .prompt-box .highlight {
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="meta-badge">
+            <span class="material-icons">business</span>
+            Meta Platforms (2024)
+        </div>
+        <h1>TestGen-LLM: AI-Powered Test Generation at Meta</h1>
+        <p class="subtitle">How Meta Uses LLMs to Automatically Improve Unit Tests - With 73% of AI-Generated Tests Accepted for Production</p>
+        <div class="paper-info">
+            <strong>Paper:</strong> <a href="https://doi.org/10.1145/3663529.3663839" target="_blank">ACM FSE '24</a><br>
+            <small>Alshahwan, Chheda, Finogenova, Gokkaya, Harman et al. | Meta Platforms | July 2024</small>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Table of Contents -->
+        <section>
+            <div class="toc">
+                <h3>What You'll Learn</h3>
+                <ul>
+                    <li><a href="#tldr"><span class="material-icons">flash_on</span> The Bottom Line (TL;DR)</a></li>
+                    <li><a href="#problem"><span class="material-icons">report_problem</span> The Problem with LLM Hallucination</a></li>
+                    <li><a href="#solution"><span class="material-icons">lightbulb</span> The TestGen-LLM Solution</a></li>
+                    <li><a href="#how-it-works"><span class="material-icons">settings</span> How the Filters Work</a></li>
+                    <li><a href="#results"><span class="material-icons">bar_chart</span> Real-World Results</a></li>
+                    <li><a href="#lessons"><span class="material-icons">school</span> Lessons Learned</a></li>
+                    <li><a href="#glossary"><span class="material-icons">auto_stories</span> Glossary</a></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TL;DR -->
+        <section id="tldr">
+            <h2><span class="material-icons">flash_on</span> The Bottom Line</h2>
+
+            <div class="highlight-box success">
+                <strong>The Key Innovation:</strong> Meta built TestGen-LLM, a tool that uses LLMs to extend existing human-written tests. Unlike raw LLM code generation, TestGen-LLM <em>guarantees</em> its suggestions improve the codebase by filtering out any test that doesn't build, pass reliably, or add new coverage.
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">75%</div>
+                    <div class="label">Built correctly</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="number">57%</div>
+                    <div class="label">Passed reliably</div>
+                </div>
+                <div class="stat-card secondary">
+                    <div class="number">25%</div>
+                    <div class="label">Added coverage</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="number">73%</div>
+                    <div class="label">Accepted by engineers</div>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <div class="key-insight-title"><span class="material-icons">vpn_key</span> Key Insight</div>
+                <p>The breakthrough isn't just using LLMs for code generation - it's wrapping them in a verification pipeline that <strong>eliminates hallucination</strong>. Every test TestGen-LLM recommends comes with a guarantee: it builds, it passes, and it improves coverage. No guessing, no manual verification of LLM output needed.</p>
+            </div>
+        </section>
+
+        <!-- The Problem -->
+        <section id="problem">
+            <h2><span class="material-icons">report_problem</span> The Problem: LLM Hallucination in Code</h2>
+
+            <p>LLMs like ChatGPT and Copilot can generate impressive-looking code. But there's a catch: they sometimes "hallucinate" - producing code that looks reasonable but doesn't actually work.</p>
+
+            <div class="analogy">
+                <div class="analogy-title"><span class="material-icons">lightbulb</span> The Confident Student Analogy</div>
+                <p>Imagine a student who writes eloquent exam answers with perfect grammar and confident assertions - but the facts are wrong. The writing <em>looks</em> good, but it's not actually correct.</p>
+                <p>LLMs can be similar: they generate syntactically beautiful code that references APIs that don't exist, makes incorrect assumptions about behavior, or contains subtle bugs.</p>
+            </div>
+
+            <h3>Why This Matters for Testing</h3>
+
+            <div class="comparison-grid">
+                <div class="comparison-card old">
+                    <h4><span class="material-icons">cancel</span> Problems with Raw LLM Tests</h4>
+                    <ul>
+                        <li>Tests might not compile</li>
+                        <li>Tests might fail randomly (flaky)</li>
+                        <li>Tests might just duplicate existing tests</li>
+                        <li>Tests might have wrong assertions</li>
+                        <li>Human must verify every suggestion</li>
+                    </ul>
+                </div>
+                <div class="comparison-card new">
+                    <h4><span class="material-icons">check_circle</span> What Engineers Actually Need</h4>
+                    <ul>
+                        <li>Tests that definitely build</li>
+                        <li>Tests that pass reliably</li>
+                        <li>Tests that add new value</li>
+                        <li>Tests they can trust</li>
+                        <li>Minimal review overhead</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box warning">
+                <strong>The Challenge:</strong> How do you get the productivity benefits of LLM code generation while eliminating the risks of hallucination? Meta's answer: automated verification.
+            </div>
+        </section>
+
+        <!-- The Solution -->
+        <section id="solution">
+            <h2><span class="material-icons">lightbulb</span> The TestGen-LLM Solution</h2>
+
+            <p>TestGen-LLM doesn't just generate tests - it <strong>improves existing tests</strong>. It takes human-written test classes and extends them with additional test cases that cover corner cases the humans missed.</p>
+
+            <h3>The Core Idea: "Assured LLMSE"</h3>
+
+            <p>Meta calls this approach <strong>"Assured LLM-based Software Engineering"</strong> - using LLMs as a component within a larger system that provides guarantees about the output.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <div class="concept-icon"><span class="material-icons">add_circle</span></div>
+                    <h4>Improve, Don't Replace</h4>
+                    <p>TestGen-LLM extends existing human tests rather than writing from scratch. It builds on human expertise.</p>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-icon"><span class="material-icons">filter_alt</span></div>
+                    <h4>Filter Everything</h4>
+                    <p>Every generated test passes through filters that verify it actually works and adds value.</p>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-icon"><span class="material-icons">verified</span></div>
+                    <h4>Guarantee Improvement</h4>
+                    <p>Only tests that pass ALL filters get recommended. No hallucination can slip through.</p>
+                </div>
+                <div class="concept-card">
+                    <div class="concept-icon"><span class="material-icons">group</span></div>
+                    <h4>Ensemble Approach</h4>
+                    <p>Multiple LLMs and prompts generate candidates. The filters pick the best from all of them.</p>
+                </div>
+            </div>
+
+            <h3>How TestGen-LLM Helps Engineers</h3>
+
+            <div class="analogy">
+                <div class="analogy-title"><span class="material-icons">assistant</span> The Junior Engineer Analogy</div>
+                <p>Think of TestGen-LLM like a junior engineer who:</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Looks at your existing tests and understands the style</li>
+                    <li>Suggests additional test cases you might have missed</li>
+                    <li>Only brings you suggestions they've already verified work</li>
+                    <li>Documents exactly what coverage each test adds</li>
+                    <li>Never wastes your time with broken code</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works">
+            <h2><span class="material-icons">settings</span> How the Filters Work</h2>
+
+            <p>TestGen-LLM uses a three-stage filter pipeline. Each filter eliminates tests that don't meet a specific quality bar.</p>
+
+            <div class="pipeline-visual">
+                <h4 style="text-align: center; margin-bottom: 20px;">The TestGen-LLM Filter Pipeline</h4>
+                <div class="pipeline-steps">
+                    <div class="pipeline-step input">
+                        <span class="material-icons">smart_toy</span>
+                        LLM Output
+                        <div class="percent">100%</div>
+                    </div>
+                    <span class="arrow"><span class="material-icons">arrow_forward</span></span>
+                    <div class="pipeline-step filter">
+                        <span class="material-icons">build</span>
+                        Builds?
+                        <div class="percent">75%</div>
+                    </div>
+                    <span class="arrow"><span class="material-icons">arrow_forward</span></span>
+                    <div class="pipeline-step filter">
+                        <span class="material-icons">check_circle</span>
+                        Passes?
+                        <div class="percent">57%</div>
+                    </div>
+                    <span class="arrow"><span class="material-icons">arrow_forward</span></span>
+                    <div class="pipeline-step output">
+                        <span class="material-icons">trending_up</span>
+                        +Coverage?
+                        <div class="percent">25%</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Filter 1: Does It Build?</h3>
+            <p>The most basic check: can the generated code actually compile? This catches:</p>
+            <ul style="padding-left: 20px; margin-bottom: 20px;">
+                <li>Syntax errors</li>
+                <li>References to non-existent classes or methods</li>
+                <li>Import issues</li>
+                <li>Type mismatches</li>
+            </ul>
+
+            <h3>Filter 2: Does It Pass Reliably?</h3>
+            <p>A test that builds might still fail. This filter runs the test <strong>5 times</strong> and requires it to pass every time. This catches:</p>
+            <ul style="padding-left: 20px; margin-bottom: 20px;">
+                <li><strong>Flaky tests:</strong> Tests that sometimes pass, sometimes fail</li>
+                <li><strong>Wrong assertions:</strong> Tests that check for the wrong values</li>
+                <li><strong>Environment dependencies:</strong> Tests that only work in certain conditions</li>
+            </ul>
+
+            <div class="highlight-box warning">
+                <strong>Why 5 runs?</strong> Flaky tests are a major problem in industrial software. By requiring 5 consecutive passes, TestGen-LLM avoids introducing flakiness - one of the most hated problems in testing.
+            </div>
+
+            <h3>Filter 3: Does It Add Coverage?</h3>
+            <p>A passing test might just repeat what existing tests already do. This final filter measures code coverage and only accepts tests that cover <em>new</em> lines of code.</p>
+
+            <div class="key-insight">
+                <div class="key-insight-title"><span class="material-icons">tips_and_updates</span> Why Coverage Matters</div>
+                <p>Coverage isn't just about numbers. It's used as a <strong>proxy for semantic uniqueness</strong>. If a new test doesn't cover any new code, it's probably testing the same thing as existing tests. Requiring new coverage ensures the test adds genuine value.</p>
+            </div>
+
+            <h3>The Prompts Used</h3>
+
+            <p>TestGen-LLM tried four different prompting strategies:</p>
+
+            <div class="prompt-box">
+                <strong>extend_coverage:</strong><br>
+                "Here is a Kotlin unit test class and the class that it tests: <span class="highlight">{test_class}</span> <span class="highlight">{class_under_test}</span>. Write an extended version that includes additional unit tests that will increase the test coverage."
+            </div>
+
+            <div class="prompt-box">
+                <strong>corner_cases:</strong><br>
+                "...Write an extended version that includes additional unit tests that will cover <span class="highlight">corner cases</span> missed by the original..."
+            </div>
+
+            <div class="prompt-box">
+                <strong>extend_test:</strong><br>
+                "Here is a Kotlin unit test class: <span class="highlight">{test_class}</span>. Write an extended version that includes additional tests to cover some extra corner cases."<br>
+                <em style="color: #94a3b8;">(Note: This one doesn't even need the class under test!)</em>
+            </div>
+        </section>
+
+        <!-- Results -->
+        <section id="results">
+            <h2><span class="material-icons">bar_chart</span> Real-World Results</h2>
+
+            <p>TestGen-LLM was deployed during Meta's "test-a-thons" - focused events where engineers write tests for specific products. Here's how the AI performed alongside human engineers:</p>
+
+            <h3>Test-a-thon Leaderboard (November 2023)</h3>
+
+            <table class="leaderboard">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Test Author</th>
+                        <th>Tests</th>
+                        <th>Lines Covered</th>
+                        <th>Diffs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="rank">1</td>
+                        <td>Threads Engineer</td>
+                        <td>40</td>
+                        <td>1,047</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">2</td>
+                        <td>Home Engineer</td>
+                        <td>34</td>
+                        <td>650</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">3</td>
+                        <td>Business Engineer</td>
+                        <td>34</td>
+                        <td>443</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">4</td>
+                        <td>Sharing Engineer</td>
+                        <td>33</td>
+                        <td>816</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">5</td>
+                        <td>Messaging Engineer</td>
+                        <td>18</td>
+                        <td>157</td>
+                        <td>2</td>
+                    </tr>
+                    <tr class="highlight">
+                        <td class="rank">6</td>
+                        <td><strong>TestGen-LLM</strong></td>
+                        <td>17</td>
+                        <td>1,460</td>
+                        <td>17</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">7</td>
+                        <td>Friends Engineer</td>
+                        <td>12</td>
+                        <td>143</td>
+                        <td>2</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight-box success">
+                <strong>Key Takeaway:</strong> TestGen-LLM ranked 6th among 36 engineers! It produced 17 tests that covered 1,460 lines of code - more coverage than any human engineer (though one outlier test contributed heavily to this).
+            </div>
+
+            <h3>Deployment Results Across Instagram and Facebook</h3>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">1,979</div>
+                    <div class="label">Test classes targeted</div>
+                </div>
+                <div class="stat-card secondary">
+                    <div class="number">196</div>
+                    <div class="label">Successfully improved</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="number">~10%</div>
+                    <div class="label">Improvement rate</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="number">73%</div>
+                    <div class="label">Acceptance rate</div>
+                </div>
+            </div>
+
+            <h3>December Test-a-thon: Fully Automated</h3>
+
+            <p>In the December deployment, TestGen-LLM ran completely automatically, generating and submitting diffs without human intervention:</p>
+
+            <ul style="padding-left: 20px;">
+                <li><strong>42 diffs generated</strong> for Instagram</li>
+                <li><strong>36 accepted</strong> by engineers (86%)</li>
+                <li><strong>4 rejected</strong> for specific reasons</li>
+                <li><strong>2 withdrawn</strong> by the team (covered unimportant files)</li>
+            </ul>
+
+            <h3>Why Were Tests Rejected?</h3>
+
+            <p>The 4 rejected tests failed for interesting reasons:</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>Trivial Methods</h4>
+                    <p>Generated tests for getter methods - technically valid but not valuable enough.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Too Many Concerns</h4>
+                    <p>Some tests violated "single responsibility" - testing multiple things at once.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Missing Assertions</h4>
+                    <p>One test had no assertion - it just called methods without checking results.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Lessons Learned -->
+        <section id="lessons">
+            <h2><span class="material-icons">school</span> Lessons Learned</h2>
+
+            <h3>What Worked Well</h3>
+
+            <div class="comparison-grid">
+                <div class="comparison-card new">
+                    <h4><span class="material-icons">thumb_up</span> Strengths</h4>
+                    <ul>
+                        <li><strong>Style matching:</strong> LLM copied the human test style perfectly</li>
+                        <li><strong>Corner cases:</strong> Found edge cases humans missed</li>
+                        <li><strong>Guarantees:</strong> Filters eliminated all hallucination</li>
+                        <li><strong>Ensemble:</strong> Different prompts found unique tests</li>
+                        <li><strong>Documentation:</strong> Auto-generated coverage reports</li>
+                    </ul>
+                </div>
+                <div class="comparison-card old">
+                    <h4><span class="material-icons">construction</span> Areas for Improvement</h4>
+                    <ul>
+                        <li><strong>Self-plagiarism:</strong> LLM often generated near-identical tests</li>
+                        <li><strong>Trivial tests:</strong> Sometimes tested obvious things</li>
+                        <li><strong>TODO comments:</strong> Occasionally left placeholders</li>
+                        <li><strong>Coverage granularity:</strong> Only line coverage, not branch</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Surprising Findings</h3>
+
+            <div class="key-insight">
+                <div class="key-insight-title"><span class="material-icons">psychology</span> LLMs Are "Fashion Followers"</div>
+                <p>The LLMs closely mimicked the existing test style - including naming conventions, comment patterns, and even bespoke assertion utilities. This is a feature, not a bug! Tests that match the existing style are easier for engineers to review and maintain. However, it also means LLMs can pick up <em>bad</em> habits from the training data.</p>
+            </div>
+
+            <div class="analogy">
+                <div class="analogy-title"><span class="material-icons">lightbulb</span> The "Minimal Context" Surprise</div>
+                <p>One prompting strategy (<code>extend_test</code>) worked with <strong>only the test class</strong> - without even seeing the code being tested! This is remarkable because it suggests LLMs can infer what to test just from the patterns in existing tests.</p>
+                <p>While prompts with more context performed better, the fact that minimal context works at all opens interesting possibilities for testing code that's hard to share (e.g., proprietary dependencies).</p>
+            </div>
+
+            <h3>Comparison with Other Automated Repair</h3>
+
+            <p>Meta has previously deployed automated program repair tools. TestGen-LLM's 73% acceptance rate compares favorably:</p>
+
+            <table class="leaderboard">
+                <thead>
+                    <tr>
+                        <th>Tool</th>
+                        <th>Acceptance Rate</th>
+                        <th>Task</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="highlight">
+                        <td><strong>TestGen-LLM</strong></td>
+                        <td>73%</td>
+                        <td>Test improvement</td>
+                    </tr>
+                    <tr>
+                        <td>SapFix</td>
+                        <td>50%</td>
+                        <td>Bug repair</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Glossary -->
+        <section id="glossary">
+            <h2><span class="material-icons">auto_stories</span> Glossary</h2>
+
+            <div class="glossary-term">
+                <strong>TestGen-LLM</strong><br>
+                Meta's tool for automatically improving existing test classes using Large Language Models. Uses filters to guarantee improvements.
+            </div>
+
+            <div class="glossary-term">
+                <strong>Assured LLMSE</strong><br>
+                "Assured LLM-based Software Engineering" - an approach where LLMs are embedded in verification pipelines that guarantee output quality.
+            </div>
+
+            <div class="glossary-term">
+                <strong>Flaky Test</strong><br>
+                A test that sometimes passes and sometimes fails in identical environments. One of the most frustrating problems in software testing.
+            </div>
+
+            <div class="glossary-term">
+                <strong>Test-a-thon</strong><br>
+                A focused event at Meta where engineers dedicate time specifically to writing tests for a product area.
+            </div>
+
+            <div class="glossary-term">
+                <strong>Diff</strong><br>
+                Meta's term for a code change submitted for review. Short for "differential" - showing the difference between old and new code.
+            </div>
+
+            <div class="glossary-term">
+                <strong>Coverage</strong><br>
+                A measure of how much code is executed by tests. TestGen-LLM uses line coverage - what percentage of code lines are run during tests.
+            </div>
+
+            <div class="glossary-term">
+                <strong>Hallucination</strong><br>
+                When an LLM generates plausible-sounding but incorrect content. In code, this might mean referencing APIs that don't exist.
+            </div>
+
+            <div class="glossary-term">
+                <strong>Ensemble Approach</strong><br>
+                Using multiple LLMs, prompts, or configurations and combining their outputs. Takes the best from each.
+            </div>
+
+            <div class="glossary-term">
+                <strong>Corner Case</strong><br>
+                An edge case or unusual scenario that might not be covered by typical tests. Examples: empty lists, null values, maximum integers.
+            </div>
+        </section>
+
+        <!-- Key Takeaways -->
+        <section>
+            <h2><span class="material-icons">flag</span> Key Takeaways</h2>
+
+            <div class="highlight-box">
+                <h3 style="margin-top: 0; color: var(--primary);">The Big Picture</h3>
+                <p style="margin-bottom: 0;">LLMs can generate useful code, but hallucination is real. The solution isn't to avoid LLMs - it's to wrap them in verification systems that filter out bad outputs and guarantee quality. TestGen-LLM proves this works at industrial scale.</p>
+            </div>
+
+            <h3>Five Things to Remember</h3>
+
+            <ol style="padding-left: 20px;">
+                <li style="margin-bottom: 15px;"><strong>Filter, Don't Trust:</strong> Don't ship raw LLM output. Use automated verification (build, pass, coverage) to guarantee quality.</li>
+
+                <li style="margin-bottom: 15px;"><strong>Improve, Don't Replace:</strong> LLMs work best when extending human work, not replacing it. TestGen-LLM builds on human-written tests.</li>
+
+                <li style="margin-bottom: 15px;"><strong>Ensemble Wins:</strong> Different prompts and models find different things. Combining them beats any single approach.</li>
+
+                <li style="margin-bottom: 15px;"><strong>Style Matters:</strong> LLMs naturally match existing code style, which makes their output easier to review and maintain.</li>
+
+                <li style="margin-bottom: 15px;"><strong>73% Acceptance Is Excellent:</strong> For automated code generation, having engineers accept nearly 3 out of 4 suggestions is a strong result.</li>
+            </ol>
+        </section>
+
+        <!-- Further Reading -->
+        <section>
+            <h2><span class="material-icons">link</span> Learn More</h2>
+
+            <ul style="padding-left: 20px;">
+                <li><a href="https://doi.org/10.1145/3663529.3663839" target="_blank">Original Paper (ACM)</a></li>
+                <li><a href="https://engineering.fb.com/" target="_blank">Meta Engineering Blog</a></li>
+                <li><a href="https://arxiv.org/abs/2305.04207" target="_blank">ChatGPT for Unit Test Generation (Related Research)</a></li>
+            </ul>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>This explainer makes AI research accessible to everyone.</p>
+        <p>Based on: <a href="https://doi.org/10.1145/3663529.3663839" target="_blank">"Automated Unit Test Improvement using Large Language Models at Meta"</a></p>
+        <p>Alshahwan, Chheda, Finogenova, et al. | Meta Platforms | FSE 2024</p>
+        <p style="margin-top: 20px;"><a href="index.html">Back to All Papers</a></p>
+    </footer>
+
+</body>
+</html>
