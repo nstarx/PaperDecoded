@@ -481,11 +481,12 @@
             color: white;
         }
 
-        .year-btn.current-year {
+        .year-btn.current-year,
+        .read-year-btn.current-year {
             position: relative;
         }
 
-        .year-btn.current-year::after {
+        .read-year-btn.current-year::after {
             content: "NOW";
             position: absolute;
             top: -8px;
@@ -496,6 +497,29 @@
             padding: 2px 5px;
             border-radius: 8px;
             font-weight: 700;
+        }
+
+        .read-year-btn {
+            padding: 6px 14px;
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            background: white;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .read-year-btn:hover {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .read-year-btn.active {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
         }
 
         .sort-controls {
@@ -568,25 +592,76 @@
             color: var(--warning);
         }
 
-        /* Reading this year highlight */
-        .paper-card[data-read-year="2025"] {
-            position: relative;
-        }
-
+        /* Reading badge - inside header */
         .reading-badge {
-            position: absolute;
-            top: -10px;
-            left: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
             background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
             color: white;
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 12px;
             font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            z-index: 10;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+            font-weight: 600;
+            margin-left: 8px;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+        }
+
+        .reading-badge .material-icons {
+            font-size: 0.85rem;
+        }
+
+        /* Collapsible filter section */
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .filter-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .filter-toggle:hover {
+            background: var(--bg-light);
+        }
+
+        .filter-toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-toggle-left .material-icons {
+            color: var(--primary);
+        }
+
+        .filter-toggle .chevron {
+            transition: transform 0.3s;
+            color: var(--text-muted);
+        }
+
+        .filter-section.collapsed .chevron {
+            transform: rotate(-90deg);
+        }
+
+        .filter-section.collapsed .filter-bar {
+            display: none;
+        }
+
+        .filter-bar {
+            padding: 15px 20px;
         }
     </style>
 </head>
@@ -619,33 +694,47 @@
             <input type="text" placeholder="Search papers..." id="search-input">
         </div>
 
-        <!-- Filter Tags -->
-        <div class="filter-bar">
-            <button class="filter-tag active" data-filter="all">All Papers</button>
-            <button class="filter-tag" data-filter="vision">Computer Vision</button>
-            <button class="filter-tag" data-filter="language">Language Models</button>
-            <button class="filter-tag" data-filter="multimodal">Multimodal</button>
-            <button class="filter-tag" data-filter="self-supervised">Self-Supervised</button>
-            <button class="filter-tag" data-filter="robotics">Robotics</button>
-            <button class="filter-tag" data-filter="productivity">AI & Productivity</button>
-            <button class="filter-tag" data-filter="testing">Software Testing</button>
-            <button class="filter-tag" data-filter="efficiency">Model Efficiency</button>
-            <button class="filter-tag" data-filter="data">Data Integration</button>
-            <button class="filter-tag" data-filter="security">Code Security</button>
-            <button class="filter-tag" data-filter="federated">Federated Learning</button>
-            <button class="filter-tag" data-filter="agents">AI Agents</button>
-            <button class="filter-tag" data-filter="reasoning">Reasoning</button>
-            <button class="filter-tag" data-filter="multi-agent">Multi-Agent</button>
+        <!-- Collapsible Filter Section -->
+        <div class="filter-section" id="filter-section">
+            <div class="filter-toggle" onclick="document.getElementById('filter-section').classList.toggle('collapsed')">
+                <div class="filter-toggle-left">
+                    <span class="material-icons">filter_list</span>
+                    <span>Filter by Topic</span>
+                </div>
+                <span class="material-icons chevron">expand_more</span>
+            </div>
+            <div class="filter-bar">
+                <button class="filter-tag active" data-filter="all">All Papers</button>
+                <button class="filter-tag" data-filter="vision">Computer Vision</button>
+                <button class="filter-tag" data-filter="language">Language Models</button>
+                <button class="filter-tag" data-filter="multimodal">Multimodal</button>
+                <button class="filter-tag" data-filter="self-supervised">Self-Supervised</button>
+                <button class="filter-tag" data-filter="robotics">Robotics</button>
+                <button class="filter-tag" data-filter="productivity">AI & Productivity</button>
+                <button class="filter-tag" data-filter="testing">Software Testing</button>
+                <button class="filter-tag" data-filter="efficiency">Model Efficiency</button>
+                <button class="filter-tag" data-filter="data">Data Integration</button>
+                <button class="filter-tag" data-filter="security">Code Security</button>
+                <button class="filter-tag" data-filter="federated">Federated Learning</button>
+                <button class="filter-tag" data-filter="agents">AI Agents</button>
+                <button class="filter-tag" data-filter="reasoning">Reasoning</button>
+                <button class="filter-tag" data-filter="multi-agent">Multi-Agent</button>
+            </div>
         </div>
 
         <!-- Year and Sort Controls -->
         <div class="controls-bar">
             <div class="year-filters">
-                <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; margin-right: 5px;">Year:</span>
-                <button class="year-btn active" data-year="all">All Years</button>
-                <button class="year-btn current-year" data-year="2025">2025</button>
+                <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; margin-right: 5px;">Published:</span>
+                <button class="year-btn active" data-year="all">All</button>
+                <button class="year-btn" data-year="2025">2025</button>
                 <button class="year-btn" data-year="2024">2024</button>
                 <button class="year-btn" data-year="2017">2017</button>
+            </div>
+            <div class="year-filters" style="margin-left: 20px;">
+                <span style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 500; margin-right: 5px;">Read in:</span>
+                <button class="read-year-btn active" data-read-year="all">All</button>
+                <button class="read-year-btn current-year" data-read-year="2025">2025</button>
             </div>
             <div class="sort-controls">
                 <label for="sort-select">Sort by:</label>
@@ -667,12 +756,12 @@
         <div class="papers-grid" id="papers-grid">
             <!-- VL-JEPA Card -->
             <article class="paper-card" data-categories="vision,language,multimodal,self-supervised" data-year="2024" data-citations="45" data-read-time="15" data-date="2024-12-15" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header">
                     <div class="category">
                         <span class="material-icons">visibility</span>
                         Vision-Language
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 45</span>
                     <h3>VL-JEPA: Joint Embedding Predictive Architecture</h3>
                     <div class="authors">Chen, Shukor, Moutakanni, et al. (Meta FAIR, HKUST)</div>
@@ -756,12 +845,12 @@
 
             <!-- Attention Is All You Need -->
             <article class="paper-card" data-categories="language" data-year="2017" data-citations="125000" data-read-time="20" data-date="2017-06-12" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);">
                     <div class="category">
                         <span class="material-icons">auto_awesome</span>
                         Landmark Paper
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 125K+</span>
                     <h3>Attention Is All You Need</h3>
                     <div class="authors">Vaswani, Shazeer, Parmar et al. (Google Brain)</div>
@@ -803,12 +892,12 @@
 
             <!-- AI Coding Productivity -->
             <article class="paper-card" data-categories="productivity" data-year="2025" data-citations="12" data-read-time="15" data-date="2025-10-15" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);">
                     <div class="category">
                         <span class="material-icons">code</span>
                         AI & Productivity
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 12</span>
                     <h3>AI Coding Assistants: The Hidden Cost</h3>
                     <div class="authors">Xu, Medappa, Tunc et al. (Tilburg University)</div>
@@ -850,12 +939,12 @@
 
             <!-- TestGen-LLM -->
             <article class="paper-card" data-categories="testing,productivity" data-year="2024" data-citations="89" data-read-time="18" data-date="2024-02-14" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #0668E1 0%, #10b981 100%);">
                     <div class="category">
                         <span class="material-icons">bug_report</span>
                         Software Testing
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 89</span>
                     <h3>TestGen-LLM: AI-Powered Test Generation</h3>
                     <div class="authors">Alshahwan, Chheda, Finogenova et al. (Meta)</div>
@@ -897,12 +986,12 @@
 
             <!-- Nested Subspace Networks -->
             <article class="paper-card" data-categories="efficiency,language" data-year="2025" data-citations="8" data-read-time="15" data-date="2025-09-20" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #059669 0%, #0891b2 100%);">
                     <div class="category">
                         <span class="material-icons">tune</span>
                         Model Efficiency
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 8</span>
                     <h3>Nested Subspace Networks: One Model, Infinite Sizes</h3>
                     <div class="authors">Rauba & van der Schaar (University of Cambridge)</div>
@@ -944,12 +1033,12 @@
 
             <!-- AnyMatch Entity Matching -->
             <article class="paper-card" data-categories="data,language" data-year="2024" data-citations="15" data-read-time="15" data-date="2024-09-06" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);">
                     <div class="category">
                         <span class="material-icons">compare_arrows</span>
                         Data Integration
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 15</span>
                     <h3>AnyMatch: Zero-Shot Entity Matching</h3>
                     <div class="authors">Shen, Chen, Theobald et al. (University of Stuttgart)</div>
@@ -991,12 +1080,12 @@
 
             <!-- Is Vibe Coding Safe -->
             <article class="paper-card" data-categories="security,productivity" data-year="2025" data-citations="5" data-read-time="18" data-date="2025-12-03" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);">
                     <div class="category">
                         <span class="material-icons">security</span>
                         Code Security
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 5</span>
                     <h3>Is Vibe Coding Safe? Security Risks in AI-Generated Code</h3>
                     <div class="authors">Zhao, Wang, Zhang et al. (CMU)</div>
@@ -1038,12 +1127,12 @@
 
             <!-- Project AIKYA -->
             <article class="paper-card" data-categories="federated,data" data-year="2024" data-citations="3" data-read-time="15" data-date="2024-06-01" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #1e3a5f 0%, #7c3aed 100%);">
                     <div class="category">
                         <span class="material-icons">share</span>
                         Federated Learning
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 3</span>
                     <h3>Project AIKYA: Collaborative Anomaly Detection</h3>
                     <div class="authors">Kinexys by J.P. Morgan & BNY</div>
@@ -1085,12 +1174,12 @@
 
             <!-- Paper2Agent -->
             <article class="paper-card" data-categories="agents,language,productivity" data-year="2025" data-citations="18" data-read-time="15" data-date="2025-02-01" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);">
                     <div class="category">
                         <span class="material-icons">smart_toy</span>
                         AI Agents
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 18</span>
                     <h3>Paper2Agent: From Papers to AI Assistants</h3>
                     <div class="authors">Miao, Davis, Pritchard & Zou (Stanford)</div>
@@ -1132,12 +1221,12 @@
 
             <!-- s1 Test-Time Scaling -->
             <article class="paper-card" data-categories="reasoning,language,efficiency" data-year="2025" data-citations="156" data-read-time="18" data-date="2025-02-27" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);">
                     <div class="category">
                         <span class="material-icons">psychology</span>
                         Reasoning
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 156</span>
                     <h3>s1: Simple Test-Time Scaling</h3>
                     <div class="authors">Muennighoff, Yang, Shi et al. (Stanford)</div>
@@ -1179,12 +1268,12 @@
 
             <!-- Million-Step LLM Task -->
             <article class="paper-card" data-categories="multi-agent,language,reasoning" data-year="2025" data-citations="22" data-read-time="18" data-date="2025-11-13" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);">
                     <div class="category">
                         <span class="material-icons">hub</span>
                         Multi-Agent Systems
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 22</span>
                     <h3>Solving Million-Step Tasks with Zero Errors</h3>
                     <div class="authors">Meyerson, Paolo, Dailey et al. (Cognizant AI Lab)</div>
@@ -1226,12 +1315,12 @@
 
             <!-- The Art of Scaling RL for LLMs -->
             <article class="paper-card" data-categories="language,reasoning" data-year="2025" data-citations="35" data-read-time="15" data-date="2025-10-18" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);">
                     <div class="category">
                         <span class="material-icons">show_chart</span>
                         Reinforcement Learning
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 35</span>
                     <h3>The Art of Scaling RL for LLMs</h3>
                     <div class="authors">Arora, Grigsby, Jiang et al. (Meta, UT Austin, UCL, Berkeley)</div>
@@ -1275,12 +1364,12 @@
 
             <!-- The GenAI Wall Effect -->
             <article class="paper-card" data-categories="productivity,language" data-year="2025" data-citations="28" data-read-time="18" data-date="2025-09-15" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%);">
                     <div class="category">
                         <span class="material-icons">block</span>
                         AI & Expertise
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 28</span>
                     <h3>The GenAI Wall Effect</h3>
                     <div class="authors">Li, Cheng, Walling et al. (Stanford, Harvard)</div>
@@ -1324,12 +1413,12 @@
 
             <!-- The Illusion of Thinking -->
             <article class="paper-card" data-categories="reasoning,language" data-year="2025" data-citations="42" data-read-time="20" data-date="2025-06-15" data-read-year="2025">
-                <span class="reading-badge">Reading 2025</span>
                 <div class="paper-card-header" style="background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);">
                     <div class="category">
                         <span class="material-icons">psychology</span>
                         AI Reasoning
                     </div>
+                    <span class="reading-badge"><span class="material-icons">auto_stories</span> Read 2025</span>
                     <span class="citation-badge"><span class="material-icons">format_quote</span> 42</span>
                     <h3>The Illusion of Thinking</h3>
                     <div class="authors">Shojaee, Mirzadeh, Alizadeh et al. (Apple)</div>
@@ -1410,32 +1499,38 @@
         const paperCards = document.querySelectorAll('.paper-card');
         const papersGrid = document.getElementById('papers-grid');
         const yearBtns = document.querySelectorAll('.year-btn');
+        const readYearBtns = document.querySelectorAll('.read-year-btn');
         const sortSelect = document.getElementById('sort-select');
         const searchInput = document.getElementById('search-input');
 
         // Current filter state
         let currentCategoryFilter = 'all';
         let currentYearFilter = 'all';
+        let currentReadYearFilter = 'all';
 
         // Apply all filters combined
         function applyFilters() {
             paperCards.forEach(card => {
                 const categories = card.dataset.categories ? card.dataset.categories.split(',') : [];
                 const year = card.dataset.year;
+                const readYear = card.dataset.readYear;
                 const text = card.textContent.toLowerCase();
                 const query = searchInput.value.toLowerCase();
 
                 // Check category filter
                 const passesCategory = currentCategoryFilter === 'all' || categories.includes(currentCategoryFilter);
 
-                // Check year filter
+                // Check published year filter
                 const passesYear = currentYearFilter === 'all' || year === currentYearFilter;
+
+                // Check read year filter
+                const passesReadYear = currentReadYearFilter === 'all' || readYear === currentReadYearFilter;
 
                 // Check search query
                 const passesSearch = !query || text.includes(query);
 
                 // Show card only if it passes all filters
-                card.style.display = (passesCategory && passesYear && passesSearch) ? 'flex' : 'none';
+                card.style.display = (passesCategory && passesYear && passesReadYear && passesSearch) ? 'flex' : 'none';
             });
         }
 
@@ -1480,12 +1575,22 @@
             });
         });
 
-        // Year filter functionality
+        // Published year filter functionality
         yearBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 yearBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentYearFilter = btn.dataset.year;
+                applyFilters();
+            });
+        });
+
+        // Read year filter functionality
+        readYearBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                readYearBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentReadYearFilter = btn.dataset.readYear;
                 applyFilters();
             });
         });
