@@ -5,18 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Art of Scaling RL for LLMs - Explained Simply</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #8b5cf6;
-            --primary-dark: #7c3aed;
-            --secondary: #06b6d4;
-            --accent: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --bg-dark: #1e1b4b;
-            --bg-light: #f8fafc;
-            --text-dark: #1e293b;
-            --text-light: #64748b;
+            --primary: #8b4513;
+            --primary-dark: #6b3410;
+            --secondary: #a0522d;
+            --accent: #cd853f;
+            --success: #2d5a47;
+            --warning: #b8860b;
+            --bg-light: #faf8f5;
+            --bg-card: #fffef9;
+            --bg-page: #f5f1ea;
+            --text-primary: #2c2416;
+            --text-secondary: #5c5144;
+            --border: #e8e0d4;
+            --gold: #c9a227;
+            --burgundy: #722f37;
         }
 
         * {
@@ -26,15 +31,22 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            line-height: 1.7;
-            color: var(--text-dark);
-            background: var(--bg-light);
+            font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: var(--text-primary);
+            background: var(--bg-page);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-blend-mode: soft-light;
+            min-height: 100vh;
         }
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+            background:
+                linear-gradient(135deg, rgba(139, 92, 246, 0.9) 0%, rgba(6, 182, 212, 0.9) 100%),
+                url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80");
+            background-size: cover;
+            background-position: center;
             color: white;
             padding: 4rem 2rem;
             text-align: center;
@@ -59,7 +71,7 @@
             justify-content: center;
             flex-wrap: wrap;
             font-size: 0.95rem;
-            opacity: 0.9;
+            color: #ffffff;
         }
 
         .paper-info span {
@@ -141,21 +153,21 @@
 
         /* Highlight Boxes */
         .highlight-box {
-            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(6,182,212,0.1));
-            border-left: 4px solid var(--primary);
-            padding: 1.5rem;
-            border-radius: 0 12px 12px 0;
-            margin: 1.5rem 0;
+            background: linear-gradient(135deg, #faf6f0 0%, #f5efe5 100%);
+            padding: 25px 30px;
+            border-radius: 3px;
+            margin: 25px 0;
+            border: 1px solid var(--border);
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(139, 69, 19, 0.03);
         }
 
         .highlight-box.success {
             background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.1));
-            border-left-color: var(--accent);
         }
 
         .highlight-box.warning {
             background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(239,68,68,0.1));
-            border-left-color: var(--warning);
         }
 
         .highlight-box strong {
@@ -232,7 +244,7 @@
 
         .stat-card .label {
             font-size: 0.9rem;
-            opacity: 0.9;
+            color: #ffffff;
         }
 
         /* Comparison Grid */
@@ -325,7 +337,7 @@
 
         .formula-box .explanation {
             font-size: 0.95rem;
-            opacity: 0.9;
+            color: #ffffff;
             margin-top: 1rem;
         }
 
