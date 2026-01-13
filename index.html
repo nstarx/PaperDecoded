@@ -731,6 +731,69 @@
       border-radius: 0 3px 3px 0;
     }
 
+    /* Cover image overlay */
+    .book-cover .cover-image {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      border-radius: 0 3px 3px 0;
+      z-index: 0;
+    }
+
+    /* Hide book style background when cover image is present */
+    .book-cover:has(.cover-image) {
+      background: transparent !important;
+    }
+
+    /* Styles for covers with images */
+    .book-cover:has(.cover-image) .title-emboss {
+      background: rgba(255, 255, 255, 0.8) !important;
+      -webkit-text-fill-color: #000 !important;
+      -webkit-background-clip: unset !important;
+      background-clip: unset !important;
+      color: #000 !important;
+      font-weight: 700 !important;
+      text-shadow: none !important;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      position: absolute;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: 90%;
+    }
+
+    .book-cover:has(.cover-image) .author {
+      color: #000 !important;
+      font-weight: 700 !important;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .book-cover:has(.cover-image) .category-icon,
+    .book-cover:has(.cover-image) .year-badge,
+    .book-cover:has(.cover-image) .line,
+    .book-cover:has(.cover-image) .cover-decoration {
+      display: none !important;
+    }
+
+    /* Cover-only: hide all text elements */
+    .book-cover:has(.cover-only) .title-emboss,
+    .book-cover:has(.cover-only) .author,
+    .book-cover:has(.cover-only) .year-badge,
+    .book-cover:has(.cover-only) .category-icon,
+    .book-cover:has(.cover-only) .line,
+    .book-cover:has(.cover-only) .cover-decoration {
+      display: none !important;
+    }
+
     .book-cover .cover-edge-top {
       position: absolute;
       top: -4px;
@@ -1048,6 +1111,24 @@
       animation: infoIntro 0.5s ease-out backwards;
     }
 
+    .search-context {
+      margin-top: 0.5rem;
+      padding: 0.4rem 0.6rem;
+      background: rgba(37, 99, 235, 0.1);
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: #475569;
+      line-height: 1.4;
+      text-align: left;
+    }
+
+    .search-context mark {
+      background: #fef08a;
+      color: #000;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
     .book-card:nth-child(1) .book-info { animation-delay: 0.15s; }
     .book-card:nth-child(2) .book-info { animation-delay: 0.2s; }
     .book-card:nth-child(3) .book-info { animation-delay: 0.25s; }
@@ -1310,6 +1391,7 @@
           <div class="book">
             <div class="book-cover">
               <div class="cover-inner"></div>
+              <div class="cover-image" style="background-image: url('cover_attentio.png');"></div>
               <div class="cover-edge-top"></div>
               <div class="cover-edge-right"></div>
               <div class="cover-edge-bottom"></div>
@@ -1412,6 +1494,7 @@
           <div class="book">
             <div class="book-cover">
               <div class="cover-inner"></div>
+              <div class="cover-image" style="background-image: url('s1-test-scalling.png');"></div>
               <div class="cover-edge-top"></div>
               <div class="cover-edge-right"></div>
               <div class="cover-edge-bottom"></div>
@@ -1463,6 +1546,7 @@
           <div class="book">
             <div class="book-cover">
               <div class="cover-inner"></div>
+              <div class="cover-image" style="background-image: url('test_gen.png');"></div>
               <div class="cover-edge-top"></div>
               <div class="cover-edge-right"></div>
               <div class="cover-edge-bottom"></div>
@@ -1565,6 +1649,7 @@
           <div class="book">
             <div class="book-cover">
               <div class="cover-inner"></div>
+              <div class="cover-image" style="background-image: url('illusion_thinking.png');"></div>
               <div class="cover-edge-top"></div>
               <div class="cover-edge-right"></div>
               <div class="cover-edge-bottom"></div>
@@ -1922,6 +2007,7 @@
           <div class="book">
             <div class="book-cover">
               <div class="cover-inner"></div>
+              <div class="cover-image" style="background-image: url('art_scalling.png');"></div>
               <div class="cover-edge-top"></div>
               <div class="cover-edge-right"></div>
               <div class="cover-edge-bottom"></div>
@@ -2244,20 +2330,49 @@
       };
       setBookStylesByCitations();
 
-      // Search functionality
+      // Search functionality - searches all text content with context
       searchInput.addEventListener('input', () => {
-        const query = searchInput.value.toLowerCase();
-        bookCards.forEach(card => {
-          const title = card.dataset.title?.toLowerCase() || '';
-          const authors = card.dataset.authors?.toLowerCase() || '';
-          const categories = card.dataset.categories?.toLowerCase() || '';
-          const text = card.textContent.toLowerCase();
+        const query = searchInput.value.toLowerCase().trim();
+        const searchWords = query.split(/\s+/).filter(w => w.length > 0);
 
-          const matches = !query ||
-            title.includes(query) ||
-            authors.includes(query) ||
-            categories.includes(query) ||
-            text.includes(query);
+        bookCards.forEach(card => {
+          // Remove existing search context
+          const existingContext = card.querySelector('.search-context');
+          if (existingContext) existingContext.remove();
+
+          const allText = card.textContent.toLowerCase();
+          const matches = !query || searchWords.every(word => allText.includes(word));
+
+          if (matches && query) {
+            // Find and show context for the first matching word
+            const blurb = card.querySelector('.blurb')?.textContent || '';
+            const bookInfo = card.querySelector('.book-info')?.textContent || '';
+            const searchableText = blurb + ' ' + bookInfo;
+
+            let contextSnippet = '';
+            for (const word of searchWords) {
+              const idx = searchableText.toLowerCase().indexOf(word);
+              if (idx !== -1) {
+                const start = Math.max(0, idx - 30);
+                const end = Math.min(searchableText.length, idx + word.length + 30);
+                let snippet = searchableText.substring(start, end).trim();
+                if (start > 0) snippet = '...' + snippet;
+                if (end < searchableText.length) snippet = snippet + '...';
+                // Highlight the matching word
+                const regex = new RegExp(`(${word})`, 'gi');
+                snippet = snippet.replace(regex, '<mark>$1</mark>');
+                contextSnippet = snippet;
+                break;
+              }
+            }
+
+            if (contextSnippet) {
+              const contextEl = document.createElement('div');
+              contextEl.className = 'search-context';
+              contextEl.innerHTML = contextSnippet;
+              card.querySelector('.book-info').appendChild(contextEl);
+            }
+          }
 
           card.style.display = matches ? 'flex' : 'none';
         });
