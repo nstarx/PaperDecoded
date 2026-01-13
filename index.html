@@ -2192,121 +2192,161 @@
       const searchInput = document.getElementById('search-input');
       const bookCards = document.querySelectorAll('.book-card');
 
-      // Book interaction
+      // Book interaction with extended hover area
+      const defaultRotateX = 8;
+      const defaultRotateY = -25;
+      const extraPadding = 60; // Extra area around book for hover effect
+      let activeBook = null;
+      let dragState = null;
+
+      // Global mousemove for extended hover area
+      document.addEventListener('mousemove', (e) => {
+        if (dragState) {
+          // Handle dragging
+          const deltaX = e.clientX - dragState.startX;
+          const deltaY = e.clientY - dragState.startY;
+          dragState.rotateY += deltaX * 0.5;
+          dragState.rotateX -= deltaY * 0.3;
+          dragState.book.style.transform = `rotateX(${dragState.rotateX}deg) rotateY(${dragState.rotateY}deg)`;
+          dragState.startX = e.clientX;
+          dragState.startY = e.clientY;
+          return;
+        }
+
+        // Find closest book within extended area
+        let closestContainer = null;
+        let closestDist = Infinity;
+        let isInsideBook = false;
+
+        containers.forEach(container => {
+          const rect = container.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+
+          // Check if mouse is directly over the book
+          const inBookX = e.clientX >= rect.left && e.clientX <= rect.right;
+          const inBookY = e.clientY >= rect.top && e.clientY <= rect.bottom;
+
+          // Check if mouse is within extended bounds
+          const inExtendedX = e.clientX >= rect.left - extraPadding && e.clientX <= rect.right + extraPadding;
+          const inExtendedY = e.clientY >= rect.top - extraPadding && e.clientY <= rect.bottom + extraPadding;
+
+          if (inExtendedX && inExtendedY) {
+            const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+            if (dist < closestDist) {
+              closestDist = dist;
+              closestContainer = container;
+              isInsideBook = inBookX && inBookY;
+            }
+          }
+        });
+
+        // Reset previous active book if different
+        if (activeBook && activeBook !== closestContainer) {
+          const prevBook = activeBook.querySelector('.book');
+          prevBook.classList.remove('no-transition');
+          prevBook.style.transform = `rotateX(${defaultRotateX}deg) rotateY(${defaultRotateY}deg)`;
+        }
+
+        activeBook = closestContainer;
+
+        if (closestContainer) {
+          const book = closestContainer.querySelector('.book');
+          const rect = closestContainer.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+
+          // Calculate distance from book edge (0 = on edge, negative = inside, positive = outside)
+          const distFromLeft = rect.left - e.clientX;
+          const distFromRight = e.clientX - rect.right;
+          const distFromTop = rect.top - e.clientY;
+          const distFromBottom = e.clientY - rect.bottom;
+          const distFromEdge = Math.max(distFromLeft, distFromRight, distFromTop, distFromBottom, 0);
+
+          // Interpolate multiplier: full effect at edge (0), subtle at max padding
+          const t = Math.min(distFromEdge / extraPadding, 1); // 0 to 1
+          const minMultY = 0.04, maxMultY = 0.15;
+          const minMultX = 0.03, maxMultX = 0.1;
+          const multiplierY = maxMultY - t * (maxMultY - minMultY);
+          const multiplierX = maxMultX - t * (maxMultX - minMultX);
+
+          book.classList.add('no-transition');
+          const hoverRotateY = defaultRotateY + (e.clientX - centerX) * multiplierY;
+          const hoverRotateX = defaultRotateX - (e.clientY - centerY) * multiplierX;
+          book.style.transform = `rotateX(${hoverRotateX}deg) rotateY(${hoverRotateY}deg)`;
+        }
+      });
+
+      // Drag support
       containers.forEach(container => {
         const book = container.querySelector('.book');
-        const defaultRotateX = 8;
-        const defaultRotateY = -25;
 
-        let isDragging = false;
-        let startX, startY;
-        let rotateX = defaultRotateX;
-        let rotateY = defaultRotateY;
-
-        const updateTransform = () => {
-          book.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        };
-
-        const onMouseMove = (e) => {
-          if (isDragging) {
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-            rotateY += deltaX * 0.5;
-            rotateX -= deltaY * 0.3;
-            updateTransform();
-            startX = e.clientX;
-            startY = e.clientY;
-          } else {
-            const rect = container.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const hoverRotateY = defaultRotateY + (e.clientX - centerX) * 0.15;
-            const hoverRotateX = defaultRotateX - (e.clientY - centerY) * 0.1;
-            book.style.transform = `rotateX(${hoverRotateX}deg) rotateY(${hoverRotateY}deg)`;
-          }
-        };
-
-        const onMouseDown = (e) => {
-          isDragging = true;
-          container.classList.add('dragging');
-          book.classList.add('no-transition');
-          startX = e.clientX;
-          startY = e.clientY;
+        container.addEventListener('mousedown', (e) => {
           const rect = container.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
           const centerY = rect.top + rect.height / 2;
-          rotateY = defaultRotateY + (e.clientX - centerX) * 0.15;
-          rotateX = defaultRotateX - (e.clientY - centerY) * 0.1;
+
+          dragState = {
+            container,
+            book,
+            startX: e.clientX,
+            startY: e.clientY,
+            rotateX: defaultRotateX - (e.clientY - centerY) * 0.1,
+            rotateY: defaultRotateY + (e.clientX - centerX) * 0.15
+          };
+          container.classList.add('dragging');
+          book.classList.add('no-transition');
           e.preventDefault();
-        };
-
-        const onMouseUp = () => {
-          if (!isDragging) return;
-          isDragging = false;
-          container.classList.remove('dragging');
-          book.classList.remove('no-transition');
-          rotateX = defaultRotateX;
-          rotateY = defaultRotateY;
-          updateTransform();
-        };
-
-        const onMouseLeave = () => {
-          if (!isDragging) {
-            book.classList.remove('no-transition');
-            book.style.transform = `rotateX(${defaultRotateX}deg) rotateY(${defaultRotateY}deg)`;
-          }
-        };
-
-        const onMouseEnter = () => {
-          if (!isDragging) {
-            book.classList.add('no-transition');
-          }
-        };
+        });
 
         // Touch support
-        const onTouchStart = (e) => {
-          isDragging = true;
-          container.classList.add('dragging');
-          book.classList.add('no-transition');
-          startX = e.touches[0].clientX;
-          startY = e.touches[0].clientY;
+        container.addEventListener('touchstart', (e) => {
           const rect = container.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
           const centerY = rect.top + rect.height / 2;
-          rotateY = defaultRotateY + (startX - centerX) * 0.15;
-          rotateX = defaultRotateX - (startY - centerY) * 0.1;
-        };
+          const touch = e.touches[0];
 
-        const onTouchMove = (e) => {
-          if (!isDragging) return;
-          const deltaX = e.touches[0].clientX - startX;
-          const deltaY = e.touches[0].clientY - startY;
-          rotateY += deltaX * 0.5;
-          rotateX -= deltaY * 0.3;
-          updateTransform();
-          startX = e.touches[0].clientX;
-          startY = e.touches[0].clientY;
+          dragState = {
+            container,
+            book,
+            startX: touch.clientX,
+            startY: touch.clientY,
+            rotateX: defaultRotateX - (touch.clientY - centerY) * 0.1,
+            rotateY: defaultRotateY + (touch.clientX - centerX) * 0.15
+          };
+          container.classList.add('dragging');
+          book.classList.add('no-transition');
+        }, { passive: true });
+
+        container.addEventListener('touchmove', (e) => {
+          if (!dragState || dragState.container !== container) return;
+          const touch = e.touches[0];
+          const deltaX = touch.clientX - dragState.startX;
+          const deltaY = touch.clientY - dragState.startY;
+          dragState.rotateY += deltaX * 0.5;
+          dragState.rotateX -= deltaY * 0.3;
+          book.style.transform = `rotateX(${dragState.rotateX}deg) rotateY(${dragState.rotateY}deg)`;
+          dragState.startX = touch.clientX;
+          dragState.startY = touch.clientY;
           e.preventDefault();
-        };
+        }, { passive: false });
 
-        const onTouchEnd = () => {
-          if (!isDragging) return;
-          isDragging = false;
+        container.addEventListener('touchend', () => {
+          if (!dragState || dragState.container !== container) return;
           container.classList.remove('dragging');
           book.classList.remove('no-transition');
-          rotateX = defaultRotateX;
-          rotateY = defaultRotateY;
-          updateTransform();
-        };
+          book.style.transform = `rotateX(${defaultRotateX}deg) rotateY(${defaultRotateY}deg)`;
+          dragState = null;
+        });
+      });
 
-        container.addEventListener('mouseenter', onMouseEnter);
-        container.addEventListener('mousemove', onMouseMove);
-        container.addEventListener('mouseleave', onMouseLeave);
-        container.addEventListener('mousedown', onMouseDown);
-        document.addEventListener('mouseup', onMouseUp);
-        container.addEventListener('touchstart', onTouchStart, { passive: true });
-        container.addEventListener('touchmove', onTouchMove, { passive: false });
-        container.addEventListener('touchend', onTouchEnd);
+      document.addEventListener('mouseup', () => {
+        if (dragState) {
+          dragState.container.classList.remove('dragging');
+          dragState.book.classList.remove('no-transition');
+          dragState.book.style.transform = `rotateX(${defaultRotateX}deg) rotateY(${defaultRotateY}deg)`;
+          dragState = null;
+        }
       });
 
       // Set book styles based on citation count
