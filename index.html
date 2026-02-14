@@ -4,42 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NStarX Research Papers | AI & ML Made Simple</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="academic-style.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    /* ========================================
+       INDEX-SPECIFIC STYLES
+       Academic overrides for the index/landing page
+       ======================================== */
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(180deg, #f8f6f3 0%, #eae6e0 100%);
-      color: #1a1a1a;
-      line-height: 1.6;
-      min-height: 100vh;
+      background: var(--bg-page);
     }
 
     header {
-      padding: 2rem 4rem;
-      background: #fffffe;
-      border-bottom: 1px solid #e5e2dd;
+      padding: 1.5rem 4rem;
+      border-bottom: 1px solid var(--border-light);
     }
 
     .logo {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--font-heading);
       font-size: 1.6rem;
       font-weight: 600;
-      color: #1a1a1a;
+      color: var(--text-primary);
       text-decoration: none;
       letter-spacing: 0.02em;
     }
 
     .logo span {
-      color: #2563eb;
+      color: var(--color-accent);
     }
 
     main {
@@ -48,6 +39,7 @@
       padding: 4rem 2rem;
     }
 
+    /* Intro Section */
     .intro {
       text-align: center;
       margin-bottom: 4rem;
@@ -55,30 +47,31 @@
     }
 
     @keyframes introFade {
-      0% {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     .intro h1 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--font-heading);
       font-size: 3rem;
-      font-weight: 600;
+      font-weight: 700;
       margin-bottom: 1rem;
-      color: #2c2c2c;
-      letter-spacing: 0.01em;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      border-bottom: none;
+      justify-content: center;
+    }
+
+    .intro h1::before {
+      display: none;
     }
 
     .intro p {
       font-size: 1.1rem;
-      color: #666;
+      color: var(--text-secondary);
       max-width: 650px;
       margin: 0 auto;
+      text-align: center;
     }
 
     .intro-stats {
@@ -93,17 +86,17 @@
     }
 
     .intro-stat .number {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--font-heading);
       font-size: 2.5rem;
       font-weight: 700;
-      color: #2563eb;
+      color: var(--color-accent);
     }
 
     .intro-stat .label {
-      font-size: 0.85rem;
-      color: #888;
+      font-size: 0.82rem;
+      color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
     }
 
     /* Search Bar */
@@ -116,17 +109,17 @@
     .search-container input {
       width: 100%;
       padding: 15px 20px 15px 50px;
-      border: 2px solid #e5e2dd;
-      border-radius: 12px;
+      border: 1px solid var(--border-medium);
+      border-radius: 0;
       font-size: 1rem;
+      font-family: var(--font-body);
       background: white;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s;
     }
 
     .search-container input:focus {
       outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      border-color: var(--color-accent);
     }
 
     .search-container .material-icons {
@@ -134,14 +127,29 @@
       left: 18px;
       top: 50%;
       transform: translateY(-50%);
-      color: #999;
+      color: var(--text-muted);
     }
 
+    /* Books Grid */
     .books-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 2rem;
       padding: 1rem;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      counter-reset: none;
+      border-top: none;
+    }
+
+    .books-grid::before {
+      display: none;
+    }
+
+    .books-grid h2::before {
+      display: none;
     }
 
     @media (max-width: 1400px) {
@@ -154,6 +162,7 @@
       .books-grid { grid-template-columns: 1fr; }
     }
 
+    /* Book Card */
     .book-card {
       display: flex;
       flex-direction: column;
@@ -161,6 +170,25 @@
       padding: 2rem 1.5rem;
     }
 
+    /* Doodle strip on book cover left edge */
+    .book .doodle-strip {
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 32px;
+      pointer-events: none;
+      overflow: hidden;
+      transform: translateZ(25px);
+      border-radius: 0 0 0 3px;
+    }
+
+    .book .doodle-strip svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Book 3D Container */
     .book-container {
       perspective: 1200px;
       margin-bottom: 1.5rem;
@@ -200,12 +228,8 @@
     .book-card:nth-child(15) .book { animation-delay: 0.75s; }
 
     @keyframes bookIntro {
-      0% {
-        transform: rotateY(-25deg) rotateX(8deg) translateY(50px);
-      }
-      100% {
-        transform: rotateY(-25deg) rotateX(8deg) translateY(0);
-      }
+      0% { transform: rotateY(-25deg) rotateX(8deg) translateY(50px); }
+      100% { transform: rotateY(-25deg) rotateX(8deg) translateY(0); }
     }
 
     .book.no-transition {
@@ -225,13 +249,7 @@
     .book-style-1 .book-cover {
       background:
         url("data:image/svg+xml,%3Csvg width='8' height='8' viewBox='0 0 8 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h1v1H0zM2 0h1v1H2zM4 0h1v1H4zM6 0h1v1H6zM1 1h1v1H1zM3 1h1v1H3zM5 1h1v1H5zM7 1h1v1H7zM0 2h1v1H0zM2 2h1v1H2zM4 2h1v1H4zM6 2h1v1H6zM1 3h1v1H1zM3 3h1v1H3zM5 3h1v1H5zM7 3h1v1H7zM0 4h1v1H0zM2 4h1v1H2zM4 4h1v1H4zM6 4h1v1H6zM1 5h1v1H1zM3 5h1v1H3zM5 5h1v1H5zM7 5h1v1H7zM0 6h1v1H0zM2 6h1v1H2zM4 6h1v1H4zM6 6h1v1H6zM1 7h1v1H1zM3 7h1v1H3zM5 7h1v1H5zM7 7h1v1H7z' fill='%23ffffff' fill-opacity='0.03'/%3E%3C/svg%3E"),
-        repeating-linear-gradient(
-          90deg,
-          transparent 0px,
-          transparent 2px,
-          rgba(255,255,255,0.02) 2px,
-          rgba(255,255,255,0.02) 3px
-        ),
+        repeating-linear-gradient(90deg, transparent 0px, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 3px),
         linear-gradient(165deg, #1e2848 0%, #151b32 40%, #0f1424 100%);
       color: #c9a43a;
     }
@@ -245,7 +263,6 @@
       border-radius: 0 4px 4px 0;
     }
 
-    /* Gold decorative border frame */
     .book-style-1 .book-cover .cover-decoration {
       position: absolute;
       inset: 12px;
@@ -270,17 +287,8 @@
 
     .book-style-1 .book-cover .title-emboss {
       position: relative;
-      text-shadow:
-        0 1px 0 rgba(0,0,0,0.4),
-        0 -1px 0 rgba(255,215,100,0.2);
-      background: linear-gradient(
-        180deg,
-        #d4af37 0%,
-        #f5d675 25%,
-        #c9a43a 50%,
-        #a8872e 75%,
-        #d4af37 100%
-      );
+      text-shadow: 0 1px 0 rgba(0,0,0,0.4), 0 -1px 0 rgba(255,215,100,0.2);
+      background: linear-gradient(180deg, #d4af37 0%, #f5d675 25%, #c9a43a 50%, #a8872e 75%, #d4af37 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -316,10 +324,7 @@
 
     .book-style-1 .book-top::after,
     .book-style-1 .book-bottom::after {
-      background: repeating-linear-gradient(180deg,
-        #c9a43a 0px, #c9a43a 2px,
-        #1e2848 2px, #1e2848 4px
-      );
+      background: repeating-linear-gradient(180deg, #c9a43a 0px, #c9a43a 2px, #1e2848 2px, #1e2848 4px);
     }
 
     /* ========================================
@@ -344,10 +349,7 @@
     }
 
     .book-style-2 .book-cover .title-emboss {
-      text-shadow:
-        1px 1px 0 rgba(0,0,0,0.5),
-        -0.5px -0.5px 0 rgba(255,255,255,0.1),
-        0 2px 3px rgba(0,0,0,0.3);
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.5), -0.5px -0.5px 0 rgba(255,255,255,0.1), 0 2px 3px rgba(0,0,0,0.3);
       color: #dcc8b0;
       letter-spacing: 0.03em;
     }
@@ -357,14 +359,9 @@
       position: absolute;
       inset: 0;
       border-radius: 0 4px 4px 0;
-      box-shadow:
-        inset 2px 0 8px rgba(0,0,0,0.3),
-        inset -1px 0 4px rgba(255,255,255,0.05),
-        inset 0 2px 6px rgba(0,0,0,0.2),
-        inset 0 -2px 6px rgba(0,0,0,0.2);
+      box-shadow: inset 2px 0 8px rgba(0,0,0,0.3), inset -1px 0 4px rgba(255,255,255,0.05), inset 0 2px 6px rgba(0,0,0,0.2), inset 0 -2px 6px rgba(0,0,0,0.2);
     }
 
-    /* Leather embossed corner ornaments */
     .book-style-2 .book-cover .cover-decoration {
       position: absolute;
       inset: 10px;
@@ -400,25 +397,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(180deg,
-          transparent 15%,
-          rgba(0,0,0,0.3) 16%,
-          rgba(255,255,255,0.08) 17%,
-          transparent 19%,
-          transparent 35%,
-          rgba(0,0,0,0.3) 36%,
-          rgba(255,255,255,0.08) 37%,
-          transparent 39%,
-          transparent 61%,
-          rgba(0,0,0,0.3) 62%,
-          rgba(255,255,255,0.08) 63%,
-          transparent 65%,
-          transparent 81%,
-          rgba(0,0,0,0.3) 82%,
-          rgba(255,255,255,0.08) 83%,
-          transparent 85%
-        );
+      background: linear-gradient(180deg, transparent 15%, rgba(0,0,0,0.3) 16%, rgba(255,255,255,0.08) 17%, transparent 19%, transparent 35%, rgba(0,0,0,0.3) 36%, rgba(255,255,255,0.08) 37%, transparent 39%, transparent 61%, rgba(0,0,0,0.3) 62%, rgba(255,255,255,0.08) 63%, transparent 65%, transparent 81%, rgba(0,0,0,0.3) 82%, rgba(255,255,255,0.08) 83%, transparent 85%);
     }
 
     .book-style-2 .book-back {
@@ -444,14 +423,11 @@
 
     .book-style-2 .book-top::after,
     .book-style-2 .book-bottom::after {
-      background: repeating-linear-gradient(180deg,
-        #8b5a3c 0px, #8b5a3c 2px,
-        #f5e6d3 2px, #f5e6d3 4px
-      );
+      background: repeating-linear-gradient(180deg, #8b5a3c 0px, #8b5a3c 2px, #f5e6d3 2px, #f5e6d3 4px);
     }
 
     /* ========================================
-       PAPER-WRAPPED WITH DUST JACKET (Style 3 - Green)
+       GREEN STYLE (Style 3)
        ======================================== */
 
     .book-style-3 .book-cover {
@@ -476,7 +452,6 @@
       text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
-    /* Geometric leaf pattern for green books */
     .book-style-3 .book-cover .cover-decoration {
       position: absolute;
       inset: 0;
@@ -530,10 +505,7 @@
 
     .book-style-3 .book-top::after,
     .book-style-3 .book-bottom::after {
-      background: repeating-linear-gradient(180deg,
-        #2d5a47 0px, #2d5a47 2px,
-        #4a7a67 2px, #4a7a67 4px
-      );
+      background: repeating-linear-gradient(180deg, #2d5a47 0px, #2d5a47 2px, #4a7a67 2px, #4a7a67 4px);
     }
 
     /* ========================================
@@ -561,7 +533,6 @@
       text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
-    /* Tech circuit pattern for purple books */
     .book-style-4 .book-cover .cover-decoration {
       position: absolute;
       inset: 0;
@@ -612,10 +583,7 @@
 
     .book-style-4 .book-top::after,
     .book-style-4 .book-bottom::after {
-      background: repeating-linear-gradient(180deg,
-        #7c3aed 0px, #7c3aed 2px,
-        #c4b5fd 2px, #c4b5fd 4px
-      );
+      background: repeating-linear-gradient(180deg, #7c3aed 0px, #7c3aed 2px, #c4b5fd 2px, #c4b5fd 4px);
     }
 
     /* ========================================
@@ -646,7 +614,6 @@
       filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3));
     }
 
-    /* Art deco pattern for red landmark books */
     .book-style-5 .book-cover .cover-decoration {
       position: absolute;
       inset: 0;
@@ -700,10 +667,7 @@
 
     .book-style-5 .book-top::after,
     .book-style-5 .book-bottom::after {
-      background: repeating-linear-gradient(180deg,
-        #dc2626 0px, #dc2626 2px,
-        #fecaca 2px, #fecaca 4px
-      );
+      background: repeating-linear-gradient(180deg, #dc2626 0px, #dc2626 2px, #fecaca 2px, #fecaca 4px);
     }
 
     /* ========================================
@@ -868,30 +832,21 @@
 
     .book-cover .cover-edge-top {
       position: absolute;
-      top: -4px;
-      left: 0;
-      right: 0;
-      height: 4px;
+      top: -4px; left: 0; right: 0; height: 4px;
       transform: rotateX(90deg);
       transform-origin: bottom center;
     }
 
     .book-cover .cover-edge-bottom {
       position: absolute;
-      bottom: -4px;
-      left: 0;
-      right: 0;
-      height: 4px;
+      bottom: -4px; left: 0; right: 0; height: 4px;
       transform: rotateX(-90deg);
       transform-origin: top center;
     }
 
     .book-cover .cover-edge-right {
       position: absolute;
-      top: 0;
-      right: -4px;
-      bottom: 0;
-      width: 4px;
+      top: 0; right: -4px; bottom: 0; width: 4px;
       transform: rotateY(90deg);
       transform-origin: left center;
       border-radius: 0 2px 2px 0;
@@ -910,47 +865,39 @@
 
     .book-back .cover-edge-top {
       position: absolute;
-      top: -4px;
-      left: 0;
-      right: 0;
-      height: 4px;
+      top: -4px; left: 0; right: 0; height: 4px;
       transform: rotateX(90deg);
       transform-origin: bottom center;
     }
 
     .book-back .cover-edge-bottom {
       position: absolute;
-      bottom: -4px;
-      left: 0;
-      right: 0;
-      height: 4px;
+      bottom: -4px; left: 0; right: 0; height: 4px;
       transform: rotateX(-90deg);
       transform-origin: top center;
     }
 
     .book-back .cover-edge-left {
       position: absolute;
-      top: 0;
-      left: -4px;
-      bottom: 0;
-      width: 4px;
+      top: 0; left: -4px; bottom: 0; width: 4px;
       transform: rotateY(-90deg);
       transform-origin: right center;
       border-radius: 2px 0 0 2px;
     }
 
     .book-cover h3 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--font-heading);
       font-size: 1.15rem;
       font-weight: 600;
       line-height: 1.3;
       margin-bottom: 0.75rem;
       position: relative;
       z-index: 2;
+      border-bottom: none;
     }
 
     .book-cover .author {
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-body);
       font-size: 0.65rem;
       font-weight: 500;
       letter-spacing: 0.06em;
@@ -981,7 +928,7 @@
       font-size: 0.6rem;
       font-weight: 600;
       padding: 2px 8px;
-      border-radius: 10px;
+      border-radius: 0;
       background: rgba(255,255,255,0.15);
       margin-top: 0.5rem;
       position: relative;
@@ -1030,16 +977,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow:
-        inset 4px 0 12px rgba(0,0,0,0.25),
-        inset -2px 0 8px rgba(0,0,0,0.15);
+      box-shadow: inset 4px 0 12px rgba(0,0,0,0.25), inset -2px 0 8px rgba(0,0,0,0.15);
     }
 
     .book-spine span {
       writing-mode: vertical-rl;
       text-orientation: mixed;
       transform: rotate(180deg);
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--font-heading);
       font-size: 0.7rem;
       font-weight: 600;
       letter-spacing: 0.03em;
@@ -1058,35 +1003,16 @@
       right: 3px;
       transform-origin: center center;
       transform: translateX(24px) rotateY(90deg);
-      background: linear-gradient(90deg,
-        #d8d4c8 0%,
-        #e8e4d8 3%,
-        #f5f2e8 8%,
-        #faf8f0 50%,
-        #f5f2e8 92%,
-        #e8e4d8 97%,
-        #d8d4c8 100%
-      );
+      background: linear-gradient(90deg, #d8d4c8 0%, #e8e4d8 3%, #f5f2e8 8%, #faf8f0 50%, #f5f2e8 92%, #e8e4d8 97%, #d8d4c8 100%);
       border-radius: 0 3px 3px 0;
-      box-shadow:
-        inset 8px 0 15px rgba(0,0,0,0.12),
-        inset 0 2px 4px rgba(0,0,0,0.05),
-        inset 0 -2px 4px rgba(0,0,0,0.05),
-        2px 0 4px rgba(0,0,0,0.08);
+      box-shadow: inset 8px 0 15px rgba(0,0,0,0.12), inset 0 2px 4px rgba(0,0,0,0.05), inset 0 -2px 4px rgba(0,0,0,0.05), 2px 0 4px rgba(0,0,0,0.08);
     }
 
     .book-pages::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: repeating-linear-gradient(90deg,
-        transparent 0px,
-        transparent 0.8px,
-        rgba(0,0,0,0.04) 0.8px,
-        rgba(0,0,0,0.04) 1px,
-        transparent 1px,
-        transparent 1.8px
-      );
+      background: repeating-linear-gradient(90deg, transparent 0px, transparent 0.8px, rgba(0,0,0,0.04) 0.8px, rgba(0,0,0,0.04) 1px, transparent 1px, transparent 1.8px);
       border-radius: 0 3px 3px 0;
     }
 
@@ -1094,14 +1020,9 @@
       position: absolute;
       width: calc(100% - 4px);
       height: calc(48px - 4px);
-      top: 4px;
-      left: 0;
+      top: 4px; left: 0;
       transform: rotateX(90deg) translateZ(20px);
-      background: linear-gradient(180deg,
-        #faf8f0 0%,
-        #f0ece0 40%,
-        #e5e0d4 100%
-      );
+      background: linear-gradient(180deg, #faf8f0 0%, #f0ece0 40%, #e5e0d4 100%);
       box-shadow: inset 0 3px 10px rgba(0,0,0,0.06);
     }
 
@@ -1109,24 +1030,16 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: repeating-linear-gradient(180deg,
-        transparent 0px, transparent 1px,
-        rgba(0,0,0,0.02) 1px, rgba(0,0,0,0.02) 1.5px
-      );
+      background: repeating-linear-gradient(180deg, transparent 0px, transparent 1px, rgba(0,0,0,0.02) 1px, rgba(0,0,0,0.02) 1.5px);
     }
 
     .book-bottom {
       position: absolute;
       width: calc(100% - 4px);
       height: calc(48px - 4px);
-      bottom: 4px;
-      left: 0;
+      bottom: 4px; left: 0;
       transform: rotateX(-90deg) translateZ(20px);
-      background: linear-gradient(0deg,
-        #f0ece0 0%,
-        #e5e0d4 60%,
-        #d8d4c8 100%
-      );
+      background: linear-gradient(0deg, #f0ece0 0%, #e5e0d4 60%, #d8d4c8 100%);
       box-shadow: inset 0 -3px 10px rgba(0,0,0,0.1);
     }
 
@@ -1134,19 +1047,14 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: repeating-linear-gradient(180deg,
-        transparent 0px, transparent 1px,
-        rgba(0,0,0,0.025) 1px, rgba(0,0,0,0.025) 1.5px
-      );
+      background: repeating-linear-gradient(180deg, transparent 0px, transparent 1px, rgba(0,0,0,0.025) 1px, rgba(0,0,0,0.025) 1.5px);
     }
 
     .book-top::after,
     .book-bottom::after {
       content: '';
       position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
+      left: 0; top: 0; bottom: 0;
       width: 5px;
       z-index: 10;
     }
@@ -1167,16 +1075,11 @@
     .book-card:nth-child(4) .book-shadow { animation-delay: 0.2s; }
 
     @keyframes shadowIntro {
-      0% {
-        opacity: 0;
-        transform: scale(0.8) translateY(20px);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-      }
+      0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
+    /* Book Info */
     .book-info {
       text-align: center;
       max-width: 220px;
@@ -1207,34 +1110,28 @@
     .book-card:nth-child(4) .book-info { animation-delay: 0.3s; }
 
     @keyframes infoIntro {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     .book-info h4 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--font-heading);
       font-size: 1.1rem;
       font-weight: 600;
       margin-bottom: 0.25rem;
-      color: #2c2c2c;
+      color: var(--text-primary);
       line-height: 1.3;
     }
 
     .book-info .author-name {
       font-size: 0.75rem;
-      color: #777;
+      color: var(--text-muted);
       margin-bottom: 0.5rem;
     }
 
     .book-info .description {
       font-size: 0.75rem;
-      color: #666;
+      color: var(--text-secondary);
       line-height: 1.5;
       margin-bottom: 0.75rem;
     }
@@ -1244,7 +1141,7 @@
       justify-content: center;
       gap: 1rem;
       font-size: 0.7rem;
-      color: #888;
+      color: var(--text-muted);
       margin-bottom: 0.75rem;
     }
 
@@ -1258,6 +1155,7 @@
       font-size: 0.9rem;
     }
 
+    /* Book Actions */
     .book-actions {
       display: flex;
       gap: 8px;
@@ -1266,7 +1164,7 @@
 
     .book-actions a {
       padding: 8px 16px;
-      border-radius: 8px;
+      border-radius: 0;
       font-size: 0.8rem;
       font-weight: 500;
       text-decoration: none;
@@ -1274,6 +1172,7 @@
       display: flex;
       align-items: center;
       gap: 4px;
+      font-family: var(--font-body);
     }
 
     .book-actions a .material-icons {
@@ -1281,40 +1180,40 @@
     }
 
     .book-actions .btn-primary {
-      background: #2563eb;
+      background: var(--color-accent);
       color: white;
     }
 
     .book-actions .btn-primary:hover {
-      background: #1d4ed8;
+      background: var(--text-primary);
     }
 
     .book-actions .btn-outline {
       background: white;
-      border: 1px solid #e5e2dd;
-      color: #666;
+      border: 1px solid var(--border-medium);
+      color: var(--text-secondary);
     }
 
     .book-actions .btn-outline:hover {
-      border-color: #2563eb;
-      color: #2563eb;
+      border-color: var(--color-accent);
+      color: var(--color-accent);
     }
 
     .drag-hint {
       font-size: 0.65rem;
-      color: #aaa;
+      color: var(--text-muted);
       margin-top: 0.5rem;
       opacity: 0.6;
       letter-spacing: 0.03em;
     }
 
-    /* Coming Soon styling */
+    /* Coming Soon */
     .book-card.coming-soon {
       opacity: 0.6;
     }
 
     .book-card.coming-soon .book-actions .btn-primary {
-      background: #94a3b8;
+      background: var(--border-medium);
       pointer-events: none;
     }
 
@@ -1327,7 +1226,7 @@
       font-size: 0.55rem;
       font-weight: 600;
       padding: 3px 8px;
-      border-radius: 10px;
+      border-radius: 0;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       z-index: 10;
@@ -1335,27 +1234,29 @@
 
     /* About Section */
     .about-section {
-      background: #fffffe;
-      border-radius: 16px;
+      background: var(--bg-page);
+      border-radius: 0;
       padding: 3rem;
       margin-top: 4rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-      border: 1px solid #e5e2dd;
+      border: 1px solid var(--border-light);
+      box-shadow: none;
     }
 
     .about-section h2 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: var(--font-heading);
       font-size: 1.8rem;
-      font-weight: 600;
+      font-weight: 700;
       margin-bottom: 2rem;
-      color: #2c2c2c;
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       gap: 10px;
+      border-bottom: 1px solid var(--rule-light);
+      padding-bottom: 8px;
     }
 
     .about-section h2 .material-icons {
-      color: #2563eb;
+      color: var(--text-secondary);
     }
 
     .about-content {
@@ -1374,7 +1275,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #2563eb;
+      color: var(--color-accent);
       margin-bottom: 0.75rem;
       font-size: 1rem;
       font-weight: 600;
@@ -1385,27 +1286,30 @@
     }
 
     .about-item p {
-      color: #666;
+      color: var(--text-secondary);
       font-size: 0.9rem;
       line-height: 1.6;
+      text-align: left;
     }
 
+    /* Footer overrides for index */
     footer {
       text-align: center;
       padding: 3rem 2rem;
-      background: #fffffe;
-      border-top: 1px solid #e5e2dd;
+      background: var(--bg-page);
+      border-top: 3px double var(--rule-color);
       margin-top: 3rem;
     }
 
     footer p {
-      color: #999;
+      color: var(--text-muted);
       font-size: 0.85rem;
       letter-spacing: 0.02em;
+      text-align: center;
     }
 
     footer a {
-      color: #2563eb;
+      color: var(--color-link);
       text-decoration: none;
     }
 
@@ -1413,6 +1317,7 @@
       text-decoration: underline;
     }
 
+    /* Responsive */
     @media (max-width: 768px) {
       header { padding: 1.5rem 2rem; }
       main { padding: 2rem 1rem; }
@@ -2441,6 +2346,42 @@
         });
       };
       setBookStylesByCitations();
+
+      // Doodle strips on book covers
+      const doodleTiles = {
+        'Attention Is All You Need': {w:28,h:40, d:'<circle cx="14" cy="18" r="3.5" stroke-width="1.5"/><path d="M14 8 L14 14.5" stroke-width="1.3"/><path d="M14 21.5 L14 28" stroke-width="1.3"/><path d="M4 18 L10.5 18" stroke-width="1.3"/><path d="M17.5 18 L24 18" stroke-width="1.3"/><path d="M7.5 11.5 L11 15" stroke-width="1"/><path d="M20.5 11.5 L17 15" stroke-width="1"/><path d="M7.5 24.5 L11 21" stroke-width="1"/><path d="M20.5 24.5 L17 21" stroke-width="1"/><circle cx="14" cy="36" r="1.5" stroke-width="0.8"/><path d="M10 33 L18 39" stroke-width="0.7"/><path d="M18 33 L10 39" stroke-width="0.7"/>'},
+        'VL-JEPA': {w:28,h:36, d:'<path d="M3 18 Q14 6 25 18" stroke-width="1.5"/><path d="M3 18 Q14 30 25 18" stroke-width="1.5"/><circle cx="14" cy="18" r="4.5" stroke-width="1.3"/><circle cx="14" cy="18" r="1.5" fill="currentColor" stroke="none"/><path d="M5 8 L23 8" stroke-width="0.8"/><path d="M8 5 L20 5" stroke-width="0.7"/>'},
+        's1 Test-Time Scaling': {w:28,h:40, d:'<circle cx="14" cy="20" r="11" stroke-width="1.5"/><path d="M14 12 L14 20 L20 20" stroke-width="1.6"/><path d="M14 9 L14 6" stroke-width="1.2"/><path d="M14 31 L14 34" stroke-width="1.2"/><path d="M3 20 L0 20" stroke-width="1.2"/><path d="M25 20 L28 20" stroke-width="1.2"/><circle cx="8" cy="36" r="1.5" stroke-width="0.8"/><circle cx="14" cy="38" r="1" stroke-width="0.6"/><circle cx="20" cy="36" r="1.5" stroke-width="0.8"/>'},
+        'TestGen-LLM': {w:28,h:44, d:'<path d="M10 6 L18 6" stroke-width="1.6"/><path d="M11 6 L11 17 L5 34 Q4 38 7 39 L21 39 Q24 38 23 34 L17 17 L17 6" stroke-width="1.5"/><path d="M11 17 L17 17" stroke-width="1" stroke-dasharray="2,1.5"/><circle cx="11" cy="29" r="1.8" stroke-width="1"/><circle cx="16" cy="33" r="1.2" stroke-width="0.8"/><circle cx="9" cy="35" r="1" stroke-width="0.7"/>'},
+        'AI Coding Hidden Cost': {w:28,h:40, d:'<path d="M14 8 L14 32" stroke-width="1.2"/><path d="M8 15 Q8 10 14 10 Q20 10 20 15 Q20 20 14 21 Q8 22 8 27 Q8 31 14 31 Q20 31 20 27" stroke-width="1.6"/><path d="M6 36 L10 36" stroke-width="1"/><path d="M18 36 L22 36" stroke-width="1"/>'},
+        'Illusion of Thinking': {w:28,h:44, d:'<path d="M6 28 Q2 24 4 18 Q3 12 8 9 Q13 5 19 8 Q24 6 26 12 Q29 18 25 22 Q27 28 21 29" stroke-width="1.5"/><path d="M6 28 Q13 33 21 29" stroke-width="1.3"/><circle cx="12" cy="18" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="18" r="1.5" fill="currentColor" stroke="none"/><path d="M11 23 Q14 26 19 23" stroke-width="1"/><circle cx="9" cy="36" r="2.5" stroke-width="1" stroke-dasharray="1.8,1.8"/><circle cx="6" cy="41" r="1.5" stroke-width="0.8" stroke-dasharray="1.2,1.2"/>'},
+        'Is Vibe Coding Safe': {w:28,h:42, d:'<path d="M14 5 L25 12 L25 23 Q25 34 14 40 Q3 34 3 23 L3 12 Z" stroke-width="1.6"/><path d="M14 16 L13 22 L17 25 L11 30" stroke-width="1.6"/><path d="M9 14 L7 17" stroke-width="1"/><path d="M19 14 L21 17" stroke-width="1"/>'},
+        'Nested Subspace Networks': {w:28,h:40, d:'<circle cx="14" cy="20" r="13" stroke-width="1.5"/><circle cx="14" cy="20" r="8.5" stroke-width="1.3"/><circle cx="14" cy="20" r="4" stroke-width="1.2"/><circle cx="14" cy="20" r="1.2" fill="currentColor" stroke="none"/><path d="M14 7 L14 3" stroke-width="0.8"/><path d="M14 33 L14 37" stroke-width="0.8"/>'},
+        'AnyMatch': {w:28,h:42, d:'<path d="M3 13 L12 13 L12 9 Q12 4 15 4 Q18 4 18 9 L18 13 L18 29 L18 33 Q18 38 15 38 Q12 38 12 33 L12 29 L3 29 Z" stroke-width="1.3"/><path d="M25 13 L18 13" stroke-width="1.3" stroke-dasharray="2,2"/><path d="M25 29 L18 29" stroke-width="1.3" stroke-dasharray="2,2"/><circle cx="24" cy="21" r="2" stroke-width="1"/>'},
+        'Project AIKYA': {w:28,h:42, d:'<rect x="2" y="16" width="10" height="22" rx="1" stroke-width="1.3"/><rect x="16" y="12" width="10" height="26" rx="1" stroke-width="1.3"/><path d="M4 21 L9 21M4 27 L9 27M4 33 L9 33" stroke-width="1"/><path d="M18 17 L23 17M18 23 L23 23M18 29 L23 29" stroke-width="1"/><path d="M12 27 Q14 23 16 27" stroke-width="1" stroke-dasharray="2,1.5"/><path d="M10 8 L14 3 L18 8 L18 12 L10 12 Z" stroke-width="1.2"/>'},
+        'Paper2Agent': {w:28,h:40, d:'<path d="M3 18 L15 8 L15 15 L25 10" stroke-width="1.6"/><path d="M3 18 L15 25 L15 15" stroke-width="1.5"/><path d="M3 18 L15 25 L25 10" stroke-width="1" stroke-dasharray="2.5,2"/><circle cx="14" cy="34" r="3" stroke-width="1.2"/><circle cx="12" cy="33" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="33" r="1" fill="currentColor" stroke="none"/><path d="M12 36 L16 36" stroke-width="0.8"/>'},
+        'Million-Step Tasks': {w:28,h:44, d:'<path d="M4 40 L4 32 L12 32 L12 24 L20 24 L20 16 L26 16 L26 8 L23 8" stroke-width="1.5"/><path d="M25 11 L23 6 L21 11" stroke-width="1.2"/><circle cx="4" cy="40" r="1.8" fill="currentColor" stroke="none"/>'},
+        'Scaling RL for LLMs': {w:28,h:40, d:'<path d="M4 34 L24 34" stroke-width="1.3"/><path d="M4 34 L4 6" stroke-width="1.3"/><path d="M6 32 Q10 28 14 20 Q18 12 22 8" stroke-width="1.8"/><circle cx="22" cy="8" r="2" fill="currentColor" stroke="none"/><path d="M8 34 L8 30" stroke-width="0.8"/><path d="M12 34 L12 22" stroke-width="0.8"/><path d="M16 34 L16 17" stroke-width="0.8"/><path d="M20 34 L20 11" stroke-width="0.8"/>'},
+        'GenAI Wall Effect': {w:28,h:36, d:'<rect x="2" y="4" width="12" height="7" rx="0.5" stroke-width="1.2"/><rect x="14" y="4" width="12" height="7" rx="0.5" stroke-width="1.2"/><rect x="2" y="11" width="8" height="7" rx="0.5" stroke-width="1.2"/><rect x="10" y="11" width="8" height="7" rx="0.5" stroke-width="1.2"/><rect x="18" y="11" width="8" height="7" rx="0.5" stroke-width="1.2"/><rect x="2" y="18" width="12" height="7" rx="0.5" stroke-width="1.2"/><rect x="14" y="18" width="12" height="7" rx="0.5" stroke-width="1.2"/><rect x="2" y="25" width="8" height="7" rx="0.5" stroke-width="1.2"/><rect x="10" y="25" width="8" height="7" rx="0.5" stroke-width="1.2"/><rect x="18" y="25" width="8" height="7" rx="0.5" stroke-width="1.2"/>'},
+        'V-JEPA 2': {w:28,h:40, d:'<rect x="4" y="6" width="20" height="28" rx="2" stroke-width="1.3"/><rect x="8" y="10" width="12" height="9" rx="1" stroke-width="1.1"/><path d="M11 24 L11 30" stroke-width="1"/><path d="M17 24 L17 30" stroke-width="1"/><circle cx="4" cy="10" r="1.8" stroke-width="0.8"/><circle cx="4" cy="17" r="1.8" stroke-width="0.8"/><circle cx="4" cy="24" r="1.8" stroke-width="0.8"/><circle cx="4" cy="31" r="1.8" stroke-width="0.8"/><circle cx="24" cy="10" r="1.8" stroke-width="0.8"/><circle cx="24" cy="17" r="1.8" stroke-width="0.8"/><circle cx="24" cy="24" r="1.8" stroke-width="0.8"/><circle cx="24" cy="31" r="1.8" stroke-width="0.8"/>'}
+      };
+
+      bookCards.forEach(card => {
+        const title = card.dataset.title;
+        const t = doodleTiles[title];
+        if (!t) return;
+        const book = card.querySelector('.book');
+        if (!book) return;
+        const pid = 'dp' + title.replace(/[^a-zA-Z0-9]/g, '').slice(0, 14);
+        const strip = document.createElement('div');
+        strip.className = 'doodle-strip';
+        strip.innerHTML = '<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">' +
+          '<defs><pattern id="' + pid + '" x="0" y="0" width="' + t.w + '" height="' + t.h + '" patternUnits="userSpaceOnUse">' +
+          '<g fill="none" stroke="#c9a43a" stroke-linecap="round" stroke-linejoin="round" color="#c9a43a">' + t.d + '</g>' +
+          '</pattern></defs>' +
+          '<rect width="100%" height="100%" fill="url(#' + pid + ')"/></svg>';
+        book.appendChild(strip);
+      });
 
       // Search functionality - searches all text content with context
       searchInput.addEventListener('input', () => {

@@ -5,330 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The GenAI Wall Effect - Explained Simply</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="academic-style.css">
     <style>
-        :root {
-            --primary: #8b4513;
-            --primary-dark: #6b3410;
-            --secondary: #a0522d;
-            --accent: #cd853f;
-            --success: #2d5a47;
-            --warning: #b8860b;
-            --bg-light: #faf8f5;
-            --bg-card: #fffef9;
-            --bg-page: #f5f1ea;
-            --text-primary: #2c2416;
-            --text-secondary: #5c5144;
-            --border: #e8e0d4;
-            --gold: #c9a227;
-            --burgundy: #722f37;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-            line-height: 1.8;
-            color: var(--text-primary);
-            background: var(--bg-page);
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            background-blend-mode: soft-light;
-            min-height: 100vh;
-        }
-
-        /* Header */
-        .header {
-            background:
-                linear-gradient(135deg, rgba(220, 38, 38, 0.9) 0%, rgba(245, 158, 11, 0.9) 100%),
-                url("https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?w=1200&q=80");
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .header .subtitle {
-            font-size: 1.3rem;
-            opacity: 0.95;
-            max-width: 700px;
-            margin: 0 auto 1.5rem;
-        }
-
-        .paper-info {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            font-size: 0.95rem;
-            color: #ffffff;
-        }
-
-        .paper-info span {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Navigation */
-        .nav-container {
-            background: white;
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .nav-container a {
-            color: var(--primary);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
-        }
-
-        .nav-container a:hover {
-            color: var(--primary-dark);
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        section {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-
+        /* File-specific styles not covered by academic-style.css */
         .section-header {
             display: flex;
             align-items: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
-            border-bottom: 2px solid var(--bg-light);
+            border-bottom: 1px solid var(--border-light);
         }
 
         .section-header .material-icons {
-            font-size: 2rem;
-            color: var(--primary);
-            background: linear-gradient(135deg, rgba(220,38,38,0.1), rgba(245,158,11,0.1));
-            padding: 0.5rem;
-            border-radius: 12px;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
         }
 
         .section-header h2 {
             font-size: 1.5rem;
-            color: var(--text-dark);
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
         }
 
-        h3 {
-            color: var(--primary-dark);
-            margin: 1.5rem 0 1rem;
-            font-size: 1.2rem;
+        .section-header h2::before {
+            display: none;
         }
 
-        p {
-            margin-bottom: 1rem;
-            color: var(--text-dark);
-        }
-
-        /* Highlight Boxes */
-        .highlight-box {
-            background: linear-gradient(135deg, #faf6f0 0%, #f5efe5 100%);
-            padding: 25px 30px;
-            border-radius: 3px;
-            margin: 25px 0;
-            border: 1px solid var(--border);
-            position: relative;
-            box-shadow: inset 0 0 30px rgba(139, 69, 19, 0.03);
-        }
-
-        .highlight-box.success {
-            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.1));
-        }
-
-        .highlight-box.warning {
-            background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(239,68,68,0.1));
-        }
-
-        .highlight-box strong {
-            color: var(--primary-dark);
-        }
-
-        /* Analogy Box */
-        .analogy {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border: 2px solid #f59e0b;
-        }
-
-        .analogy-title {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-            color: #92400e;
-            margin-bottom: 0.75rem;
-        }
-
-        .analogy p {
-            color: #78350f;
-            margin: 0;
-        }
-
-        /* Key Insight */
-        .key-insight {
-            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-            border: 2px solid var(--success);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .key-insight-title {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-            color: #065f46;
-            margin-bottom: 0.75rem;
-        }
-
-        .key-insight p {
-            color: #064e3b;
-            margin: 0;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .stat-card .number {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-card .label {
-            font-size: 0.9rem;
-            color: #ffffff;
-        }
-
-        /* Comparison Grid */
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .comparison-card {
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        .comparison-card.old {
-            background: linear-gradient(135deg, #fef2f2, #fee2e2);
-            border: 2px solid #fca5a5;
-        }
-
-        .comparison-card.new {
-            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-            border: 2px solid #6ee7b7;
-        }
-
-        .comparison-card h4 {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .comparison-card.old h4 {
-            color: #2563eb;
-        }
-
-        .comparison-card.new h4 {
-            color: #059669;
-        }
-
-        .comparison-card ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .comparison-card li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-
-        .comparison-card li::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .comparison-card.old li::before {
-            background: #ef4444;
-        }
-
-        .comparison-card.new li::before {
-            background: #10b981;
-        }
-
-        /* Distance Diagram */
         .distance-diagram {
-            background: linear-gradient(135deg, #1e1b4b, #312e81);
-            color: white;
+            background: var(--bg-aside);
+            color: var(--text-primary);
             padding: 2rem;
-            border-radius: 12px;
-            margin: 1.5rem 0;
+            margin: 24px 0;
+            border: 1px solid var(--border-light);
         }
 
         .distance-diagram h4 {
             text-align: center;
             margin-bottom: 1.5rem;
-            color: #c4b5fd;
+            color: var(--text-secondary);
         }
 
         .distance-track {
@@ -345,9 +61,8 @@
             top: 50%;
             left: 10%;
             right: 10%;
-            height: 4px;
-            background: linear-gradient(to right, #10b981, #f59e0b, #ef4444);
-            border-radius: 2px;
+            height: 2px;
+            background: var(--border-medium);
         }
 
         .distance-point {
@@ -359,62 +74,47 @@
         .distance-point .icon {
             width: 60px;
             height: 60px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 0.5rem;
             font-size: 1.5rem;
-        }
-
-        .distance-point.insider .icon {
-            background: #10b981;
-        }
-
-        .distance-point.adjacent .icon {
-            background: #f59e0b;
-        }
-
-        .distance-point.distant .icon {
-            background: #ef4444;
+            border: 1px solid var(--border-medium);
+            background: var(--bg-page);
+            color: var(--text-secondary);
         }
 
         .distance-point .label {
             font-size: 0.85rem;
-            color: #ffffff;
+            color: var(--text-secondary);
         }
 
         .distance-point .title {
             font-weight: 600;
             margin-bottom: 0.25rem;
+            color: var(--text-primary);
         }
 
-        /* Wall Visualization */
         .wall-viz {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             gap: 1rem;
             align-items: center;
-            margin: 1.5rem 0;
+            margin: 24px 0;
             padding: 1.5rem;
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border-radius: 12px;
+            background: var(--bg-aside);
+            border: 1px solid var(--border-light);
         }
 
         .wall-side {
             padding: 1rem;
-            border-radius: 8px;
             text-align: center;
+            border: 1px solid var(--border-light);
         }
 
-        .wall-side.before {
-            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-            border: 2px solid #86efac;
-        }
-
-        .wall-side.after {
-            background: linear-gradient(135deg, #fee2e2, #fecaca);
-            border: 2px solid #fca5a5;
+        .wall-side h4,
+        .wall-side p {
+            color: var(--text-primary);
         }
 
         .wall-barrier {
@@ -427,82 +127,59 @@
         .wall-barrier .bricks {
             width: 20px;
             height: 80px;
-            background: repeating-linear-gradient(
-                0deg,
-                #dc2626 0px,
-                #dc2626 15px,
-                #b91c1c 15px,
-                #b91c1c 20px
-            );
-            border-radius: 4px;
+            background: var(--text-primary);
         }
 
         .wall-barrier .label {
             writing-mode: vertical-rl;
             text-orientation: mixed;
             font-weight: 600;
-            color: var(--primary);
+            color: var(--text-primary);
             font-size: 0.9rem;
+            font-family: var(--font-heading);
         }
 
-        /* Task Types */
         .task-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 1.5rem 0;
+            gap: 16px;
+            margin: 24px 0;
         }
 
         .task-card {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .task-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(220,38,38,0.15);
+            border: 1px solid var(--border-light);
+            padding: 20px;
         }
 
         .task-card .icon {
             font-size: 2.5rem;
-            color: var(--primary);
+            color: var(--text-secondary);
             margin-bottom: 1rem;
         }
 
         .task-card h4 {
-            color: var(--text-dark);
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
+            font-family: var(--font-heading);
+            font-weight: 700;
         }
 
         .task-card p {
             font-size: 0.9rem;
-            color: var(--text-light);
+            color: var(--text-secondary);
             margin: 0;
         }
 
         .task-card .result {
             margin-top: 1rem;
             padding-top: 1rem;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid var(--border-light);
             font-size: 0.85rem;
         }
 
-        .task-card .result.success {
-            color: #059669;
-        }
-
-        .task-card .result.fail {
-            color: #2563eb;
-        }
-
-        /* Results Matrix */
         .results-matrix {
             overflow-x: auto;
-            margin: 1.5rem 0;
+            margin: 24px 0;
         }
 
         .results-matrix table {
@@ -511,136 +188,48 @@
             font-size: 0.9rem;
         }
 
-        .results-matrix th, .results-matrix td {
+        .results-matrix th,
+        .results-matrix td {
             padding: 1rem;
             text-align: center;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-light);
         }
 
         .results-matrix th {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
+            background: var(--bg-aside);
+            font-weight: 700;
+            font-family: var(--font-heading);
+            border-bottom: 2px solid var(--border-dark);
+            color: var(--text-primary);
         }
 
         .results-matrix td.success {
-            background: #dcfce7;
-            color: #166534;
+            background: #f0fff4;
+            font-weight: 600;
         }
 
         .results-matrix td.fail {
-            background: #fee2e2;
-            color: #991b1b;
+            background: var(--bg-aside);
         }
 
         .results-matrix td.neutral {
-            background: #f1f5f9;
-        }
-
-        /* Glossary */
-        .glossary-grid {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .glossary-item {
-            background: var(--bg-light);
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--secondary);
-        }
-
-        .glossary-item strong {
-            color: var(--primary-dark);
-        }
-
-        /* Table of Contents */
-        .toc {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        .toc h3 {
-            margin-top: 0;
-            margin-bottom: 1rem;
-        }
-
-        .toc ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 0.5rem;
-        }
-
-        .toc a {
-            color: var(--text-dark);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .toc a:hover {
-            background: white;
-            color: var(--primary);
-        }
-
-        .toc .material-icons {
-            font-size: 1.2rem;
-            color: var(--primary);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--bg-dark);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
-            margin-top: 2rem;
-        }
-
-        footer a {
-            color: var(--secondary);
+            background: var(--bg-page);
         }
 
         .citation {
-            background: rgba(255,255,255,0.1);
+            font-style: normal;
+            color: var(--text-secondary);
+            border-left: 2px solid var(--border-medium);
             padding: 1.5rem;
-            border-radius: 12px;
             max-width: 800px;
             margin: 1.5rem auto 0;
-            font-family: monospace;
+            font-family: var(--font-mono);
             font-size: 0.85rem;
             text-align: left;
+            background: var(--bg-aside);
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .header .subtitle {
-                font-size: 1.1rem;
-            }
-
-            .container {
-                padding: 1rem;
-            }
-
-            section {
-                padding: 1.5rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
             .distance-track {
                 flex-direction: column;
                 gap: 2rem;
@@ -651,9 +240,9 @@
                 bottom: 10%;
                 left: 50%;
                 right: auto;
-                width: 4px;
+                width: 2px;
                 height: auto;
-                background: linear-gradient(to bottom, #10b981, #f59e0b, #ef4444);
+                background: var(--border-medium);
             }
 
             .wall-viz {
@@ -668,33 +257,16 @@
             .wall-barrier .bricks {
                 width: 80px;
                 height: 20px;
-                background: repeating-linear-gradient(
-                    90deg,
-                    #dc2626 0px,
-                    #dc2626 15px,
-                    #b91c1c 15px,
-                    #b91c1c 20px
-                );
             }
 
             .wall-barrier .label {
                 writing-mode: horizontal-tb;
             }
         }
-
-        /* Lists */
-        ul, ol {
-            margin: 1rem 0;
-            padding-left: 1.5rem;
-        }
-
-        li {
-            margin-bottom: 0.5rem;
-        }
     </style>
 </head>
 <body>
-    <header class="header">
+    <header>
         <h1>The GenAI Wall Effect</h1>
         <p class="subtitle">Why AI can help some outsiders do expert work, but hits a wall with others</p>
         <div class="paper-info">
@@ -847,15 +419,15 @@
 
             <h3>The Three Groups</h3>
             <div class="stats-grid">
-                <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #34d399);">
+                <div class="stat-card">
                     <div class="number">12</div>
                     <div class="label">Web Analysts<br>(Insiders)</div>
                 </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
+                <div class="stat-card">
                     <div class="number">26</div>
                     <div class="label">Marketing Specialists<br>(Adjacent Outsiders)</div>
                 </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #ef4444, #f87171);">
+                <div class="stat-card">
                     <div class="number">40</div>
                     <div class="label">Tech Specialists<br>(Distant Outsiders)</div>
                 </div>
@@ -895,17 +467,17 @@
             <p>The researchers discovered what they call the <strong>"GenAI Wall"</strong> - the point where AI can no longer meaningfully reduce expertise gaps.</p>
 
             <div class="wall-viz">
-                <div class="wall-side before">
-                    <h4 style="color: #166534;">AI Can Bridge</h4>
-                    <p style="font-size: 0.9rem; color: #166534;">Adjacent outsiders can match experts with AI help</p>
+                <div class="wall-side">
+                    <h4>AI Can Bridge</h4>
+                    <p>Adjacent outsiders can match experts with AI help</p>
                 </div>
                 <div class="wall-barrier">
                     <div class="bricks"></div>
                     <div class="label">THE WALL</div>
                 </div>
-                <div class="wall-side after">
-                    <h4 style="color: #991b1b;">AI Cannot Bridge</h4>
-                    <p style="font-size: 0.9rem; color: #991b1b;">Distant outsiders still fall short even with AI</p>
+                <div class="wall-side">
+                    <h4>AI Cannot Bridge</h4>
+                    <p>Distant outsiders still fall short even with AI</p>
                 </div>
             </div>
 
@@ -1066,7 +638,7 @@
 
             <h3>For Organizations</h3>
             <div class="highlight-box">
-                <ul style="margin: 0;">
+                <ul>
                     <li><strong>AI won't make everyone interchangeable.</strong> Deep expertise still matters, especially for execution-heavy tasks.</li>
                     <li><strong>Cross-training is more valuable than ever.</strong> Foundational knowledge in adjacent domains becomes the key to leveraging AI effectively.</li>
                     <li><strong>Task design matters.</strong> Breaking work into conceptualization (AI-friendly) and execution (expertise-dependent) components can optimize AI deployment.</li>
@@ -1075,7 +647,7 @@
 
             <h3>For Workers</h3>
             <div class="highlight-box success">
-                <ul style="margin: 0;">
+                <ul>
                     <li><strong>Broaden your base.</strong> Learning fundamentals of adjacent fields makes you more AI-effective.</li>
                     <li><strong>Execution skills are defensible.</strong> The ability to turn ideas into quality output remains valuable.</li>
                     <li><strong>Judgment is key.</strong> Knowing good from bad output is as important as creating it.</li>
@@ -1084,8 +656,8 @@
 
             <h3>The Two Types of AI Limits</h3>
             <div class="comparison-grid">
-                <div class="comparison-card new" style="border-color: var(--accent);">
-                    <h4 style="color: var(--accent);"><span class="material-icons">height</span> The GenAI Ceiling</h4>
+                <div class="comparison-card new">
+                    <h4><span class="material-icons">height</span> The GenAI Ceiling</h4>
                     <ul>
                         <li>Vertical limit within an occupation</li>
                         <li>How much AI lifts low performers toward high performers</li>
@@ -1093,8 +665,8 @@
                         <li>Previously studied extensively</li>
                     </ul>
                 </div>
-                <div class="comparison-card old" style="border-color: var(--primary); background: linear-gradient(135deg, #fef2f2, #fce7f3);">
-                    <h4 style="color: var(--primary);"><span class="material-icons">block</span> The GenAI Wall</h4>
+                <div class="comparison-card old">
+                    <h4><span class="material-icons">block</span> The GenAI Wall</h4>
                     <ul>
                         <li>Horizontal limit across occupations</li>
                         <li>How much AI helps outsiders match insiders</li>
@@ -1186,7 +758,7 @@
 
     <footer>
         <p>Explained Simply | Making AI Research Accessible</p>
-        <p style="margin-top: 0.5rem; opacity: 0.8;">Based on research by Stanford University and Harvard Business School</p>
+        <p>Based on research by Stanford University and Harvard Business School</p>
         <div class="citation">
 @article{genaiwall2025,
   title={The GenAI Wall Effect: Examining the Limits to Horizontal Expertise Transfer Between Occupational Insiders and Outsiders},

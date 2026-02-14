@@ -1,0 +1,1823 @@
+/* ============================================================
+   Academic Paper Style — PaperDecoded
+   Inspired by LaTeX article class / journal paper formatting
+   ============================================================ */
+
+/* --- Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* --- CSS Variables --- */
+:root {
+    --font-body: 'Source Serif 4', 'Georgia', 'Times New Roman', serif;
+    --font-heading: 'Cormorant Garamond', 'Georgia', serif;
+    --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+
+    --bg-page: #ffffff;
+    --bg-section: #ffffff;
+    --bg-aside: #f8f9fa;
+    --bg-highlight: #f0f4f8;
+
+    --text-primary: #1a1a2e;
+    --text-secondary: #4a4a68;
+    --text-muted: #6b7280;
+
+    --color-accent: #1a365d;
+    --color-link: #2b6cb0;
+    --color-success: #276749;
+    --color-warning: #92400e;
+    --color-danger: #9b2c2c;
+
+    --border-light: #e2e8f0;
+    --border-medium: #cbd5e0;
+    --border-dark: #1a365d;
+
+    --rule-color: #2d3748;
+    --rule-light: #e2e8f0;
+
+    --section-counter: 0;
+}
+
+/* --- Reset --- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* --- Body --- */
+body {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--text-primary);
+    background: var(--bg-page);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- Container --- */
+.container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+}
+
+/* ============================================================
+   HEADER — Academic paper title block
+   ============================================================ */
+header {
+    text-align: center;
+    padding: 60px 40px 40px;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    margin-bottom: 0;
+    border-bottom: 3px double var(--rule-color);
+    position: relative;
+}
+
+header::before {
+    display: none;
+}
+
+header::after {
+    display: none;
+}
+
+header h1 {
+    font-family: var(--font-heading);
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+    text-shadow: none;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+header .subtitle {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 20px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.paper-info {
+    background: transparent;
+    padding: 12px 0;
+    margin-top: 16px;
+    display: block;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    border: none;
+    border-radius: 0;
+    border-top: 1px solid var(--border-light);
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.paper-info a {
+    color: var(--color-link);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.paper-info a:hover {
+    border-bottom-color: var(--color-link);
+}
+
+.legacy-badge,
+.research-badge,
+.meta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--border-medium);
+    padding: 4px 14px;
+    border-radius: 0;
+    font-size: 0.78rem;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+}
+
+.legacy-badge .material-icons,
+.research-badge .material-icons,
+.meta-badge .material-icons {
+    font-size: 0.9rem;
+}
+
+/* ============================================================
+   SECTIONS — Clean academic sections with counters
+   ============================================================ */
+.container {
+    counter-reset: section-counter;
+}
+
+section {
+    background: transparent;
+    border-radius: 0;
+    padding: 32px 0;
+    margin-bottom: 0;
+    box-shadow: none;
+    border: none;
+    border-top: 1px solid var(--rule-light);
+    position: relative;
+}
+
+section::before {
+    display: none;
+}
+
+section:first-of-type {
+    border-top: none;
+}
+
+/* --- Headings --- */
+h2 {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-size: 1.65rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: -0.01em;
+    counter-increment: section-counter;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule-light);
+}
+
+h2::before {
+    content: counter(section-counter) ".";
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--text-primary);
+    font-size: 1.65rem;
+    min-width: fit-content;
+}
+
+h2 .material-icons,
+h2 .material-symbols-outlined {
+    display: none;
+}
+
+h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 28px 0 12px;
+}
+
+h4 {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/* --- Paragraphs --- */
+p {
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    text-align: justify;
+    hyphens: auto;
+}
+
+ul, ol {
+    margin-bottom: 16px;
+    padding-left: 24px;
+}
+
+li {
+    margin-bottom: 6px;
+}
+
+a {
+    color: var(--color-link);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+strong {
+    font-weight: 600;
+}
+
+/* ============================================================
+   TABLE OF CONTENTS
+   ============================================================ */
+.toc {
+    background: transparent;
+    padding: 20px 0;
+    border-radius: 0;
+    margin: 16px 0 8px;
+    border: 1px solid var(--border-light);
+    padding: 20px 24px;
+}
+
+.toc h3 {
+    font-family: var(--font-heading);
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    column-count: 2;
+    column-gap: 24px;
+}
+
+.toc li {
+    padding: 4px 0;
+    border-bottom: none;
+    break-inside: avoid;
+    font-size: 0.95rem;
+}
+
+.toc a {
+    color: var(--color-link);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.toc a:hover {
+    text-decoration: underline;
+}
+
+.toc a .material-icons,
+.toc a .material-symbols-outlined {
+    display: none;
+}
+
+/* ============================================================
+   HIGHLIGHT BOXES — Academic "remark" / "note" style
+   ============================================================ */
+.highlight-box {
+    background: var(--bg-aside);
+    padding: 20px 24px;
+    border-radius: 0;
+    margin: 24px 0;
+    border: 1px solid var(--border-light);
+    border-left: 3px solid var(--color-accent);
+    position: relative;
+    box-shadow: none;
+    font-size: 0.98rem;
+}
+
+.highlight-box::before {
+    display: none;
+}
+
+.highlight-box.success {
+    background: #f0fff4;
+    border-left-color: var(--color-success);
+    border-color: #c6f6d5;
+}
+
+.highlight-box.success::before {
+    display: none;
+}
+
+.highlight-box.warning {
+    background: #fffbeb;
+    border-left-color: var(--color-warning);
+    border-color: #fde68a;
+}
+
+.highlight-box.warning::before {
+    display: none;
+}
+
+.highlight-box.purple {
+    background: #faf5ff;
+    border-left-color: #6b21a8;
+    border-color: #e9d5ff;
+}
+
+.highlight-box.danger {
+    background: #fff5f5;
+    border-left-color: var(--color-danger);
+    border-color: #fed7d7;
+}
+
+/* ============================================================
+   ANALOGY BOXES — Academic "example" style
+   ============================================================ */
+.analogy {
+    background: var(--bg-aside);
+    border: 1px solid var(--border-light);
+    border-left: 3px solid var(--text-secondary);
+    padding: 20px 24px;
+    border-radius: 0;
+    margin: 24px 0;
+    font-style: normal;
+    position: relative;
+}
+
+.analogy::before,
+.analogy::after {
+    display: none;
+}
+
+.analogy-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-style: normal;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+}
+
+.analogy-title .material-icons,
+.analogy-title .material-symbols-outlined {
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+.analogy p {
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+/* ============================================================
+   KEY INSIGHT — Academic "theorem/proposition" style
+   ============================================================ */
+.key-insight {
+    background: transparent;
+    border: 2px solid var(--text-primary);
+    padding: 20px 24px;
+    border-radius: 0;
+    margin: 24px 0;
+    position: relative;
+}
+
+.key-insight::before {
+    display: none;
+}
+
+.key-insight-title {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+}
+
+.key-insight-title .material-icons,
+.key-insight-title .material-symbols-outlined {
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+/* ============================================================
+   COMPARISON GRID — Academic table-like comparison
+   ============================================================ */
+.comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 24px 0;
+    border: 1px solid var(--border-medium);
+}
+
+@media (max-width: 600px) {
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.comparison-card {
+    padding: 20px 24px;
+    border-radius: 0;
+    border: none;
+    background: transparent;
+}
+
+.comparison-card.old {
+    background: var(--bg-aside);
+    border-right: 1px solid var(--border-medium);
+}
+
+.comparison-card.new {
+    background: transparent;
+}
+
+.comparison-card h4 {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 8px;
+}
+
+.comparison-card.old h4 {
+    color: var(--text-secondary);
+}
+
+.comparison-card.new h4 {
+    color: var(--text-primary);
+}
+
+.comparison-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.comparison-card li {
+    padding: 6px 0;
+    padding-left: 16px;
+    position: relative;
+    border-bottom: none;
+    font-size: 0.95rem;
+}
+
+.comparison-card li::before {
+    content: "\2013";
+    position: absolute;
+    left: 0;
+    color: var(--text-muted);
+}
+
+.comparison-card.old li::before {
+    color: var(--text-muted);
+}
+
+.comparison-card.new li::before {
+    color: var(--text-primary);
+}
+
+/* ============================================================
+   STATS GRID — Academic figure/metrics style
+   ============================================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    margin: 24px 0;
+    background: var(--border-medium);
+    border: 1px solid var(--border-medium);
+}
+
+.stat-card {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    padding: 24px 16px;
+    border-radius: 0;
+    text-align: center;
+    border: none;
+    position: relative;
+}
+
+.stat-card::before {
+    display: none;
+}
+
+.stat-card .number {
+    font-family: var(--font-heading);
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+}
+
+.stat-card .label {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    opacity: 1;
+}
+
+.stat-card.success,
+.stat-card.warning,
+.stat-card.accent {
+    background: var(--bg-page);
+}
+
+.stat-card.success .number,
+.stat-card.warning .number,
+.stat-card.accent .number {
+    color: var(--text-primary);
+}
+
+.stat-card.success .label,
+.stat-card.warning .label,
+.stat-card.accent .label {
+    color: var(--text-secondary);
+}
+
+/* ============================================================
+   CONCEPT GRID — Academic card grid
+   ============================================================ */
+.concept-grid,
+.concept-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.concept-card {
+    background: transparent;
+    padding: 20px;
+    border-radius: 0;
+    border: 1px solid var(--border-light);
+    transition: none;
+}
+
+.concept-card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--border-medium);
+}
+
+.concept-icon {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+}
+
+.concept-icon .material-icons,
+.concept-icon .material-symbols-outlined {
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+}
+
+.concept-card h4 {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+/* ============================================================
+   TIMELINE — Academic chronology
+   ============================================================ */
+.timeline {
+    position: relative;
+    padding-left: 0;
+    margin: 24px 0;
+}
+
+.timeline-item {
+    position: relative;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    background: transparent;
+    border-radius: 0;
+    border: 1px solid var(--border-light);
+    border-left: 3px solid var(--border-dark);
+}
+
+.timeline-item::before {
+    display: none;
+}
+
+.timeline-item h4 {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+/* ============================================================
+   FLOW DIAGRAMS — Academic figure style
+   ============================================================ */
+.architecture-diagram,
+.flow-diagram {
+    background: var(--bg-aside);
+    border-radius: 0;
+    padding: 24px;
+    margin: 24px 0;
+    text-align: center;
+    border: 1px solid var(--border-light);
+}
+
+.flow-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.flow-box {
+    padding: 14px 18px;
+    border-radius: 0;
+    font-weight: 500;
+    text-align: center;
+    min-width: 120px;
+    border: 1px solid var(--border-medium);
+    background: var(--bg-page);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    box-shadow: none;
+}
+
+.flow-box.input {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    border-color: var(--border-dark);
+}
+
+.flow-box.process {
+    background: var(--bg-aside);
+    color: var(--text-primary);
+}
+
+.flow-box.output {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    border-color: var(--border-dark);
+}
+
+.flow-box.highlight {
+    border-color: var(--border-dark);
+    background: var(--bg-aside);
+}
+
+.flow-box.purple {
+    border-color: var(--border-medium);
+    background: var(--bg-aside);
+}
+
+.flow-box .material-icons {
+    font-size: 1.2rem;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-secondary);
+}
+
+.flow-box.purple .material-icons {
+    color: var(--text-secondary);
+}
+
+.arrow,
+.flow-arrow {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+}
+
+.arrow .material-icons {
+    font-size: 1.2rem;
+}
+
+/* ============================================================
+   GLOSSARY — Academic definitions
+   ============================================================ */
+.glossary-term {
+    background: transparent;
+    padding: 14px 0;
+    border-radius: 0;
+    margin: 0;
+    border: none;
+    border-bottom: 1px solid var(--border-light);
+    position: relative;
+}
+
+.glossary-term::before {
+    display: none;
+}
+
+.glossary-term strong {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.glossary-grid {
+    display: grid;
+    gap: 0;
+}
+
+.glossary-item {
+    background: transparent;
+    padding: 14px 0;
+    border-radius: 0;
+    border-left: none;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.glossary-item dt {
+    font-weight: 700;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    font-size: 1.05rem;
+}
+
+.glossary-item dd {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* ============================================================
+   ENCODER-DECODER VISUAL
+   ============================================================ */
+.encoder-decoder-visual {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 24px;
+    margin: 24px 0;
+    flex-wrap: wrap;
+}
+
+.enc-dec-box {
+    flex: 1;
+    min-width: 200px;
+    padding: 20px;
+    border: 1px solid var(--border-medium);
+    background: transparent;
+}
+
+.enc-dec-box h4 {
+    font-family: var(--font-heading);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.layer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.layer {
+    padding: 8px 12px;
+    background: var(--bg-aside);
+    border: 1px solid var(--border-light);
+    font-size: 0.88rem;
+    text-align: center;
+}
+
+.middle-arrow {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+}
+
+/* ============================================================
+   QKV DIAGRAM (Attention)
+   ============================================================ */
+.qkv-diagram {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 24px 0;
+    flex-wrap: wrap;
+}
+
+.qkv-box {
+    flex: 1;
+    min-width: 180px;
+    padding: 20px;
+    border: 1px solid var(--border-medium);
+    background: transparent;
+    text-align: center;
+}
+
+.qkv-box.query {
+    border-color: var(--border-dark);
+}
+
+/* ============================================================
+   ATTENTION VISUAL / SENTENCE DEMO
+   ============================================================ */
+.attention-visual {
+    margin: 24px 0;
+    padding: 20px;
+    background: var(--bg-aside);
+    border: 1px solid var(--border-light);
+}
+
+.sentence-demo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 12px 0;
+}
+
+.word-box {
+    padding: 8px 14px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-page);
+    font-size: 0.95rem;
+}
+
+.word-box.highlighted {
+    background: var(--bg-highlight);
+    border-color: var(--border-medium);
+    font-weight: 600;
+}
+
+.word-box.focus {
+    background: var(--text-primary);
+    color: var(--bg-page);
+    font-weight: 700;
+    border-color: var(--text-primary);
+}
+
+/* ============================================================
+   IMPACT LIST
+   ============================================================ */
+.impact-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.impact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1px solid var(--border-light);
+    background: transparent;
+    font-size: 0.95rem;
+}
+
+.impact-item .material-icons {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+/* ============================================================
+   USE CASE GRID
+   ============================================================ */
+.use-case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.use-case {
+    padding: 20px;
+    border: 1px solid var(--border-light);
+    background: transparent;
+}
+
+.use-case-icon {
+    margin-bottom: 8px;
+}
+
+.use-case-icon .material-icons,
+.use-case-icon .material-symbols-outlined {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+}
+
+/* ============================================================
+   TASK / TECHNIQUE / RECIPE GRIDS
+   ============================================================ */
+.task-grid,
+.techniques-grid,
+.recipe-grid,
+.desiderata-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.task-card,
+.technique-card,
+.recipe-step,
+.desiderata-card {
+    padding: 20px;
+    border: 1px solid var(--border-light);
+    background: transparent;
+    border-radius: 0;
+}
+
+.task-card h4,
+.technique-card h4,
+.recipe-step h4,
+.desiderata-card h4 {
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+/* ============================================================
+   AGENT / CASE STUDY / MCP CARDS
+   ============================================================ */
+.agent-card {
+    background: transparent;
+    border: 1px solid var(--border-light);
+    border-radius: 0;
+    padding: 20px;
+    margin: 12px 0;
+}
+
+.agent-card h4 {
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+.agent-card p {
+    margin-bottom: 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.case-study {
+    background: transparent;
+    border-radius: 0;
+    padding: 20px;
+    margin: 16px 0;
+    border: 1px solid var(--border-light);
+    border-left: 3px solid var(--text-secondary);
+}
+
+.case-study h4 {
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+.case-study-header {
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+.mcp-components {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    margin: 24px 0;
+    background: var(--border-light);
+    border: 1px solid var(--border-light);
+}
+
+@media (max-width: 600px) {
+    .mcp-components {
+        grid-template-columns: 1fr;
+    }
+}
+
+.mcp-box {
+    background: var(--bg-page);
+    border: none;
+    border-radius: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+.mcp-box .material-icons {
+    font-size: 1.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.mcp-box h4 {
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    font-family: var(--font-heading);
+}
+
+.mcp-box p {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* ============================================================
+   WORKFLOW STEPS
+   ============================================================ */
+.workflow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin: 12px 0;
+    padding: 14px 16px;
+    background: transparent;
+    border-radius: 0;
+    border: 1px solid var(--border-light);
+}
+
+.workflow-step .step-number {
+    background: var(--text-primary);
+    color: var(--bg-page);
+    width: 28px;
+    height: 28px;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.workflow-step .step-content h4 {
+    font-family: var(--font-heading);
+    margin-bottom: 4px;
+}
+
+/* ============================================================
+   PIPELINE / FLOW STEPS
+   ============================================================ */
+.pipeline-visual,
+.pipeline-flow {
+    margin: 24px 0;
+}
+
+.pipeline-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+.pipeline-step {
+    padding: 12px 16px;
+    border: 1px solid var(--border-medium);
+    background: transparent;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.pipeline-arrow {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+}
+
+/* ============================================================
+   DATA TABLES
+   ============================================================ */
+.data-table,
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+.data-table th,
+.results-table th {
+    background: var(--bg-aside);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    border-bottom: 2px solid var(--border-dark);
+    font-size: 0.95rem;
+}
+
+.data-table td,
+.results-table td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.92rem;
+}
+
+table th {
+    background: var(--bg-aside);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 2px solid var(--border-dark);
+}
+
+table td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* ============================================================
+   CODE EXAMPLES
+   ============================================================ */
+.code-example {
+    background: #1a1a2e;
+    color: #e2e8f0;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    overflow-x: auto;
+    border: 1px solid var(--border-medium);
+}
+
+.code-good {
+    border-left: 3px solid var(--color-success);
+}
+
+.code-bad {
+    border-left: 3px solid var(--color-danger);
+}
+
+code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--bg-aside);
+    padding: 2px 6px;
+    border: 1px solid var(--border-light);
+}
+
+/* ============================================================
+   PROS / CONS
+   ============================================================ */
+.pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 24px 0;
+    border: 1px solid var(--border-medium);
+}
+
+@media (max-width: 600px) {
+    .pros-cons {
+        grid-template-columns: 1fr;
+    }
+}
+
+.pros {
+    padding: 20px;
+    border-right: 1px solid var(--border-medium);
+}
+
+.cons {
+    padding: 20px;
+}
+
+/* ============================================================
+   TAKEAWAYS
+   ============================================================ */
+.takeaways,
+.takeaways-list {
+    margin: 24px 0;
+}
+
+.takeaway-list {
+    list-style: none;
+    padding: 0;
+}
+
+.takeaway-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.takeaway-number {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    min-width: 30px;
+}
+
+/* ============================================================
+   SCALE / BAR CHARTS / VISUALIZATIONS
+   ============================================================ */
+.scale-item {
+    margin: 12px 0;
+}
+
+.scale-bar {
+    height: 8px;
+    background: var(--bg-aside);
+    border: 1px solid var(--border-light);
+    margin-top: 4px;
+}
+
+.scale-fill {
+    height: 100%;
+    background: var(--text-primary);
+}
+
+.bar-container {
+    margin: 16px 0;
+}
+
+.bar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+}
+
+.bar-label {
+    min-width: 100px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.bar {
+    height: 20px;
+    background: var(--text-primary);
+    opacity: 0.7;
+}
+
+.bar-value {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Performance bars */
+.perf-bars,
+.performance-visual {
+    margin: 20px 0;
+}
+
+.perf-bar-group {
+    margin: 12px 0;
+}
+
+.perf-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.perf-bar {
+    height: 8px;
+    background: var(--bg-aside);
+    border: 1px solid var(--border-light);
+}
+
+/* Progress bars */
+.progress-bar {
+    height: 8px;
+    background: var(--bg-aside);
+    border: 1px solid var(--border-light);
+    margin: 8px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--text-primary);
+}
+
+.progress {
+    height: 100%;
+    background: var(--text-primary);
+}
+
+/* ============================================================
+   MISC COMPONENTS
+   ============================================================ */
+
+/* LLM Cards / Results */
+.llm-card,
+.llm-results {
+    border: 1px solid var(--border-light);
+    padding: 16px;
+    margin: 12px 0;
+}
+
+/* Prompt box */
+.prompt-box {
+    background: var(--bg-aside);
+    border: 1px solid var(--border-light);
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+/* Demo boxes */
+.demo-box {
+    border: 1px solid var(--border-light);
+    padding: 20px;
+    margin: 16px 0;
+    background: var(--bg-aside);
+}
+
+/* Formula boxes */
+.formula,
+.formula-box {
+    background: var(--bg-aside);
+    padding: 16px 20px;
+    margin: 16px 0;
+    text-align: center;
+    border: 1px solid var(--border-light);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+}
+
+/* Contributor visual */
+.contributor-visual,
+.contributor-box {
+    border: 1px solid var(--border-light);
+    padding: 16px;
+    margin: 12px 0;
+}
+
+/* Nested circles (visualization) */
+.nested-visual,
+.nested-circles {
+    text-align: center;
+    margin: 24px 0;
+}
+
+/* Distance diagram */
+.distance-diagram {
+    margin: 24px 0;
+    padding: 20px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-aside);
+}
+
+/* Leaderboard */
+.leaderboard {
+    margin: 24px 0;
+}
+
+/* Scaling demo */
+.scaling-demo {
+    margin: 24px 0;
+    padding: 20px;
+    border: 1px solid var(--border-light);
+}
+
+/* Thinking / reasoning visual */
+.thinking-visual,
+.thinking-timeline {
+    margin: 24px 0;
+    padding: 20px;
+    border: 1px solid var(--border-light);
+}
+
+.thinking-step {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* Method cards */
+.method-card,
+.method-cards {
+    border: 1px solid var(--border-light);
+    padding: 16px;
+    margin: 12px 0;
+}
+
+/* Puzzle grid */
+.puzzle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.puzzle-card {
+    border: 1px solid var(--border-light);
+    padding: 20px;
+}
+
+/* Regime cards */
+.regimes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.regime-card {
+    border: 1px solid var(--border-light);
+    padding: 20px;
+}
+
+/* Results matrix/visual */
+.results-matrix,
+.results-visual {
+    margin: 24px 0;
+}
+
+/* Wall visualization */
+.wall-viz {
+    text-align: center;
+    margin: 24px 0;
+    padding: 20px;
+    border: 1px solid var(--border-light);
+}
+
+/* Chat demo */
+.chat-demo {
+    border: 1px solid var(--border-light);
+    padding: 16px;
+    margin: 16px 0;
+    background: var(--bg-aside);
+}
+
+/* Bank demo */
+.bank-demo {
+    border: 1px solid var(--border-light);
+    padding: 16px;
+    margin: 16px 0;
+}
+
+/* Vulnerability list */
+.vulnerability-list {
+    margin: 16px 0;
+}
+
+.vulnerability-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* Round indicators / tournament style */
+.round-step,
+.round-indicator {
+    display: inline-block;
+    padding: 4px 12px;
+    border: 1px solid var(--border-light);
+    font-size: 0.85rem;
+}
+
+/* Pattern visualizations */
+.pattern-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.pattern-label {
+    min-width: 100px;
+    font-size: 0.88rem;
+}
+
+.pattern-bar,
+.pattern-fill {
+    height: 12px;
+    background: var(--text-primary);
+    opacity: 0.6;
+}
+
+/* Failure patterns */
+.failure-pattern {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* Cost comparison */
+.cost-comparison {
+    margin: 20px 0;
+}
+
+.cost-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+}
+
+/* Budget demo */
+.budget-demo {
+    border: 1px solid var(--border-light);
+    padding: 20px;
+    margin: 16px 0;
+}
+
+/* Scenario box */
+.scenario-box {
+    border: 1px solid var(--border-light);
+    padding: 16px;
+    margin: 12px 0;
+    background: var(--bg-aside);
+}
+
+/* Warning stat */
+.warning-stat {
+    border: 1px solid var(--color-warning);
+    padding: 16px;
+    text-align: center;
+    margin: 16px 0;
+}
+
+/* Section header / title */
+.section-header,
+.section-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+}
+
+/* Back link */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-link);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Change indicator */
+.change-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85rem;
+}
+
+.change-indicator.up {
+    color: var(--color-success);
+}
+
+.change-indicator.down {
+    color: var(--color-danger);
+}
+
+/* Legend */
+.legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+    font-size: 0.85rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--border-medium);
+}
+
+/* EM example */
+.em-example {
+    border: 1px solid var(--border-light);
+    padding: 16px;
+    margin: 12px 0;
+}
+
+/* Arch card / comparison */
+.arch-card,
+.arch-comparison {
+    border: 1px solid var(--border-light);
+    padding: 16px;
+    margin: 12px 0;
+}
+
+.arch-icon {
+    color: var(--text-secondary);
+}
+
+/* Balance visual */
+.balance-visual {
+    text-align: center;
+    margin: 24px 0;
+}
+
+/* Complexity */
+.complexity {
+    margin: 12px 0;
+}
+
+.complexity-bar {
+    height: 8px;
+    background: var(--bg-aside);
+    border: 1px solid var(--border-light);
+}
+
+/* Citation */
+.citation {
+    font-style: italic;
+    color: var(--text-secondary);
+    border-left: 2px solid var(--border-medium);
+    padding-left: 16px;
+    margin: 16px 0;
+}
+
+/* Nav container */
+.nav-container {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* TOC grid */
+.toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+@media (max-width: 600px) {
+    .toc-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Misc state classes */
+.correct { color: var(--color-success); }
+.incorrect, .error { color: var(--color-danger); }
+.active { font-weight: 700; }
+.winner { font-weight: 700; }
+.record { font-weight: 700; }
+
+/* ============================================================
+   FOOTER — Academic citation style
+   ============================================================ */
+footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    border-top: 3px double var(--rule-color);
+    margin-top: 20px;
+}
+
+footer a {
+    color: var(--color-link);
+}
+
+/* ============================================================
+   MATERIAL ICONS — Global sizing
+   ============================================================ */
+.material-icons,
+.material-symbols-outlined {
+    font-size: inherit;
+    vertical-align: middle;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+    header {
+        padding: 40px 20px 30px;
+    }
+
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    .container {
+        padding: 0 16px 40px;
+    }
+
+    section {
+        padding: 24px 0;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    .toc ul {
+        column-count: 1;
+    }
+
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .comparison-card.old {
+        border-right: none;
+        border-bottom: 1px solid var(--border-medium);
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .impact-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media print {
+    body {
+        font-size: 11pt;
+    }
+
+    header {
+        border-bottom: 2px solid black;
+    }
+
+    section {
+        break-inside: avoid;
+    }
+
+    .toc {
+        break-after: page;
+    }
+}

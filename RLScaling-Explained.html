@@ -5,587 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Art of Scaling RL for LLMs - Explained Simply</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="academic-style.css">
     <style>
-        :root {
-            --primary: #8b4513;
-            --primary-dark: #6b3410;
-            --secondary: #a0522d;
-            --accent: #cd853f;
-            --success: #2d5a47;
-            --warning: #b8860b;
-            --bg-light: #faf8f5;
-            --bg-card: #fffef9;
-            --bg-page: #f5f1ea;
-            --text-primary: #2c2416;
-            --text-secondary: #5c5144;
-            --border: #e8e0d4;
-            --gold: #c9a227;
-            --burgundy: #722f37;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-            line-height: 1.8;
-            color: var(--text-primary);
-            background: var(--bg-page);
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            background-blend-mode: soft-light;
-            min-height: 100vh;
-        }
-
-        /* Header */
-        .header {
-            background:
-                linear-gradient(135deg, rgba(139, 92, 246, 0.9) 0%, rgba(6, 182, 212, 0.9) 100%),
-                url("https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80");
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .header .subtitle {
-            font-size: 1.3rem;
-            opacity: 0.95;
-            max-width: 700px;
-            margin: 0 auto 1.5rem;
-        }
-
-        .paper-info {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            font-size: 0.95rem;
-            color: #ffffff;
-        }
-
-        .paper-info span {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Navigation */
-        .nav-container {
-            background: white;
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .nav-container a {
-            color: var(--primary);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
-        }
-
-        .nav-container a:hover {
-            color: var(--primary-dark);
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        section {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--bg-light);
-        }
-
-        .section-header .material-icons {
-            font-size: 2rem;
-            color: var(--primary);
-            background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(6,182,212,0.1));
-            padding: 0.5rem;
-            border-radius: 12px;
-        }
-
-        .section-header h2 {
-            font-size: 1.5rem;
-            color: var(--text-dark);
-        }
-
-        h3 {
-            color: var(--primary-dark);
-            margin: 1.5rem 0 1rem;
-            font-size: 1.2rem;
-        }
-
-        p {
-            margin-bottom: 1rem;
-            color: var(--text-dark);
-        }
-
-        /* Highlight Boxes */
-        .highlight-box {
-            background: linear-gradient(135deg, #faf6f0 0%, #f5efe5 100%);
-            padding: 25px 30px;
-            border-radius: 3px;
-            margin: 25px 0;
-            border: 1px solid var(--border);
-            position: relative;
-            box-shadow: inset 0 0 30px rgba(139, 69, 19, 0.03);
-        }
-
-        .highlight-box.success {
-            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.1));
-        }
-
-        .highlight-box.warning {
-            background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(239,68,68,0.1));
-        }
-
-        .highlight-box strong {
-            color: var(--primary-dark);
-        }
-
-        /* Analogy Box */
-        .analogy {
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border: 2px solid #f59e0b;
-        }
-
-        .analogy-title {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-            color: #92400e;
-            margin-bottom: 0.75rem;
-        }
-
-        .analogy p {
-            color: #78350f;
-            margin: 0;
-        }
-
-        /* Key Insight */
-        .key-insight {
-            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-            border: 2px solid var(--accent);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .key-insight-title {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 600;
-            color: #065f46;
-            margin-bottom: 0.75rem;
-        }
-
-        .key-insight p {
-            color: #064e3b;
-            margin: 0;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .stat-card .number {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-card .label {
-            font-size: 0.9rem;
-            color: #ffffff;
-        }
-
-        /* Comparison Grid */
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .comparison-card {
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        .comparison-card.old {
-            background: linear-gradient(135deg, #fef2f2, #fee2e2);
-            border: 2px solid #fca5a5;
-        }
-
-        .comparison-card.new {
-            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-            border: 2px solid #6ee7b7;
-        }
-
-        .comparison-card h4 {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .comparison-card.old h4 {
-            color: #2563eb;
-        }
-
-        .comparison-card.new h4 {
-            color: #059669;
-        }
-
-        .comparison-card ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .comparison-card li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-
-        .comparison-card li::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .comparison-card.old li::before {
-            background: #ef4444;
-        }
-
-        .comparison-card.new li::before {
-            background: #10b981;
-        }
-
-        /* Formula Box */
-        .formula-box {
-            background: linear-gradient(135deg, #1e1b4b, #312e81);
-            color: white;
-            padding: 2rem;
-            border-radius: 12px;
-            margin: 1.5rem 0;
-            text-align: center;
-        }
-
-        .formula-box .formula {
-            font-family: 'Courier New', monospace;
-            font-size: 1.3rem;
-            margin: 1rem 0;
-            padding: 1rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 8px;
-        }
-
-        .formula-box .explanation {
-            font-size: 0.95rem;
-            color: #ffffff;
-            margin-top: 1rem;
-        }
-
-        /* Scaling Axes */
+        /* File-specific styles not covered by academic-style.css */
         .axes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
+            gap: 16px;
+            margin: 24px 0;
         }
 
         .axis-card {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 1.25rem;
+            padding: 20px;
+            border: 1px solid var(--border-light);
             text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .axis-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(139,92,246,0.15);
         }
 
         .axis-card .material-icons {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 0.75rem;
+            font-size: 2rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
         }
 
         .axis-card h4 {
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
+            font-family: var(--font-heading);
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-weight: 700;
         }
 
         .axis-card p {
             font-size: 0.85rem;
-            color: var(--text-light);
+            color: var(--text-secondary);
             margin: 0;
         }
 
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
-            margin: 1.5rem 0;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(to bottom, var(--primary), var(--secondary));
-            border-radius: 3px;
-        }
-
-        .timeline-item {
-            position: relative;
-            padding: 1rem 0 1.5rem 1.5rem;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2rem;
-            top: 1.25rem;
-            width: 12px;
-            height: 12px;
-            background: var(--primary);
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 0 0 3px var(--primary);
-        }
-
-        .timeline-item h4 {
-            color: var(--primary-dark);
-            margin-bottom: 0.5rem;
-        }
-
-        /* Recipe Steps */
-        .recipe-grid {
-            display: grid;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .recipe-step {
-            display: flex;
-            gap: 1rem;
-            align-items: flex-start;
-            padding: 1.25rem;
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border-radius: 12px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .recipe-step .step-number {
-            background: var(--primary);
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .recipe-step .step-content h4 {
-            color: var(--primary-dark);
-            margin: 0 0 0.5rem 0;
-        }
-
-        .recipe-step .step-content p {
-            margin: 0;
-            color: var(--text-light);
-            font-size: 0.95rem;
-        }
-
-        /* Glossary */
-        .glossary-grid {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .glossary-item {
-            background: var(--bg-light);
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--secondary);
-        }
-
-        .glossary-item strong {
-            color: var(--primary-dark);
-        }
-
-        /* Table of Contents */
-        .toc {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        .toc h3 {
-            margin-top: 0;
-            margin-bottom: 1rem;
-        }
-
-        .toc ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 0.5rem;
-        }
-
-        .toc a {
-            color: var(--text-dark);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .toc a:hover {
-            background: white;
-            color: var(--primary);
-        }
-
-        .toc .material-icons {
+        .formula-box .formula {
+            font-family: var(--font-mono);
             font-size: 1.2rem;
-            color: var(--primary);
+            margin: 12px 0;
+            padding: 12px;
+            border: 1px solid var(--border-light);
         }
 
-        /* Footer */
-        footer {
-            background: var(--bg-dark);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
-            margin-top: 2rem;
-        }
-
-        footer a {
-            color: var(--secondary);
-        }
-
-        .citation {
-            background: rgba(255,255,255,0.1);
-            padding: 1.5rem;
-            border-radius: 12px;
-            max-width: 800px;
-            margin: 1.5rem auto 0;
-            font-family: monospace;
-            font-size: 0.85rem;
-            text-align: left;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .header .subtitle {
-                font-size: 1.1rem;
-            }
-
-            .container {
-                padding: 1rem;
-            }
-
-            section {
-                padding: 1.5rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .formula-box .formula {
-                font-size: 1rem;
-            }
-        }
-
-        /* Lists */
-        ul, ol {
-            margin: 1rem 0;
-            padding-left: 1.5rem;
-        }
-
-        li {
-            margin-bottom: 0.5rem;
+        .formula-box .explanation {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 12px;
         }
     </style>
 </head>
 <body>
-    <header class="header">
+    <header>
         <h1>The Art of Scaling RL for LLMs</h1>
         <p class="subtitle">How Meta discovered the recipe for predictable, efficient reinforcement learning at massive scale</p>
         <div class="paper-info">
@@ -602,10 +73,10 @@
     <main class="container">
         <!-- TL;DR -->
         <section id="tldr">
-            <div class="section-header">
+            <h2>
                 <span class="material-icons">flash_on</span>
-                <h2>TL;DR - The 30-Second Version</h2>
-            </div>
+                TL;DR - The 30-Second Version
+            </h2>
 
             <div class="highlight-box">
                 <strong>The Big Idea:</strong> After 400,000+ GPU-hours of experiments, researchers discovered that RL training for LLMs follows predictable "sigmoid" curves. With the right recipe (called ScaleRL), you can reliably scale RL training to 100,000 GPU-hours and beyond - making AI reasoning significantly better in a controlled, efficient way.
@@ -649,10 +120,10 @@
 
         <!-- The Problem -->
         <section id="problem">
-            <div class="section-header">
+            <h2>
                 <span class="material-icons">error_outline</span>
-                <h2>The Problem: RL is Expensive and Unpredictable</h2>
-            </div>
+                The Problem: RL is Expensive and Unpredictable
+            </h2>
 
             <p>Reinforcement Learning (RL) has become a crucial ingredient in making LLMs better at reasoning. Models like OpenAI's o1 use RL to "think" before answering. But there's a big problem:</p>
 
@@ -687,10 +158,10 @@
 
         <!-- The Sigmoid Discovery -->
         <section id="sigmoid">
-            <div class="section-header">
+            <h2>
                 <span class="material-icons">show_chart</span>
-                <h2>The Key Discovery: Sigmoid Scaling</h2>
-            </div>
+                The Key Discovery: Sigmoid Scaling
+            </h2>
 
             <p>The researchers discovered something crucial: RL training follows a predictable S-shaped (sigmoid) curve. This means you can mathematically predict how good your model will become based on how much compute you use!</p>
 
@@ -704,15 +175,15 @@
             <h3>The Three Magic Parameters</h3>
 
             <div class="stats-grid">
-                <div class="stat-card" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">
+                <div class="stat-card">
                     <div class="number">A</div>
                     <div class="label">Asymptotic Performance<br>(The ceiling)</div>
                 </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #06b6d4, #22d3ee);">
+                <div class="stat-card">
                     <div class="number">B</div>
                     <div class="label">Compute Efficiency<br>(How fast you improve)</div>
                 </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #34d399);">
+                <div class="stat-card">
                     <div class="number">C_mid</div>
                     <div class="label">Midpoint<br>(When you're halfway there)</div>
                 </div>
@@ -731,10 +202,10 @@
 
         <!-- The ScaleRL Recipe -->
         <section id="recipe">
-            <div class="section-header">
+            <h2>
                 <span class="material-icons">menu_book</span>
-                <h2>The ScaleRL Recipe: 7 Key Ingredients</h2>
-            </div>
+                The ScaleRL Recipe: 7 Key Ingredients
+            </h2>
 
             <p>After exhaustive experimentation, the team identified the essential ingredients for successful large-scale RL training:</p>
 
@@ -803,10 +274,10 @@
 
         <!-- Scaling Axes -->
         <section id="axes">
-            <div class="section-header">
+            <h2>
                 <span class="material-icons">tune</span>
-                <h2>The Four Axes of Scaling</h2>
-            </div>
+                The Four Axes of Scaling
+            </h2>
 
             <p>When scaling up RL training, you can turn four different "knobs". The paper reveals which ones matter most:</p>
 
@@ -844,10 +315,10 @@
 
         <!-- Key Results -->
         <section id="results">
-            <div class="section-header">
+            <h2>
                 <span class="material-icons">insights</span>
-                <h2>Key Results: What They Achieved</h2>
-            </div>
+                Key Results: What They Achieved
+            </h2>
 
             <div class="timeline">
                 <div class="timeline-item">
@@ -873,7 +344,7 @@
 
             <div class="highlight-box warning">
                 <strong>Most Critical Components:</strong>
-                <ul style="margin-top: 0.5rem;">
+                <ul>
                     <li><strong>CISPO loss:</strong> Without it, training becomes unstable and can collapse</li>
                     <li><strong>FP32 precision:</strong> Using lower precision causes numerical issues at scale</li>
                     <li><strong>High replay ratio:</strong> Low replay wastes compute on excessive data generation</li>
@@ -883,14 +354,14 @@
 
         <!-- What This Means -->
         <section id="implications">
-            <div class="section-header">
+            <h2>
                 <span class="material-icons">lightbulb</span>
-                <h2>What This Means for AI Development</h2>
-            </div>
+                What This Means for AI Development
+            </h2>
 
             <div class="comparison-grid">
-                <div class="comparison-card new" style="border-color: var(--primary);">
-                    <h4 style="color: var(--primary);"><span class="material-icons">trending_up</span> For AI Labs</h4>
+                <div class="comparison-card new">
+                    <h4><span class="material-icons">trending_up</span> For AI Labs</h4>
                     <ul>
                         <li>Plan compute budgets accurately</li>
                         <li>Avoid wasted experiments</li>
@@ -898,8 +369,8 @@
                         <li>Compare methods fairly</li>
                     </ul>
                 </div>
-                <div class="comparison-card new" style="border-color: var(--secondary);">
-                    <h4 style="color: var(--secondary);"><span class="material-icons">science</span> For Researchers</h4>
+                <div class="comparison-card new">
+                    <h4><span class="material-icons">science</span> For Researchers</h4>
                     <ul>
                         <li>Clear methodology to follow</li>
                         <li>Reproducible results</li>
@@ -925,10 +396,10 @@
 
         <!-- Glossary -->
         <section id="glossary">
-            <div class="section-header">
+            <h2>
                 <span class="material-icons">book</span>
-                <h2>Glossary: Key Terms Explained</h2>
-            </div>
+                Glossary: Key Terms Explained
+            </h2>
 
             <div class="glossary-grid">
                 <div class="glossary-item">
@@ -966,10 +437,10 @@
 
         <!-- Key Takeaways -->
         <section>
-            <div class="section-header">
+            <h2>
                 <span class="material-icons">emoji_events</span>
-                <h2>Key Takeaways</h2>
-            </div>
+                Key Takeaways
+            </h2>
 
             <div class="highlight-box success">
                 <ol>
@@ -984,10 +455,10 @@
 
         <!-- Learn More -->
         <section>
-            <div class="section-header">
+            <h2>
                 <span class="material-icons">school</span>
-                <h2>Learn More</h2>
-            </div>
+                Learn More
+            </h2>
 
             <ul>
                 <li><a href="https://arxiv.org/abs/2410.xxxxx" target="_blank">Original Paper on arXiv</a></li>
@@ -999,7 +470,7 @@
 
     <footer>
         <p>Explained Simply | Making AI Research Accessible</p>
-        <p style="margin-top: 0.5rem; opacity: 0.8;">Based on research by Meta AI, UT Austin, UCL, UC Berkeley, Harvard, and Periodic Labs</p>
+        <p>Based on research by Meta AI, UT Austin, UCL, UC Berkeley, Harvard, and Periodic Labs</p>
         <div class="citation">
 @article{scalingrl2025,
   title={The Art of Scaling Reinforcement Learning Compute for LLMs},

@@ -5,293 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Illusion of Thinking - Paper Explained | NStarX Research</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="academic-style.css">
     <style>
-        :root {
-            --primary: #8b4513;
-            --primary-dark: #6b3410;
-            --secondary: #a0522d;
-            --accent: #cd853f;
-            --success: #2d5a47;
-            --warning: #b8860b;
-            --bg-light: #faf8f5;
-            --bg-card: #fffef9;
-            --bg-page: #f5f1ea;
-            --text-primary: #2c2416;
-            --text-secondary: #5c5144;
-            --border: #e8e0d4;
-            --gold: #c9a227;
-            --burgundy: #722f37;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
-            line-height: 1.8;
-            color: var(--text-primary);
-            background: var(--bg-page);
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            background-blend-mode: soft-light;
-            min-height: 100vh;
-        }
-
-        /* Header */
-        header {
-            background:
-                linear-gradient(135deg, rgba(124, 58, 237, 0.9) 0%, rgba(236, 72, 153, 0.9) 100%),
-                url("https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&q=80");
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-        }
-
+        /* File-specific classes not covered by academic-style.css */
         .header-content {
-            max-width: 900px;
+            max-width: 760px;
             margin: 0 auto;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-
-        header .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            margin-bottom: 20px;
-        }
-
-        .paper-info {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            font-size: 0.95rem;
-            color: #ffffff;
-        }
-
-        .paper-info span {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .paper-info .material-icons {
-            font-size: 1.1rem;
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        /* Table of Contents */
-        .toc {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-
-        .toc h2 {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .toc-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-        }
-
-        .toc a {
-            color: var(--primary);
-            text-decoration: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .toc a:hover {
-            background: var(--bg-light);
-        }
-
-        .toc .material-icons {
-            font-size: 1rem;
-            color: var(--text-secondary);
-        }
-
-        /* Sections */
-        section {
-            background: white;
-            border-radius: 16px;
-            padding: 35px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--bg-light);
-        }
-
-        .section-header .material-icons {
-            font-size: 1.8rem;
-            color: var(--primary);
-        }
-
-        .section-header h2 {
-            font-size: 1.5rem;
-            color: var(--text-primary);
-        }
-
-        h3 {
-            font-size: 1.2rem;
-            color: var(--text-primary);
-            margin: 25px 0 15px;
-        }
-
-        p {
-            margin-bottom: 15px;
-            color: var(--text-secondary);
-        }
-
-        /* Highlight Boxes */
-        .highlight-box {
-            background: linear-gradient(135deg, #faf6f0 0%, #f5efe5 100%);
-            padding: 25px 30px;
-            border-radius: 3px;
-            margin: 25px 0;
-            border: 1px solid var(--border);
-            position: relative;
-            box-shadow: inset 0 0 30px rgba(139, 69, 19, 0.03);
-        }
-
-        .highlight-box.warning {
-            background: linear-gradient(135deg, #fef3c7 0%, #fee2e2 100%);
-        }
-
-        .highlight-box.success {
-            background: linear-gradient(135deg, #d1fae5 0%, #cffafe 100%);
-        }
-
-        .highlight-box p {
-            margin: 0;
-            color: var(--text-primary);
-        }
-
-        /* Analogy Box */
-        .analogy {
-            background: linear-gradient(135deg, #fef3c7 0%, #fff7ed 100%);
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-        }
-
-        .analogy-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            color: #92400e;
-            margin-bottom: 12px;
-        }
-
-        .analogy-title .material-icons {
-            color: #f59e0b;
-        }
-
-        .analogy p {
-            color: #78350f;
-            margin: 0;
-        }
-
-        /* Key Insight */
-        .key-insight {
-            background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-            border: 1px solid #93c5fd;
-        }
-
-        .key-insight-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            color: #1e40af;
-            margin-bottom: 12px;
-        }
-
-        .key-insight-title .material-icons {
-            color: #3b82f6;
-        }
-
-        .key-insight p {
-            color: #1e3a8a;
-            margin: 0;
-        }
-
-        /* Three Regimes Visual */
-        .regimes-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 25px 0;
-        }
-
-        @media (max-width: 700px) {
-            .regimes-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .regime-card {
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
         }
 
         .regime-card.low {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border: 2px solid #10b981;
+            border-color: var(--color-success);
+        }
+
+        .regime-card.low .winner {
+            color: var(--color-success);
         }
 
         .regime-card.medium {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 2px solid #f59e0b;
+            border-color: var(--color-warning);
+        }
+
+        .regime-card.medium .winner {
+            color: var(--color-warning);
         }
 
         .regime-card.high {
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            border: 2px solid #ef4444;
+            border-color: var(--color-danger);
         }
 
-        .regime-card h4 {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
+        .regime-card.high .winner {
+            color: var(--color-danger);
         }
 
         .regime-card .winner {
@@ -300,198 +43,52 @@
             margin-bottom: 8px;
         }
 
-        .regime-card.low .winner { color: #047857; }
-        .regime-card.medium .winner { color: #b45309; }
-        .regime-card.high .winner { color: #2563eb; }
-
-        .regime-card p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin: 0;
-        }
-
-        /* Puzzle Cards */
-        .puzzle-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        @media (max-width: 600px) {
-            .puzzle-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .puzzle-card {
-            background: var(--bg-light);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .puzzle-card h4 {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-            color: var(--primary);
-        }
-
-        .puzzle-card p {
-            font-size: 0.9rem;
-            margin: 0 0 10px;
-        }
-
-        .puzzle-card .complexity {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            background: white;
-            padding: 5px 10px;
-            border-radius: 6px;
-            display: inline-block;
-        }
-
-        /* Comparison Grid */
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 25px 0;
-        }
-
-        @media (max-width: 600px) {
-            .comparison-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .comparison-card {
-            padding: 25px;
-            border-radius: 12px;
-        }
-
-        .comparison-card.old {
-            background: linear-gradient(135deg, #fee2e2 0%, #fef3c7 100%);
-            border: 2px solid #ef4444;
-        }
-
-        .comparison-card.new {
-            background: linear-gradient(135deg, #d1fae5 0%, #dbeafe 100%);
-            border: 2px solid #10b981;
-        }
-
-        .comparison-card h4 {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-
-        .comparison-card.old h4 { color: #2563eb; }
-        .comparison-card.new h4 { color: #047857; }
-
-        .comparison-card ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .comparison-card li {
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            font-size: 0.95rem;
-        }
-
-        .comparison-card li:last-child {
-            border-bottom: none;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 15px;
-            margin: 25px 0;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #f0e7ff 0%, #fce7f3 100%);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .stat-card .number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .stat-card .label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 5px;
-        }
-
-        /* Thinking Process Visual */
-        .thinking-visual {
-            background: var(--bg-light);
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-        }
-
-        .thinking-timeline {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-
-        .thinking-step {
+        .thinking-step.correct {
+            background: #f0fff4;
+            color: var(--color-success);
             padding: 8px 15px;
-            border-radius: 20px;
+            border: 1px solid var(--border-light);
             font-size: 0.85rem;
             font-weight: 500;
         }
 
-        .thinking-step.correct {
-            background: #d1fae5;
-            color: #047857;
-        }
-
         .thinking-step.incorrect {
-            background: #fee2e2;
-            color: #2563eb;
+            background: #fff5f5;
+            color: var(--color-danger);
+            padding: 8px 15px;
+            border: 1px solid var(--border-light);
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
         .thinking-step.final {
-            background: #dbeafe;
-            color: #1e40af;
+            background: var(--bg-highlight);
+            color: var(--color-accent);
+            padding: 8px 15px;
+            border: 1px solid var(--border-light);
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
-        .arrow {
-            color: var(--text-muted);
-        }
-
-        /* Collapse Visual */
         .collapse-visual {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-radius: 12px;
+            background: #1a1a2e;
             padding: 30px;
-            margin: 20px 0;
-            color: white;
+            margin: 24px 0;
+            color: #e2e8f0;
+            border: 1px solid var(--border-medium);
         }
 
         .collapse-visual h4 {
-            color: #60a5fa;
+            color: var(--bg-page);
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-family: var(--font-heading);
+        }
+
+        .collapse-visual p {
+            color: #94a3b8;
         }
 
         .complexity-bar {
@@ -512,16 +109,11 @@
 
         .bar {
             width: 100%;
-            border-radius: 4px 4px 0 0;
-            transition: height 0.3s;
         }
 
         .bar.accuracy {
-            background: linear-gradient(to top, #10b981, #34d399);
-        }
-
-        .bar.thinking {
-            background: linear-gradient(to top, #7c3aed, #a78bfa);
+            background: var(--text-primary);
+            opacity: 0.7;
         }
 
         .bar-label {
@@ -529,148 +121,36 @@
             color: #94a3b8;
         }
 
-        .legend {
-            display: flex;
+        .collapse-visual .legend {
             justify-content: center;
             gap: 30px;
             margin-top: 20px;
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
+        .collapse-visual .legend-item {
             color: #94a3b8;
         }
 
-        .legend-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
+        .puzzle-card .complexity {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: var(--bg-aside);
+            padding: 5px 10px;
+            display: inline-block;
+            border: 1px solid var(--border-light);
         }
 
-        .legend-dot.accuracy { background: #10b981; }
-        .legend-dot.thinking { background: #7c3aed; }
-
-        /* Glossary */
-        .glossary-grid {
-            display: grid;
-            gap: 15px;
+        .pattern-fill.hanoi {
+            background: var(--text-primary);
+            opacity: 0.7;
         }
 
-        .glossary-item {
-            background: var(--bg-light);
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 3px solid var(--primary);
-        }
-
-        .glossary-item dt {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .glossary-item dd {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin: 0;
-        }
-
-        /* Takeaways */
-        .takeaways-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .takeaways-list li {
-            display: flex;
-            gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .takeaways-list li:last-child {
-            border-bottom: none;
-        }
-
-        .takeaways-list .material-icons {
-            color: var(--primary);
-            flex-shrink: 0;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            background: white;
-            border-top: 1px solid var(--border);
-        }
-
-        footer p {
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-        }
-
-        footer a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Back Button */
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            color: white;
-            color: #ffffff;
-            text-decoration: none;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-        }
-
-        .back-link:hover {
-            opacity: 1;
-        }
-
-        /* Failure Pattern Visual */
-        .failure-pattern {
-            background: var(--bg-light);
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-        }
-
-        .pattern-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .pattern-label {
-            width: 100px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
-        .pattern-bar {
-            flex: 1;
-            height: 30px;
-            border-radius: 6px;
-            position: relative;
-            overflow: hidden;
+        .pattern-fill.river {
+            background: var(--text-primary);
+            opacity: 0.5;
         }
 
         .pattern-fill {
-            height: 100%;
-            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
@@ -680,12 +160,12 @@
             color: white;
         }
 
-        .pattern-fill.hanoi {
-            background: linear-gradient(90deg, #10b981, #ef4444);
-        }
-
-        .pattern-fill.river {
-            background: linear-gradient(90deg, #10b981 15%, #ef4444 15%);
+        .pattern-bar {
+            height: 30px;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-aside);
+            border: 1px solid var(--border-light);
         }
     </style>
 </head>
@@ -851,7 +331,7 @@
             <h3>The Secret Weapon: Simulators</h3>
 
             <p>Unlike math problems where you only know if the final answer is right, the researchers built simulators that could:</p>
-            <ul style="margin-left: 20px; color: var(--text-secondary);">
+            <ul>
                 <li>Verify each individual move in a solution</li>
                 <li>Identify exactly where the model first made a mistake</li>
                 <li>Extract and evaluate intermediate solutions from the thinking traces</li>
@@ -914,7 +394,7 @@
 
             <div class="collapse-visual">
                 <h4><span class="material-icons">show_chart</span> The Counterintuitive Pattern</h4>
-                <p style="color: #94a3b8; margin-bottom: 20px;">As complexity increases, thinking effort rises... then mysteriously falls right before complete failure.</p>
+                <p>As complexity increases, thinking effort rises... then mysteriously falls right before complete failure.</p>
 
                 <div class="complexity-bar">
                     <div class="bar-item">
@@ -986,7 +466,7 @@
                     <span class="arrow">→</span>
                     <div class="thinking-step final">Final: Correct (lucky!)</div>
                 </div>
-                <p style="font-size: 0.9rem; color: var(--text-secondary);">The model found the right answer at 10% into its thinking, then spent 90% exploring dead ends before (hopefully) returning to the correct solution.</p>
+                <p>The model found the right answer at 10% into its thinking, then spent 90% exploring dead ends before (hopefully) returning to the correct solution.</p>
             </div>
 
             <h3>How Thinking Patterns Change with Complexity</h3>
@@ -1035,7 +515,7 @@
             </div>
 
             <p>This is significant because:</p>
-            <ul style="margin-left: 20px; color: var(--text-secondary);">
+            <ul>
                 <li><strong>Finding a solution</strong> requires search, creativity, and exploration</li>
                 <li><strong>Executing a known algorithm</strong> should be much easier - just follow the steps!</li>
                 <li>Yet models failed at both equally</li>
@@ -1218,8 +698,8 @@
 
             <p>This paper challenges assumptions about the reasoning capabilities of frontier AI models. For those interested in going deeper:</p>
 
-            <ul style="margin-left: 20px; color: var(--text-secondary);">
-                <li><a href="https://arxiv.org/abs/2505.xxxxx" target="_blank" style="color: var(--primary);">Read the full paper on arXiv</a></li>
+            <ul>
+                <li><a href="https://arxiv.org/abs/2505.xxxxx" target="_blank">Read the full paper on arXiv</a></li>
                 <li>The appendix contains detailed descriptions of all puzzle environments and simulators</li>
                 <li>Related work: GSM-Symbolic paper on mathematical reasoning limitations</li>
                 <li>Related work: "Faith and Fate" paper on compositionality limits in transformers</li>
@@ -1230,7 +710,7 @@
     <footer>
         <p><strong>Paper:</strong> "The Illusion of Thinking: Understanding the Strengths and Limitations of Reasoning Models via the Lens of Problem Complexity"</p>
         <p><strong>Authors:</strong> Shojaee, Mirzadeh, Alizadeh, Horton, Bengio, Farajtabar (Apple)</p>
-        <p style="margin-top: 15px;"><a href="index.html">Back to NStarX Research Papers</a></p>
+        <p><a href="index.html">Back to NStarX Research Papers</a></p>
     </footer>
 </body>
 </html>
